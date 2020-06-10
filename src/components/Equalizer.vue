@@ -1,7 +1,7 @@
 <template>
     <div class="effectContainer">
         <h1>Equalizer</h1>
-        <span ref="toggleButton" class="toggleButton active" @click="toggle">On/Off</span>
+        <span ref="toggleButton" class="toggleButton" @click="toggle">On/Off</span>
         <div ref="low"></div>
         <div ref="lowFreq"></div>
         <div ref="mid"></div>

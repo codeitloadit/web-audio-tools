@@ -6,6 +6,7 @@
         <Reverb />
         <Compressor />
         <Equalizer />
+        <Limiter />
         <MasterOutput />
         <Meter />
     </div>
@@ -18,6 +19,7 @@ import Delay from './components/Delay'
 import Reverb from './components/Reverb'
 import Compressor from './components/Compressor'
 import Equalizer from './components/Equalizer'
+import Limiter from './components/Limiter'
 import MasterOutput from './components/MasterOutput'
 import Meter from './components/Meter'
 
@@ -30,6 +32,7 @@ export default {
         Reverb,
         Compressor,
         Equalizer,
+        Limiter,
         MasterOutput,
         Meter,
     },
