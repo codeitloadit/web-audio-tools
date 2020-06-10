@@ -1,4 +1,4 @@
-const map = function(n, start1, stop1, start2, stop2, withinBounds) {
+function map(n, start1, stop1, start2, stop2, withinBounds) {
     const newval = ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2
     if (!withinBounds) {
         return newval
@@ -43,4 +43,11 @@ function rgbToHex(r, g, b) {
         throw 'Invalid color component'
     }
     return ((r << 16) | (g << 8) | b).toString(16)
+}
+
+export const utils = {
+    map,
+    roundRect,
+    getMousePosOnCanvas,
+    rgbToHex,
 }

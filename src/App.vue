@@ -9,6 +9,7 @@
         <Limiter />
         <MasterOutput />
         <Meter />
+        <Spectrum />
     </div>
 </template>
 
@@ -22,6 +23,7 @@ import Equalizer from './components/Equalizer'
 import Limiter from './components/Limiter'
 import MasterOutput from './components/MasterOutput'
 import Meter from './components/Meter'
+import Spectrum from './components/Spectrum'
 
 export default {
     name: 'App',
@@ -35,6 +37,7 @@ export default {
         Limiter,
         MasterOutput,
         Meter,
+        Spectrum,
     },
 }
 </script>

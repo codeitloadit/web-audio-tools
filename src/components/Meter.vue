@@ -1,5 +1,5 @@
 <template>
-    <div ref="meter" class="effectContainer">
+    <div class="effectContainer">
         <h1>Meter</h1>
         <div ref="left"></div>
         <div ref="right"></div>
@@ -33,7 +33,7 @@ export default {
         const graphLeft = bar.create(this.$refs.left, 0, -70, 10, -70, 10, 5, [0])
         const graphRight = bar.create(this.$refs.right, 0, -70, 10, -70, 10, 5, [0])
 
-        const drawMeter = () => {
+        const draw = () => {
             const leftLevel = this.leftMeter.getLevel()
             const rightLevel = this.rightMeter.getLevel()
 
@@ -45,9 +45,9 @@ export default {
             graphLeft.setValue(leftLevel)
             graphRight.setValue(rightLevel)
 
-            window.requestAnimationFrame(drawMeter)
+            window.requestAnimationFrame(draw)
         }
-        window.requestAnimationFrame(drawMeter)
+        window.requestAnimationFrame(draw)
     },
 }
 </script>
