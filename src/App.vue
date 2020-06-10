@@ -4,6 +4,7 @@
         <Gate />
         <Delay />
         <Reverb />
+        <Compressor />
         <MasterOutput />
         <Meter />
     </div>
@@ -14,6 +15,7 @@ import BackingTrack from './components/BackingTrack'
 import Gate from './components/Gate'
 import Delay from './components/Delay'
 import Reverb from './components/Reverb'
+import Compressor from './components/Compressor'
 import MasterOutput from './components/MasterOutput'
 import Meter from './components/Meter'
 
@@ -24,6 +26,7 @@ export default {
         Gate,
         Delay,
         Reverb,
+        Compressor,
         MasterOutput,
         Meter,
     },
