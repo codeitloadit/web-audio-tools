@@ -22,7 +22,7 @@ export default {
                 this.node.wet.value = 0
                 this.$refs.toggleButton.classList.remove('activeButton')
             } else {
-                this.node.wet.value = this.knobs.wet.getValue()
+                this.node.wet.value = this.knobs.wet.getValue() / 100
                 this.$refs.toggleButton.classList.add('activeButton')
             }
             this.isActive = !this.isActive
