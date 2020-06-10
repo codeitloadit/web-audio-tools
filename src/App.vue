@@ -2,6 +2,7 @@
     <div id="app">
         <BackingTrack />
         <Gate />
+        <Delay />
         <MasterOutput />
         <Meter />
     </div>
@@ -10,6 +11,7 @@
 <script>
 import BackingTrack from './components/BackingTrack'
 import Gate from './components/Gate'
+import Delay from './components/Delay'
 import MasterOutput from './components/MasterOutput'
 import Meter from './components/Meter'
 
@@ -18,6 +20,7 @@ export default {
     components: {
         BackingTrack,
         Gate,
+        Delay,
         MasterOutput,
         Meter,
     },
