@@ -10,6 +10,7 @@
         <MasterOutput />
         <Meter />
         <Spectrum />
+        <Waveform />
     </div>
 </template>
 
@@ -24,6 +25,7 @@ import Limiter from './components/Limiter'
 import MasterOutput from './components/MasterOutput'
 import Meter from './components/Meter'
 import Spectrum from './components/Spectrum'
+import Waveform from './components/Waveform'
 
 export default {
     name: 'App',
@@ -38,6 +40,7 @@ export default {
         MasterOutput,
         Meter,
         Spectrum,
+        Waveform,
     },
 }
 </script>
