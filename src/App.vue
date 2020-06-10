@@ -1,18 +1,24 @@
 <template>
     <div id="app">
         <BackingTrack />
+        <Gate />
+        <MasterOutput />
         <Meter />
     </div>
 </template>
 
 <script>
 import BackingTrack from './components/BackingTrack'
+import Gate from './components/Gate'
+import MasterOutput from './components/MasterOutput'
 import Meter from './components/Meter'
 
 export default {
     name: 'App',
     components: {
         BackingTrack,
+        Gate,
+        MasterOutput,
         Meter,
     },
 }
