@@ -15,7 +15,7 @@ import {mapActions} from 'vuex'
 export default {
     name: 'BackingTrack',
     methods: {
-        ...mapActions(['setPlayer', 'appendToChain']),
+        ...mapActions(['setSource', 'appendToChain']),
         toggle() {
             if (this.isActive) {
                 this.node.stop()
@@ -44,7 +44,7 @@ export default {
             this.$refs.toggleButton.innerText = 'On/Off'
             this.$refs.toggleButton.classList.remove('disabled')
         })
-        this.setPlayer(this.node)
+        this.setSource(this.node)
 
         const panner = new Tone.Panner()
         this.appendToChain(panner)

@@ -6,22 +6,24 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         chain: [],
-        player: null,
-        audioNode: null, // TODO: Should connect to the users input: new Tone.UserMedia();
+        source: null,
     },
     getters: {
         chain: (state) => state.chain,
     },
     mutations: {
-        setThePlayer: (state, player) => (state.player = player),
+        setTheSource: (state, source) => {
+            state.source = source
+            state.source.chain(...state.chain)
+        },
         addToChain: (state, node) => {
             state.chain.push(node)
-            state.player.chain(...state.chain)
+            state.source.chain(...state.chain)
         },
     },
     actions: {
-        setPlayer({commit}, player) {
-            commit('setThePlayer', player)
+        setSource({commit}, source) {
+            commit('setTheSource', source)
         },
         appendToChain({commit}, node) {
             commit('addToChain', node)

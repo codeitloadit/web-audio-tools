@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <BackingTrack />
+        <AudioInput />
         <Gate />
         <Delay />
         <Reverb />
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import BackingTrack from './components/BackingTrack'
+import AudioInput from './components/AudioInput'
 import Gate from './components/Gate'
 import Delay from './components/Delay'
 import Reverb from './components/Reverb'
@@ -30,7 +30,7 @@ import Waveform from './components/Waveform'
 export default {
     name: 'App',
     components: {
-        BackingTrack,
+        AudioInput,
         Gate,
         Delay,
         Reverb,
