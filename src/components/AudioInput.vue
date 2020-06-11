@@ -42,17 +42,12 @@ export default {
             }),
         }
 
-        const player = new Tone.Player('One and Done.mp3', () => {
-            this.$refs.toggleButton.innerText = 'On/Off'
-            this.$refs.toggleButton.classList.remove('disabled')
-
-            player.start()
-        })
-
+        // TODO: Understand why the UserMedia is not working as the source.
+        const player = new Tone.Player('One and Done.mp3')
         this.setSource(player)
+        player.autostart = true
 
         this.node = new Tone.UserMedia()
-        window.input = this.node
         this.appendToChain(this.node)
 
         Tone.UserMedia.enumerateDevices()
