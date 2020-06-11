@@ -2,7 +2,7 @@
     <div class="effectContainer">
         <select ref="select"></select>
         <h1>Audio Input</h1>
-        <span ref="toggleButton" class="toggleButton" @click="toggle">On/Off</span>
+        <span ref="toggleButton" class="toggleButton activeButton" @click="toggle">On/Off</span>
         <div ref="volume"></div>
         <div ref="pan"></div>
     </div>
@@ -42,9 +42,18 @@ export default {
             }),
         }
 
+        const player = new Tone.Player('One and Done.mp3', () => {
+            this.$refs.toggleButton.innerText = 'On/Off'
+            this.$refs.toggleButton.classList.remove('disabled')
+
+            player.start()
+        })
+
+        this.setSource(player)
+
         this.node = new Tone.UserMedia()
         window.input = this.node
-        this.setSource(this.node)
+        this.appendToChain(this.node)
 
         Tone.UserMedia.enumerateDevices()
             .then((deviceInfos) => {
@@ -57,6 +66,9 @@ export default {
                         this.$refs.select.appendChild(option)
                     }
                 }
+
+                this.node.open(this.$refs.select.value)
+                this.isActive = true
 
                 this.$refs.select.onchange = () => {
                     this.node.close()

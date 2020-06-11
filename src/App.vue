@@ -30,7 +30,7 @@ import Waveform from './components/Waveform'
 export default {
     name: 'App',
     components: {
-        AudioInput,
+        AudioInput, // TODO: Replace this with the WebRTC stream audio.
         Gate,
         Delay,
         Reverb,

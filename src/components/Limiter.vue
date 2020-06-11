@@ -31,7 +31,7 @@ export default {
     isActive: false,
     mounted() {
         this.knobs = {
-            threshold: knob.create(this.$refs.threshold, 'Threshold', -20, -100, 0, false, (knob, value) => {
+            threshold: knob.create(this.$refs.threshold, 'Threshold', -10, -20, 0, false, (knob, value) => {
                 if (this.isActive) {
                     this.node.threshold.value = value
                 }
