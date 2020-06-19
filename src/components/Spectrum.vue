@@ -55,7 +55,7 @@ export default {
     canvas: null,
     ctx: null,
     mounted() {
-        this.node = new Tone.FFT()
+        this.node = new Tone.FFT(4096)
         Tone.connect(Tone.Master, this.node)
 
         this.canvas = this.$refs.canvas
@@ -63,7 +63,6 @@ export default {
 
         this.canvas.style.backgroundColor = '#111'
 
-        this.ctx.lineWidth = 0
         this.ctx.fillStyle = '#16adce'
 
         window.requestAnimationFrame(this.draw)

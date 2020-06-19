@@ -31,16 +31,12 @@ export default {
 
                 this.ctx.beginPath()
                 for (let i = 0; i < value.length; i++) {
+                    const x = utils.map(i, 0, value.length, 0, this.width)
+                    const y = utils.map(value[i], -1, 1, this.height, 0)
                     if (i === 0) {
-                        this.ctx.moveTo(
-                            utils.map(i, 0, value.length, 0, this.width),
-                            utils.map(value[i], -1, 1, this.height, 0)
-                        )
+                        this.ctx.moveTo(x, y)
                     } else {
-                        this.ctx.lineTo(
-                            utils.map(i, 0, value.length, 0, this.width),
-                            utils.map(value[i], -1, 1, this.height, 0)
-                        )
+                        this.ctx.lineTo(x, y)
                     }
                 }
                 this.ctx.stroke()
@@ -59,7 +55,7 @@ export default {
     canvas: null,
     ctx: null,
     mounted() {
-        this.node = new Tone.Waveform()
+        this.node = new Tone.Waveform(4096)
         Tone.connect(Tone.Master, this.node)
 
         this.canvas = this.$refs.canvas
@@ -68,7 +64,7 @@ export default {
         this.canvas.style.backgroundColor = '#111'
 
         this.ctx.strokeStyle = '#16adce'
-        this.ctx.lineWidth = 4
+        this.ctx.lineWidth = 2
 
         window.requestAnimationFrame(this.draw)
         this.toggle()

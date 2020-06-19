@@ -1,6 +1,8 @@
 <template>
     <div id="app">
         <AudioInput />
+        <Tuner />
+        <Meter />
         <Gate />
         <Delay />
         <Reverb />
@@ -8,7 +10,6 @@
         <Equalizer />
         <Limiter />
         <MasterOutput />
-        <Meter />
         <Spectrum />
         <Waveform />
     </div>
@@ -26,6 +27,7 @@ import MasterOutput from './components/MasterOutput'
 import Meter from './components/Meter'
 import Spectrum from './components/Spectrum'
 import Waveform from './components/Waveform'
+import Tuner from './components/Tuner'
 
 export default {
     name: 'App',
@@ -41,6 +43,7 @@ export default {
         Meter,
         Spectrum,
         Waveform,
+        Tuner,
     },
 }
 </script>

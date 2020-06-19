@@ -17,16 +17,21 @@ import {mapActions} from 'vuex'
 export default {
     name: 'AudioInput',
     methods: {
-        ...mapActions(['setSource', 'appendToChain']),
+        ...mapActions(['setSource', 'setStream', 'appendToChain']),
         toggle() {
             this.node.close()
             if (this.isActive) {
                 this.$refs.toggleButton.classList.remove('activeButton')
             } else {
-                this.node.open(this.$refs.select.value)
+                this.openStream()
                 this.$refs.toggleButton.classList.add('activeButton')
             }
             this.isActive = !this.isActive
+        },
+        openStream() {
+            this.node.open(this.$refs.select.value).then((stream) => {
+                this.setStream(stream)
+            })
         },
     },
     node: null,
@@ -62,12 +67,12 @@ export default {
                     }
                 }
 
-                this.node.open(this.$refs.select.value)
+                this.openStream()
                 this.isActive = true
 
                 this.$refs.select.onchange = () => {
                     this.node.close()
-                    this.node.open(this.$refs.select.value)
+                    this.openStream()
                 }
             })
             .catch((error) => {
