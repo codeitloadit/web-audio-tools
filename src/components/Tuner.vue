@@ -1,9 +1,5 @@
 <template>
     <div class="effectContainer">
-        <span id="data">
-            <span ref="peakX"></span>
-            <span ref="peakY"></span>
-        </span>
         <h1>Tuner</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">On/Off</span>
         <canvas ref="canvas" :width="width" :height="height"></canvas>
@@ -42,13 +38,8 @@ export default {
                 this.recentPitchData.push(pitchData)
 
                 this.ctx.strokeStyle = '#444'
-                this.ctx.beginPath()
-                this.ctx.arc(200, 520, 500, (250 * Math.PI) / 180, (268 * Math.PI) / 180)
-                this.ctx.stroke()
-
-                this.ctx.beginPath()
-                this.ctx.arc(200, 520, 500, (272 * Math.PI) / 180, (290 * Math.PI) / 180)
-                this.ctx.stroke()
+                this.drawArc(250, 268)
+                this.drawArc(272, 290)
 
                 if (this.recentPitchData.length > 50) {
                     this.recentPitchData.shift()
@@ -95,63 +86,26 @@ export default {
                         }
 
                         const angle = utils.map(averageDetune, -50, 50, 250, 290)
-
-                        this.ctx.beginPath()
-                        this.ctx.arc(200, 520, 500, ((angle - 1) * Math.PI) / 180, ((angle + 1) * Math.PI) / 180)
-                        this.ctx.stroke()
+                        this.drawArc(angle - 1, angle + 1)
 
                         this.ctx.font = '30px Arial'
                         if (Math.abs(averageDetune) < 2) {
                             this.ctx.fillText('♭', 20, 38)
                             this.ctx.fillText('♯', 380, 34)
-
-                            this.ctx.beginPath()
-                            this.ctx.moveTo(100, 60)
-                            this.ctx.lineTo(100, 80)
-                            this.ctx.lineTo(130, 70)
-                            this.ctx.fill()
-
-                            this.ctx.beginPath()
-                            this.ctx.moveTo(300, 60)
-                            this.ctx.lineTo(300, 80)
-                            this.ctx.lineTo(270, 70)
-                            this.ctx.fill()
+                            this.drawFlatTriangle()
+                            this.drawSharpTriangle()
                         } else if (averageDetune < 0) {
                             this.ctx.fillText('♭', 20, 38)
-
-                            this.ctx.beginPath()
-                            this.ctx.moveTo(100, 60)
-                            this.ctx.lineTo(100, 80)
-                            this.ctx.lineTo(130, 70)
-                            this.ctx.fill()
-
+                            this.drawFlatTriangle()
                             this.ctx.fillStyle = '#444'
-
                             this.ctx.fillText('♯', 380, 34)
-
-                            this.ctx.beginPath()
-                            this.ctx.moveTo(300, 60)
-                            this.ctx.lineTo(300, 80)
-                            this.ctx.lineTo(270, 70)
-                            this.ctx.fill()
+                            this.drawSharpTriangle()
                         } else {
                             this.ctx.fillText('♯', 380, 34)
-
-                            this.ctx.beginPath()
-                            this.ctx.moveTo(300, 60)
-                            this.ctx.lineTo(300, 80)
-                            this.ctx.lineTo(270, 70)
-                            this.ctx.fill()
-
+                            this.drawSharpTriangle()
                             this.ctx.fillStyle = '#444'
-
                             this.ctx.fillText('♭', 20, 38)
-
-                            this.ctx.beginPath()
-                            this.ctx.moveTo(100, 60)
-                            this.ctx.lineTo(100, 80)
-                            this.ctx.lineTo(130, 70)
-                            this.ctx.fill()
+                            this.drawFlatTriangle()
                         }
                     } else {
                         this.ctx.font = '30px Arial'
@@ -162,22 +116,32 @@ export default {
                         this.ctx.font = '60px Arial'
                         this.ctx.fillText('--', 200, 85)
 
-                        this.ctx.beginPath()
-                        this.ctx.moveTo(100, 60)
-                        this.ctx.lineTo(100, 80)
-                        this.ctx.lineTo(130, 70)
-                        this.ctx.fill()
-
-                        this.ctx.beginPath()
-                        this.ctx.moveTo(300, 60)
-                        this.ctx.lineTo(300, 80)
-                        this.ctx.lineTo(270, 70)
-                        this.ctx.fill()
+                        this.drawSharpTriangle()
+                        this.drawFlatTriangle()
                     }
                 }
 
                 window.requestAnimationFrame(this.draw)
             }
+        },
+        drawArc(start, stop) {
+            this.ctx.beginPath()
+            this.ctx.arc(200, 520, 500, (start * Math.PI) / 180, (stop * Math.PI) / 180)
+            this.ctx.stroke()
+        },
+        drawFlatTriangle() {
+            this.ctx.beginPath()
+            this.ctx.moveTo(100, 60)
+            this.ctx.lineTo(100, 80)
+            this.ctx.lineTo(130, 70)
+            this.ctx.fill()
+        },
+        drawSharpTriangle() {
+            this.ctx.beginPath()
+            this.ctx.moveTo(300, 60)
+            this.ctx.lineTo(300, 80)
+            this.ctx.lineTo(270, 70)
+            this.ctx.fill()
         },
     },
     recentPitchData: null,
@@ -202,21 +166,11 @@ export default {
         this.ctx.lineWidth = 8
         this.ctx.lineCap = 'round'
         this.ctx.textAlign = 'center'
-
-        // window.requestAnimationFrame(this.draw)
-        // this.toggle()
     },
 }
 </script>
 
 <style scoped>
-#data {
-    float: right;
-}
-
-#data span {
-    margin-left: 10px;
-}
 canvas {
     border-radius: 6px;
 }
