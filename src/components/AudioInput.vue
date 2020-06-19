@@ -3,6 +3,7 @@
         <select ref="select"></select>
         <h1>Audio Input</h1>
         <span ref="toggleButton" class="toggleButton activeButton" @click="toggle">On/Off</span>
+        <span ref="muteButton" class="toggleButton" @click="mute">Mute</span>
         <div ref="volume"></div>
         <div ref="pan"></div>
     </div>
@@ -28,6 +29,16 @@ export default {
             }
             this.isActive = !this.isActive
         },
+        mute() {
+            if (this.isMuted) {
+                Tone.Master.mute = false
+                this.$refs.muteButton.classList.remove('muted')
+            } else {
+                Tone.Master.mute = true
+                this.$refs.muteButton.classList.add('muted')
+            }
+            this.isMuted = !this.isMuted
+        },
         openStream() {
             this.node.open(this.$refs.select.value).then((stream) => {
                 this.setStream(stream)
@@ -37,6 +48,7 @@ export default {
     node: null,
     knobs: null,
     isActive: false,
+    isMuted: false,
     mounted() {
         this.knobs = {
             volume: knob.create(this.$refs.volume, 'Volume', 0, -10, 10, true, (knob, value) => {
@@ -81,6 +93,8 @@ export default {
 
         const panner = new Tone.Panner()
         this.appendToChain(panner)
+
+        this.mute()
     },
 }
 </script>
@@ -90,5 +104,10 @@ select {
     float: right;
     width: 150px;
     border-radius: 4px;
+}
+
+.muted {
+    background-color: #ff7077;
+    box-shadow: 0 0 30px #ff7077;
 }
 </style>
