@@ -34,8 +34,7 @@ export default {
             }
             this.isActive = !this.isActive
         },
-        draw(time) {
-            console.log(time)
+        draw() {
             this.ctx.clearRect(0, 0, this.width, this.height)
 
             if (this.isActive) {
