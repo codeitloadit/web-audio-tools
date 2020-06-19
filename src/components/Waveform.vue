@@ -65,9 +65,6 @@ export default {
 
         this.ctx.strokeStyle = '#16adce'
         this.ctx.lineWidth = 2
-
-        window.requestAnimationFrame(this.draw)
-        this.toggle()
     },
 }
 </script>

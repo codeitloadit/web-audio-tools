@@ -64,9 +64,6 @@ export default {
         this.canvas.style.backgroundColor = '#111'
 
         this.ctx.fillStyle = '#16adce'
-
-        window.requestAnimationFrame(this.draw)
-        this.toggle()
     },
 }
 </script>
