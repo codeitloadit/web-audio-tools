@@ -102,7 +102,7 @@ export default {
 <style scoped>
 select {
     float: right;
-    width: 150px;
+    width: 230px;
     border-radius: 4px;
 }
 

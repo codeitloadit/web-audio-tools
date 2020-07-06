@@ -2,6 +2,7 @@
     <div id="app">
         <AudioInput />
         <Tuner />
+        <Metronome />
         <Meter />
         <Gate />
         <Delay />
@@ -28,6 +29,7 @@ import Meter from './components/Meter'
 import Spectrum from './components/Spectrum'
 import Waveform from './components/Waveform'
 import Tuner from './components/Tuner'
+import Metronome from './components/Metronome'
 
 export default {
     name: 'App',
@@ -44,6 +46,7 @@ export default {
         Spectrum,
         Waveform,
         Tuner,
+        Metronome,
     },
 }
 </script>
@@ -73,8 +76,8 @@ html {
 
 h1 {
     font-size: 20px;
-    margin: 0 !important;
-    padding: 0 !important;
+    margin: 0;
+    padding: 0;
 }
 
 .effectContainer {

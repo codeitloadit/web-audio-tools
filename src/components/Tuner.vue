@@ -108,20 +108,15 @@ export default {
                             this.drawFlatTriangle()
                         }
                     } else {
-                        this.ctx.font = '30px Arial'
-                        this.ctx.fillStyle = '#444'
-                        this.ctx.fillText('♯', 380, 34)
-                        this.ctx.fillText('♭', 20, 38)
-
-                        this.ctx.font = '60px Arial'
-                        this.ctx.fillText('--', 200, 85)
-
-                        this.drawSharpTriangle()
-                        this.drawFlatTriangle()
+                        this.drawOffState()
                     }
+                } else {
+                    this.drawOffState()
                 }
 
                 window.requestAnimationFrame(this.draw)
+            } else {
+                this.drawOffState()
             }
         },
         drawArc(start, stop) {
@@ -142,6 +137,23 @@ export default {
             this.ctx.lineTo(300, 80)
             this.ctx.lineTo(270, 70)
             this.ctx.fill()
+        },
+        drawOffState() {
+            this.ctx.fillStyle = '#444'
+            this.ctx.strokeStyle = '#444'
+
+            this.drawArc(250, 268)
+            this.drawArc(272, 290)
+
+            this.ctx.font = '30px Arial'
+            this.ctx.fillText('♯', 380, 34)
+            this.ctx.fillText('♭', 20, 38)
+
+            this.ctx.font = '60px Arial'
+            this.ctx.fillText('--', 200, 85)
+
+            this.drawSharpTriangle()
+            this.drawFlatTriangle()
         },
     },
     recentPitchData: null,
@@ -166,6 +178,8 @@ export default {
         this.ctx.lineWidth = 8
         this.ctx.lineCap = 'round'
         this.ctx.textAlign = 'center'
+
+        this.drawOffState()
     },
 }
 </script>
