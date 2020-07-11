@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <title>VOLUME</title>
+
+        <script src="jquery-3.5.1.min.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                const timeScale = 100
+
+                const logo = $('#logo')
+                const text = $('#text')
+                const slogan = $('#slogan')
+                const buttons = $('#buttons')
+                // const social = $('#social')
+
+                const vCanvas = $('#bars')
+                const vCtx = vCanvas[0].getContext('2d')
+                vCtx.fillStyle = '#151515'
+
+                const eCanvas = $('#eCanvas')
+                const eCtx = eCanvas[0].getContext('2d')
+                eCtx.fillStyle = '#151515'
+
+                slogan.css('display', 'inline-block').hide()
+                buttons.css('display', 'flex').hide()
+
+                if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                    $('#footerSpacer').css('height', '100px')
+                }
+
+                if (window.innerWidth >= 768) {
+                    if (window.innerWidth < 1000) {
+                        const padding = 300 - (1000 - window.innerWidth) + 48
+                        $('#contact').css('padding-left', padding + 'px')
+                    }
+
+                    logo.fadeIn(60 * timeScale, () => {
+                        isStopping = true
+                    })
+
+                    function showRestOfPage() {
+                        setTimeout(() => {
+                            vCanvas.hide()
+
+                            logo.animate({width: '200px'}, 10 * timeScale, () => {
+                                setTimeout(() => {
+                                    isBars = false
+                                }, 5 * timeScale)
+                                text.fadeIn(10 * timeScale, () => {
+                                    setTimeout(() => {
+                                        slogan.fadeIn(15 * timeScale, () => {
+                                            buttons.fadeIn(10 * timeScale, () => {
+                                                // social.fadeIn(10 * timeScale)
+                                            })
+                                        })
+                                    }, 15 * timeScale)
+                                })
+                            })
+                        }, 20 * timeScale)
+                    }
+
+                    const bars = [
+                        {
+                            x: 0,
+                            height: 0,
+                            minHeight: 0,
+                            hasStopped: false,
+                        },
+                        {
+                            x: 45,
+                            height: 0,
+                            minHeight: 75,
+                            hasStopped: false,
+                        },
+                        {
+                            x: 96,
+                            height: 0,
+                            minHeight: 150,
+                            hasStopped: false,
+                        },
+                        {
+                            x: 144,
+                            height: 0,
+                            minHeight: 225,
+                            hasStopped: false,
+                        },
+                        {
+                            x: 423,
+                            height: 0,
+                            minHeight: 225,
+                            hasStopped: false,
+                        },
+                        {
+                            x: 468,
+                            height: 0,
+                            minHeight: 150,
+                            hasStopped: false,
+                        },
+                        {
+                            x: 519,
+                            height: 0,
+                            minHeight: 75,
+                            hasStopped: false,
+                        },
+                        {
+                            x: 567,
+                            height: 0,
+                            minHeight: 0,
+                            hasStopped: false,
+                        },
+                    ]
+
+                    let isStopping = false
+                    let stopCount = 0
+                    let isBars = true
+                    let eHeight = 100
+                    eCtx.fillRect(0, 0, 75, 100)
+
+                    function startBars() {
+                        bars.forEach((bar) => {
+                            bar.height = bar.minHeight
+                            vCtx.fillRect(bar.x, 0, 36, bar.height)
+                        })
+
+                        draw()
+                    }
+
+                    function draw() {
+                        if (isBars) {
+                            vCtx.clearRect(0, 0, 600, 390)
+
+                            bars.forEach((bar, i) => {
+                                if (isStopping) {
+                                    if (!bar.hasStopped) {
+                                        if (bar.height >= 360) {
+                                            bar.height = 360
+                                            bar.hasStopped = true
+                                            stopCount++
+                                            if (stopCount === 8) {
+                                                setTimeout(showRestOfPage, 15 * timeScale)
+                                            }
+                                        }
+                                        bar.height += Math.random() + 3
+                                    } else if (stopCount === 8) {
+                                        bar.height -= 2
+                                        if (bar.height < 0) {
+                                            bar.height = 0
+                                        }
+                                    }
+                                } else {
+                                    if (bar.height < 360) {
+                                        bar.height += Math.random() + 3
+                                    } else {
+                                        bar.height = Math.floor(Math.random() * (360 - bar.minHeight) + bar.minHeight)
+                                    }
+                                }
+                                vCtx.fillRect(bar.x, 0, 36, bar.height)
+                            })
+                        } else {
+                            eCtx.clearRect(0, 0, 75, 100)
+                            eCtx.fillRect(0, 0, 75, eHeight)
+                            eHeight -= 1
+                        }
+
+                        if (eHeight >= 0) {
+                            window.requestAnimationFrame(draw)
+                        }
+                    }
+
+                    startBars()
+                } else {
+                    logo.css('width', '300px')
+                    $('#textWrapper').css('width', '300px')
+                    text.css('width', '300px')
+                    buttons.css('display', 'block').hide()
+                    $('#contact').css('padding', '24px 48px 0 24px')
+
+                    logo.fadeIn(30 * timeScale, () => {
+                        logo.animate({width: '100px'}, 10 * timeScale, () => {
+                            text.fadeIn(10 * timeScale, () => {
+                                slogan.fadeIn(15 * timeScale, () => {
+                                    buttons.fadeIn(10 * timeScale, () => {
+                                        // social.fadeIn(10 * timeScale)
+                                    })
+                                })
+                            })
+                        })
+                    })
+                }
+
+                $('html, body').show()
+            })
+        </script>
+
+        <style>
+            html,
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                background: #151515;
+                /* background: linear-gradient(90deg, rgba(0, 0, 0, 1) 0%, rgba(20, 20, 20, 1) 50%, rgba(0, 0, 0, 1) 100%); */
+                color: #ccc;
+                font-size: 20px;
+                text-align: center;
+                display: none;
+            }
+
+            #bars {
+                position: absolute;
+                top: 34px;
+                z-index: 1;
+                /* border: 1px solid red; */
+            }
+
+            #logo {
+                width: 600px;
+                display: none;
+                margin-top: 30px;
+                z-index: 0;
+                position: relative;
+                left: 1px;
+            }
+
+            #textWrapper {
+                margin-top: -120px;
+                display: inline-block;
+                width: 600px;
+            }
+
+            #eCanvas {
+                position: relative;
+                left: 270px;
+                top: 140px;
+                z-index: 1;
+            }
+
+            #text {
+                width: 600px;
+                display: none;
+                margin-top: 40px;
+                z-index: 0;
+            }
+
+            #slogan {
+                color: #e9983d;
+                display: none;
+                margin-top: 30px;
+                font-size: 26px;
+            }
+
+            strong {
+                font-weight: normal;
+                color: #da3a31;
+            }
+
+            #buttonsWrapper {
+                display: inline-block;
+            }
+
+            #buttons {
+                display: flex;
+            }
+
+            #buttons > div {
+                flex: 1;
+                color: #ccc;
+                margin-top: 30px;
+                font-size: 14px;
+                width: 300px;
+            }
+
+            #apply {
+                padding-left: 24px;
+            }
+
+            #contact {
+                padding: 0 48px 0 300px;
+            }
+
+            .buttonLabel {
+                margin-left: 34px;
+                font-weight: bold;
+                font-size: 14px;
+            }
+
+            .button {
+                display: inline-block;
+                font-size: 26px;
+                font-weight: bold;
+                background-color: #da3a31;
+                border-radius: 6px;
+                width: 200px;
+                padding: 10px 16px 8px 16px;
+                margin: 8px 0 0 30px;
+                text-shadow: 0 0 4px #611815;
+                color: #fff;
+            }
+
+            #contact > a > .button {
+                background-color: #e9983d;
+                text-shadow: 0 0 4px #642f18;
+            }
+
+            #contact > .header {
+                color: #e9983d;
+            }
+
+            #social {
+                display: none;
+                margin-top: 40px;
+            }
+
+            #social > img {
+                width: 32px;
+                margin: 0 12px;
+                border-radius: 3px;
+            }
+
+            .header {
+                font-size: 20px;
+                font-weight: bold;
+                color: #da3a31;
+                margin: 0 0 10px 24px;
+            }
+
+            .list {
+                text-align: left;
+            }
+
+            .bulletWrapper {
+                display: flex;
+                align-items: center;
+            }
+
+            .bullet {
+                width: 12px;
+                height: 12px;
+                background-color: #da3a31;
+                border-radius: 50%;
+                position: relative;
+                top: -4px;
+            }
+
+            #contact .bullet {
+                background-color: #e9983d;
+            }
+
+            .bulletText {
+                width: 300px;
+                margin: 0 0 8px 12px;
+            }
+
+            #footerSpacer {
+                display: block;
+                width: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <canvas id="bars" width="800" height="390"></canvas>
+        <img id="logo" src="volume_logo.svg" /><br />
+
+        <div id="textWrapper">
+            <canvas id="eCanvas" width="75" height="100"></canvas>
+            <img id="text" src="volume_text.svg" />
+        </div>
+        <br />
+
+        <div id="slogan">IT'S ABOUT TO GET <strong>LOUD</strong></div>
+        <br />
+
+        <div id="buttonsWrapper">
+            <div id="buttons">
+                <div id="apply">
+                    <div class="header">WANNA STREAM?</div>
+
+                    <div class="list">
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">
+                                    Customize your sound with built-in audio effects in our browser based plugins
+                                </div>
+                            </span>
+                        </div>
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">
+                                    24/7 support team to assist artists with any audio and video complications
+                                </div>
+                            </span>
+                        </div>
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">
+                                    Dial in your show and presets with our proprietary soundcheck feature
+                                </div>
+                            </span>
+                        </div>
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">
+                                    Earn cash from tips and daily contest winnings with quick and easy payouts
+                                </div>
+                            </span>
+                        </div>
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">
+                                    Expand your fan base with an immediate global audience
+                                </div>
+                            </span>
+                        </div>
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">
+                                    Offering $30 as an early access signing bonus for your first hour of streaming
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="buttonLabel">MUSICIAN BETA TESTERS NEEDED</div>
+                    <a href="https://forms.gle/gwKHBMTeTiMm4t83A"><div class="button">HIRING NOW!</div></a>
+                </div>
+
+                <div id="contact">
+                    <div class="header">WANNA WATCH?</div>
+
+                    <div class="list">
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">
+                                    Discover a variety of diverse and talented artists from around the world
+                                </div>
+                            </span>
+                        </div>
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">
+                                    Be front and center with your favorite artist in ticketed private events
+                                </div>
+                            </span>
+                        </div>
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">
+                                    Real time interaction with your favorite performers and other fans
+                                </div>
+                            </span>
+                        </div>
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">
+                                    Show artists your support through on site tipping and buying merch
+                                </div>
+                            </span>
+                        </div>
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">
+                                    Send private messages to performers and other viewers
+                                </div>
+                            </span>
+                        </div>
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">Offering 200 tokens as an early access signing bonus</div>
+                            </span>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="buttonLabel">EARLY ACCESS SIGN UP</div>
+                    <a href="https://forms.gle/FKaaJRMdL34uRHWa6"><div class="button">COUNT ME IN!</div></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div id="social">
+            <img src="facebook.svg" />
+            <img src="instagram.svg" />
+            <img src="twitter.svg" />
+            <img src="youtube.svg" />
+            <img src="linkedin.svg" />
+            <img src="tiktok.svg" />
+        </div> -->
+
+        <div id="footerSpacer"></div>
+    </body>
+</html>
