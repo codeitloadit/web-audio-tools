@@ -12,7 +12,7 @@
         <script src="jquery-3.5.1.min.js"></script>
 
         <script>
-            $(document).ready(function () {
+            $(document).ready(function() {
                 const timeScale = 100
 
                 const logo = $('#logo')
@@ -177,8 +177,11 @@
 
                     startBars()
                 } else {
+                    vCanvas.remove()
+                    eCanvas.remove()
                     logo.css('width', '300px')
                     $('#textWrapper').css('width', '300px')
+                    $('#textWrapper').css('margin-top', '-10px')
                     text.css('width', '300px')
                     buttons.css('display', 'block').hide()
                     $('#contact').css('padding', '24px 48px 0 24px')
@@ -210,6 +213,7 @@
                 font-size: 20px;
                 text-align: center;
                 display: none;
+                margin: 0;
             }
 
             #bars {
@@ -389,7 +393,17 @@
                             </span>
                             <span>
                                 <div class="bulletText">
-                                    Customize your sound with built-in audio effects in our browser based plugins
+                                    Customize your sound with built-in audio effects using our browser based plugins
+                                </div>
+                            </span>
+                        </div>
+                        <div class="bulletWrapper">
+                            <span>
+                                <div class="bullet"></div>
+                            </span>
+                            <span>
+                                <div class="bulletText">
+                                    Dial in your show and effects presets with our proprietary soundcheck feature
                                 </div>
                             </span>
                         </div>
@@ -400,16 +414,6 @@
                             <span>
                                 <div class="bulletText">
                                     24/7 support team to assist artists with any audio and video complications
-                                </div>
-                            </span>
-                        </div>
-                        <div class="bulletWrapper">
-                            <span>
-                                <div class="bullet"></div>
-                            </span>
-                            <span>
-                                <div class="bulletText">
-                                    Dial in your show and presets with our proprietary soundcheck feature
                                 </div>
                             </span>
                         </div>
