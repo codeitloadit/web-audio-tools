@@ -22,7 +22,7 @@
             />
 
             <label for="beats">Beats:</label>
-            <select name="beats">
+            <select ref="top" name="beats">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -34,7 +34,7 @@
             </select>
 
             <label for="noteLength">Beat Length:</label>
-            <select name="noteLength">
+            <select ref="bottom" name="noteLength">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -58,18 +58,40 @@ export default {
         ...mapGetters(['stream']),
         toggle() {
             if (this.isActive) {
+                Tone.Transport.stop()
                 this.$refs.toggleButton.classList.remove('activeButton')
             } else {
                 if (this.$refs.bpm.value === '---') {
                     this.$refs.bpm.value = this.lastSetBMP
                 }
+                Tone.Transport.cancel().stop()
+                Tone.Transport.bpm.value = parseInt(this.$refs.bpm.value, 10)
+                const tsTop = parseInt(this.$refs.top.value, 10)
+                const tsBot = parseInt(this.$refs.bottom.value, 10)
+                const offset = 16 / tsBot
+                Tone.Transport.timeSignature = [tsTop, tsBot]
+                for (let i = 0; i < tsTop; i++) {
+                    Tone.Transport.scheduleRepeat(
+                        () => {
+                            this.node.triggerAttack(i === 0 ? 'C2' : 'C4')
+                        },
+                        '0:' + Tone.Transport.timeSignature + ':0',
+                        '0:0:' + offset * i
+                    )
+                }
+                Tone.Transport.start()
                 this.$refs.toggleButton.classList.add('activeButton')
             }
             this.isActive = !this.isActive
         },
         tapDown() {
             const elapsedTime = Tone.Transport.seconds
-            Tone.Transport.stop().start()
+            Tone.Transport.cancel()
+                .stop()
+                .start()
+            if (this.isActive) {
+                this.toggle()
+            }
             if (elapsedTime < 5) {
                 this.recentElapsedTimes.push(elapsedTime)
                 if (this.recentElapsedTimes.length > 1) {
@@ -80,10 +102,9 @@ export default {
                     for (let i = 0; i < this.recentElapsedTimes.length; i++) {
                         sum += parseFloat(this.recentElapsedTimes[i])
                     }
-
                     let bpm = Math.round(60 / (sum / this.recentElapsedTimes.length))
-
                     this.$refs.bpm.value = bpm
+                    this.lastSetBMP = this.$refs.bpm.value
                 }
             } else {
                 this.$refs.bpm.value = '---'
@@ -102,6 +123,9 @@ export default {
             this.$refs.bpm.select()
         },
         handleBPMKeypress(e) {
+            if (this.isActive) {
+                this.toggle()
+            }
             if (e.key === 'Enter') {
                 this.$refs.bpm.blur()
             }
