@@ -11,7 +11,7 @@
         <canvas ref="canvas" :width="width" :height="height"></canvas>
         <div id="topRow">
             <label for="bpm">BPM:</label>
-            <input type="text" name="bpm" value="120" />
+            <input ref="bpm" type="text" name="bpm" value="" @click="highlightBPM" @keypress="handleBPMKeypress" />
 
             <label for="beats">Beats:</label>
             <select name="beats">
@@ -57,10 +57,38 @@ export default {
             this.isActive = !this.isActive
         },
         tapDown() {
+            this.elapsedTime = Tone.Transport.seconds
+            Tone.Transport.stop().start()
+            this.recentElapsedTimes.shift()
+            this.recentElapsedTimes.push(this.elapsedTime)
+            let sum = 0
+            for (let i = 0; i < this.recentElapsedTimes.length; i++) {
+                sum += parseFloat(this.recentElapsedTimes[i])
+            }
+
+            let bpm = Math.round(60 / (sum / this.recentElapsedTimes.length))
+
+            if (bpm < 60) {
+                this.$refs.bpm.value = '---'
+            } else {
+                this.$refs.bpm.value = bpm
+            }
+
+            if (this.isActive) {
+                this.node.triggerAttack('C2')
+            }
             this.$refs.tapButton.classList.add('activeButton')
         },
         tapUp() {
             this.$refs.tapButton.classList.remove('activeButton')
+        },
+        highlightBPM() {
+            this.$refs.bpm.select()
+        },
+        handleBPMKeypress(e) {
+            if (e.key === 'Enter') {
+                this.$refs.bpm.blur()
+            }
         },
         draw() {
             this.ctx.clearRect(0, 0, this.width, this.height)
@@ -76,22 +104,21 @@ export default {
             this.ctx.strokeStyle = '#444'
         },
     },
-    node: null,
-    isActive: false,
     data() {
         return {
             width: 400,
             height: 50,
         }
     },
-    canvas: null,
-    ctx: null,
     mounted() {
+        this.recentElapsedTimes = [0.5, 0.5, 0.5]
+
         this.node = new Tone.Sampler({
             C2: 'metro_bar.wav',
             C4: 'metro_beat.wav',
-        })
-        Tone.connect(Tone.Master, this.node)
+        }).toMaster()
+
+        Tone.Transport.start(0)
 
         this.canvas = this.$refs.canvas
         this.ctx = this.canvas.getContext('2d')
