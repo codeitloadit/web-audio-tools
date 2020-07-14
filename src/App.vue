@@ -94,9 +94,9 @@ h1 {
     display: inline-block;
     width: 30px;
     height: 24px;
-    background-color: #eee;
+    background-color: #c9c9c9;
     border-radius: 4px;
-    color: #111;
+    color: #151515;
     text-align: center;
     padding: 6px 4px 2px 4px;
     vertical-align: top;

@@ -84,10 +84,10 @@ function Knob() {
                 angleEnd: 0.75 * Math.PI,
                 angleOffset: -0.5 * Math.PI,
                 angleStart: -0.75 * Math.PI,
-                colorBG: '#151515',
+                colorBG: '#111111',
                 colorFG: '#ff9c33',
                 inactiveColorFG: '#9c9c9c',
-                colorLabel: '#aaaaaa',
+                colorLabel: '#9c9c9c',
                 fnStringToValue: function(string) {
                     return parseInt(string)
                 },

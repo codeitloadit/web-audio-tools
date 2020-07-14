@@ -20,9 +20,9 @@ function Bar() {
             _width: width,
 
             _properties: {
-                colorBG: '#181818',
-                colorFG: '#F68432',
-                colorMarkers: '#888888',
+                colorBG: '#111111',
+                colorFG: '#ff9c33',
+                colorMarkers: '#555555',
                 colorPeaks: '#ff0000',
                 markerStart: markerStart,
                 markerEnd: markerEnd,

@@ -114,7 +114,15 @@ export default {
 select {
     float: right;
     width: 180px;
-    border-radius: 4px;
+    border-radius: 6px;
+    color: #c9c9c9;
+    background-color: #111111;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    padding: 1px 5px 2px 1px;
+    position: relative;
+    top: -3px;
 }
 
 .muted {

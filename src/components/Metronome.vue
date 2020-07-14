@@ -4,10 +4,12 @@
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="power.svg" />
         </span>
+        <span id="tap" ref="tapButton" class="toggleButton" @mousedown="tapDown" @mouseup="tapUp">
+            <img class="buttonIcon" src="tap.svg" />
+        </span>
         <canvas width="1" height="100"></canvas>
         <canvas ref="canvas" :width="width" :height="height"></canvas>
         <div id="topRow">
-            <span id="tap">Tap</span>
             <label for="bpm">BPM:</label>
             <input type="text" name="bpm" value="120" />
 
@@ -54,6 +56,12 @@ export default {
             }
             this.isActive = !this.isActive
         },
+        tapDown() {
+            this.$refs.tapButton.classList.add('activeButton')
+        },
+        tapUp() {
+            this.$refs.tapButton.classList.remove('activeButton')
+        },
         draw() {
             this.ctx.clearRect(0, 0, this.width, this.height)
 
@@ -66,13 +74,6 @@ export default {
         drawOffState() {
             this.ctx.fillStyle = '#444'
             this.ctx.strokeStyle = '#444'
-
-            this.ctx.font = '30px Arial'
-            this.ctx.fillText('♯', 380, 34)
-            this.ctx.fillText('♭', 20, 38)
-
-            this.ctx.font = '60px Arial'
-            this.ctx.fillText('--', 200, 85)
         },
     },
     node: null,
@@ -106,6 +107,9 @@ export default {
 </script>
 
 <style scoped>
+.effectContainer {
+    font-family: 'Graphik Semibold', Avenir, Helvetica, Arial, sans-serif;
+}
 canvas {
     border-radius: 6px;
 }
@@ -114,39 +118,40 @@ canvas {
     display: table-caption;
     position: relative;
     top: -100px;
-    left: 80px;
-    width: 400px;
+    left: 119px;
+    width: 430px;
 }
 
-#tap {
-    display: inline-block;
-    background-color: #eee;
-    border-radius: 4px;
-    color: #111;
-    text-align: center;
-    padding: 3px 10px;
-    margin-right: 16px;
-    cursor: pointer;
-    font-size: 14px;
+#tap.toggleButton.activeButton {
+    background-color: #ff9c33;
+    box-shadow: 0 0 30px #ff9c33;
+}
+
+#tap > img {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    top: -2px;
 }
 
 label {
     display: inline-block;
-    font-size: 14px;
+    font-size: 16px;
     margin-right: 6px;
-    color: #eee;
+    color: #9c9c9c;
 }
 
 input[type='text'],
 select {
-    width: 40px;
-    color: #111;
-    font-size: 14px;
-    background-color: #eee;
+    font-family: 'Graphik Regular', Avenir, Helvetica, Arial, sans-serif;
+    width: 44px;
+    color: #c9c9c9;
+    background-color: #111111;
+    font-size: 16px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     text-align: center;
-    margin-right: 16px;
-    padding: 3px 3px 3px 0;
+    margin-right: 28px;
+    padding: 5px 5px 5px 2px;
 }
 </style>
