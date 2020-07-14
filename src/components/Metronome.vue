@@ -11,7 +11,15 @@
         <canvas ref="canvas" :width="width" :height="height"></canvas>
         <div id="topRow">
             <label for="bpm">BPM:</label>
-            <input ref="bpm" type="text" name="bpm" value="" @click="highlightBPM" @keypress="handleBPMKeypress" />
+            <input
+                ref="bpm"
+                type="text"
+                name="bpm"
+                value="120"
+                @click="highlightBPM"
+                @keypress="handleBPMKeypress"
+                @change="handleBPMChange"
+            />
 
             <label for="beats">Beats:</label>
             <select name="beats">
@@ -52,26 +60,34 @@ export default {
             if (this.isActive) {
                 this.$refs.toggleButton.classList.remove('activeButton')
             } else {
+                if (this.$refs.bpm.value === '---') {
+                    this.$refs.bpm.value = this.lastSetBMP
+                }
                 this.$refs.toggleButton.classList.add('activeButton')
             }
             this.isActive = !this.isActive
         },
         tapDown() {
-            this.elapsedTime = Tone.Transport.seconds
+            const elapsedTime = Tone.Transport.seconds
             Tone.Transport.stop().start()
-            this.recentElapsedTimes.shift()
-            this.recentElapsedTimes.push(this.elapsedTime)
-            let sum = 0
-            for (let i = 0; i < this.recentElapsedTimes.length; i++) {
-                sum += parseFloat(this.recentElapsedTimes[i])
-            }
+            if (elapsedTime < 5) {
+                this.recentElapsedTimes.push(elapsedTime)
+                if (this.recentElapsedTimes.length > 1) {
+                    if (this.recentElapsedTimes.length > 5) {
+                        this.recentElapsedTimes.shift()
+                    }
+                    let sum = 0
+                    for (let i = 0; i < this.recentElapsedTimes.length; i++) {
+                        sum += parseFloat(this.recentElapsedTimes[i])
+                    }
 
-            let bpm = Math.round(60 / (sum / this.recentElapsedTimes.length))
+                    let bpm = Math.round(60 / (sum / this.recentElapsedTimes.length))
 
-            if (bpm < 60) {
-                this.$refs.bpm.value = '---'
+                    this.$refs.bpm.value = bpm
+                }
             } else {
-                this.$refs.bpm.value = bpm
+                this.$refs.bpm.value = '---'
+                this.recentElapsedTimes = []
             }
 
             if (this.isActive) {
@@ -88,6 +104,11 @@ export default {
         handleBPMKeypress(e) {
             if (e.key === 'Enter') {
                 this.$refs.bpm.blur()
+            }
+        },
+        handleBPMChange() {
+            if (this.$refs.bpm.value != '---') {
+                this.lastSetBMP = this.$refs.bpm.value
             }
         },
         draw() {
@@ -111,7 +132,8 @@ export default {
         }
     },
     mounted() {
-        this.recentElapsedTimes = [0.5, 0.5, 0.5]
+        this.recentElapsedTimes = []
+        this.lastSetBMP = 120
 
         this.node = new Tone.Sampler({
             C2: 'metro_bar.wav',
