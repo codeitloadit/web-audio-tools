@@ -1,7 +1,9 @@
 <template>
     <div class="effectContainer">
         <h1>Spectrum</h1>
-        <span ref="toggleButton" class="toggleButton" @click="toggle">On/Off</span>
+        <span ref="toggleButton" class="toggleButton" @click="toggle">
+            <img class="buttonIcon" src="power.svg" />
+        </span>
         <canvas ref="canvas" :width="width" :height="height"></canvas>
     </div>
 </template>
@@ -63,7 +65,7 @@ export default {
 
         this.canvas.style.backgroundColor = '#111'
 
-        this.ctx.fillStyle = '#16adce'
+        this.ctx.fillStyle = '#F68432'
     },
 }
 </script>

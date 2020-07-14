@@ -1,7 +1,9 @@
 <template>
     <div class="effectContainer">
         <h1>Tuner</h1>
-        <span ref="toggleButton" class="toggleButton" @click="toggle">On/Off</span>
+        <span ref="toggleButton" class="toggleButton" @click="toggle">
+            <img class="buttonIcon" src="power.svg" />
+        </span>
         <canvas ref="canvas" :width="width" :height="height"></canvas>
     </div>
 </template>
@@ -67,28 +69,28 @@ export default {
                         })
                         const averageDetune = detuneSum / relaventNoteCount
 
-                        this.ctx.strokeStyle = '#16adce'
-                        this.ctx.fillStyle = '#16adce'
+                        this.ctx.strokeStyle = '#F68432'
+                        this.ctx.fillStyle = '#F68432'
                         if (Math.abs(averageDetune) < 2) {
-                            this.ctx.strokeStyle = '#2ECC71'
-                            this.ctx.fillStyle = '#2ECC71'
+                            this.ctx.strokeStyle = '#00ff5e'
+                            this.ctx.fillStyle = '#00ff5e'
                         }
 
                         const baseNote = dominantNote[0]
                         const isSharp = dominantNote[1] === '#'
 
-                        this.ctx.font = '60px Arial'
+                        this.ctx.font = '60px Graphik Regular'
                         this.ctx.fillText(baseNote, 200, 85)
 
                         if (isSharp) {
-                            this.ctx.font = '30px Arial'
+                            this.ctx.font = '30px Graphik Regular'
                             this.ctx.fillText('#', 232, 62)
                         }
 
                         const angle = utils.map(averageDetune, -50, 50, 250, 290)
                         this.drawArc(angle - 1, angle + 1)
 
-                        this.ctx.font = '30px Arial'
+                        this.ctx.font = '30px Graphik Regular'
                         if (Math.abs(averageDetune) < 2) {
                             this.ctx.fillText('♭', 20, 38)
                             this.ctx.fillText('♯', 380, 34)
@@ -145,11 +147,11 @@ export default {
             this.drawArc(250, 268)
             this.drawArc(272, 290)
 
-            this.ctx.font = '30px Arial'
+            this.ctx.font = '30px Graphik Regular'
             this.ctx.fillText('♯', 380, 34)
             this.ctx.fillText('♭', 20, 38)
 
-            this.ctx.font = '60px Arial'
+            this.ctx.font = '60px Graphik Regular'
             this.ctx.fillText('--', 200, 85)
 
             this.drawSharpTriangle()

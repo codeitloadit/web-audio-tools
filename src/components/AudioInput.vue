@@ -2,8 +2,12 @@
     <div class="effectContainer">
         <select ref="select"></select>
         <h1>Audio Input</h1>
-        <span ref="toggleButton" class="toggleButton activeButton" @click="toggle">On/Off</span>
-        <span ref="muteButton" class="toggleButton" @click="mute">Mute</span>
+        <span ref="toggleButton" class="toggleButton activeButton" @click="toggle">
+            <img class="buttonIcon" src="power.svg" />
+        </span>
+        <span ref="muteButton" class="toggleButton" @click="mute">
+            <img class="buttonIcon" src="mute.svg" />
+        </span>
         <div ref="volume"></div>
         <div ref="pan"></div>
     </div>
@@ -28,6 +32,10 @@ export default {
                 this.$refs.toggleButton.classList.add('activeButton')
             }
             this.isActive = !this.isActive
+
+            Object.values(this.knobs).forEach((knob) => {
+                knob.setActive(this.isActive)
+            })
         },
         mute() {
             if (this.isMuted) {
@@ -81,6 +89,9 @@ export default {
 
                 this.openStream()
                 this.isActive = true
+                Object.values(this.knobs).forEach((knob) => {
+                    knob.setActive(this.isActive)
+                })
 
                 this.$refs.select.onchange = () => {
                     this.node.close()
@@ -102,7 +113,7 @@ export default {
 <style scoped>
 select {
     float: right;
-    width: 230px;
+    width: 180px;
     border-radius: 4px;
 }
 

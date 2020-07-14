@@ -1,7 +1,9 @@
 <template>
     <div class="effectContainer">
         <h1>Gate</h1>
-        <span ref="toggleButton" class="toggleButton" @click="toggle">On/Off</span>
+        <span ref="toggleButton" class="toggleButton" @click="toggle">
+            <img class="buttonIcon" src="power.svg" />
+        </span>
         <div ref="threshold"></div>
         <div ref="smoothing"></div>
     </div>
@@ -25,6 +27,10 @@ export default {
                 this.$refs.toggleButton.classList.add('activeButton')
             }
             this.isActive = !this.isActive
+
+            Object.values(this.knobs).forEach((knob) => {
+                knob.setActive(this.isActive)
+            })
         },
     },
     node: null,

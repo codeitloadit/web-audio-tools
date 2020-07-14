@@ -69,12 +69,13 @@ button:focus {
 html {
     color: #aaa;
     background-color: #101010;
-    font-family: Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Graphik Regular', Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {
+    font-family: 'Graphik Semibold', Avenir, Helvetica, Arial, sans-serif;
     font-size: 20px;
     margin: 0;
     padding: 0;
@@ -82,9 +83,8 @@ h1 {
 
 .effectContainer {
     display: inline-block;
-    background-color: #222;
+    background-color: #1e1e1e;
     padding: 16px;
-    border: 3px solid #666;
     border-radius: 12px;
     margin: 3px 2px;
     height: 125px;
@@ -92,13 +92,13 @@ h1 {
 
 .toggleButton {
     display: inline-block;
-    width: 60px;
+    width: 30px;
     height: 24px;
     background-color: #eee;
     border-radius: 4px;
     color: #111;
     text-align: center;
-    padding-top: 8px;
+    padding: 6px 4px 2px 4px;
     vertical-align: top;
     position: relative;
     top: 34px;
@@ -109,11 +109,16 @@ h1 {
 }
 
 .activeButton {
-    background-color: #fdfc7c;
-    box-shadow: 0 0 30px #fdfc7c;
+    background-color: #d6c771;
+    box-shadow: 0 0 30px #d6c771;
 }
 
 .disabled {
     color: #666;
+}
+
+.buttonIcon {
+    width: 20px;
+    height: 20px;
 }
 </style>

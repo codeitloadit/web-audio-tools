@@ -23,7 +23,7 @@ function Knob() {
         input.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'
         input.style.border = 'none'
         input.style.color = '#ff8800'
-        input.style.fontFamily = 'sans-serif'
+        input.style.fontFamily = 'Graphik Regular'
         input.style.fontSize = fontSizeString + 'px'
         input.style.height = heightString + 'px'
         input.style.margin = 'auto'
@@ -58,6 +58,7 @@ function Knob() {
             _timeoutDoubleTap: null,
             _touchCount: 0,
             _width: width,
+            _isActive: false,
 
             _notifyUpdate: function() {
                 const properties = this._properties
@@ -74,12 +75,18 @@ function Knob() {
                 }
             },
 
+            setActive: function(isActive) {
+                this._isActive = isActive
+                this.redraw()
+            },
+
             _properties: {
                 angleEnd: 0.75 * Math.PI,
                 angleOffset: -0.5 * Math.PI,
                 angleStart: -0.75 * Math.PI,
-                colorBG: '#666666',
-                colorFG: '#16adce',
+                colorBG: '#151515',
+                colorFG: '#ff9c33',
+                inactiveColorFG: '#9c9c9c',
                 colorLabel: '#aaaaaa',
                 fnStringToValue: function(string) {
                     return parseInt(string)
@@ -156,7 +163,7 @@ function Knob() {
                 const relAngle = relValue * (angleEnd - angleStart)
                 const angleVal = actualStart + relAngle
                 const colorTrack = properties.colorBG
-                const colorFilling = properties.colorFG
+                const colorFilling = this._isActive ? properties.colorFG : properties.inactiveColorFG
                 const colorLabel = properties.colorLabel
                 const textScale = properties.textScale
                 const trackWidth = properties.trackWidth
@@ -185,6 +192,11 @@ function Knob() {
                 ctx.stroke()
 
                 ctx.beginPath()
+                ctx.fillStyle = colorFilling
+                ctx.arc(centerX, centerY, radius / 6, 0, (360 * Math.PI) / 180)
+                ctx.fill()
+
+                ctx.beginPath()
 
                 if (needle) {
                     const middle = (-90 * Math.PI) / 180
@@ -211,14 +223,14 @@ function Knob() {
                     ctx.stroke()
                 }
 
-                ctx.font = fontSizeString + 'px sans-serif'
+                ctx.font = fontSizeString + 'px Graphik Regular'
                 ctx.fillStyle = colorFilling
                 ctx.textAlign = 'center'
                 ctx.textBaseline = 'bottom'
                 ctx.fillText(valueStr, centerX, centerY + radius - 7)
 
                 if (label !== null) {
-                    ctx.font = labelSizeString + 'px sans-serif'
+                    ctx.font = labelSizeString + 'px Graphik Regular'
                     ctx.fillStyle = colorLabel
                     ctx.textAlign = 'center'
                     ctx.textBaseline = 'middle'

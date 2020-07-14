@@ -1,7 +1,9 @@
 <template>
     <div class="effectContainer">
         <h1>Metronome</h1>
-        <span ref="toggleButton" class="toggleButton" @click="toggle">On/Off</span>
+        <span ref="toggleButton" class="toggleButton" @click="toggle">
+            <img class="buttonIcon" src="power.svg" />
+        </span>
         <canvas width="1" height="100"></canvas>
         <canvas ref="canvas" :width="width" :height="height"></canvas>
         <div id="topRow">

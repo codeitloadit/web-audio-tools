@@ -1,7 +1,9 @@
 <template>
     <div class="effectContainer">
         <h1>Equalizer</h1>
-        <span ref="toggleButton" class="toggleButton" @click="toggle">On/Off</span>
+        <span ref="toggleButton" class="toggleButton" @click="toggle">
+            <img class="buttonIcon" src="power.svg" />
+        </span>
         <div ref="low"></div>
         <div ref="lowFreq"></div>
         <div ref="mid"></div>
@@ -34,6 +36,10 @@ export default {
                 this.$refs.toggleButton.classList.add('activeButton')
             }
             this.isActive = !this.isActive
+
+            Object.values(this.knobs).forEach((knob) => {
+                knob.setActive(this.isActive)
+            })
         },
     },
     node: null,
@@ -46,7 +52,7 @@ export default {
                     this.node.low.value = value
                 }
             }),
-            lowFreq: knob.create(this.$refs.lowFreq, 'Low Frequency', 400, -200, 1000, false, (knob, value) => {
+            lowFreq: knob.create(this.$refs.lowFreq, 'Low Freq.', 400, -200, 1000, false, (knob, value) => {
                 if (this.isActive) {
                     this.node.lowFrequency.value = value
                 }
@@ -56,7 +62,7 @@ export default {
                     this.node.mid.value = value
                 }
             }),
-            highFreq: knob.create(this.$refs.highFreq, 'High Frequency', 2500, 1000, 4000, false, (knob, value) => {
+            highFreq: knob.create(this.$refs.highFreq, 'High Freq.', 2500, 1000, 4000, false, (knob, value) => {
                 if (this.isActive) {
                     this.node.highFrequency.value = value
                 }

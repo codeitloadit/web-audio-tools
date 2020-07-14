@@ -3,7 +3,9 @@
         <h1>Meter</h1>
         <div ref="left"></div>
         <div ref="right"></div>
-        <span ref="clipButton" class="toggleButton" @click="clearClip">Clip</span>
+        <span ref="clipButton" class="toggleButton" @click="clearClip">
+            <img class="buttonIcon" src="clip.svg" />
+        </span>
     </div>
 </template>
 
@@ -58,7 +60,7 @@ export default {
 }
 
 .toggleButton {
-    width: 60px;
+    /* width: 60px; */
     top: -16px;
     margin: 0 4px 0 20px;
 }

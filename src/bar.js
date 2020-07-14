@@ -21,7 +21,7 @@ function Bar() {
 
             _properties: {
                 colorBG: '#181818',
-                colorFG: '#16adce',
+                colorFG: '#F68432',
                 colorMarkers: '#888888',
                 colorPeaks: '#ff0000',
                 markerStart: markerStart,
