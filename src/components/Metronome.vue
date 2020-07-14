@@ -18,11 +18,11 @@
                 value="120"
                 @click="highlightBPM"
                 @keypress="handleBPMKeypress"
-                @change="handleBPMChange"
+                @change="handleInputChange"
             />
 
             <label for="beats">Beats:</label>
-            <select ref="top" name="beats">
+            <select ref="top" name="beats" @change="handleInputChange">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -34,7 +34,7 @@
             </select>
 
             <label for="noteLength">Beat Length:</label>
-            <select ref="bottom" name="noteLength">
+            <select ref="bottom" name="noteLength" @change="handleInputChange">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -51,6 +51,7 @@
 <script>
 import * as Tone from 'tone'
 import {mapGetters} from 'vuex'
+import {utils} from '../utils'
 
 export default {
     name: 'Metronome',
@@ -59,6 +60,7 @@ export default {
         toggle() {
             if (this.isActive) {
                 Tone.Transport.stop()
+                this.drawOffState()
                 this.$refs.toggleButton.classList.remove('activeButton')
             } else {
                 if (this.$refs.bpm.value === '---') {
@@ -74,6 +76,7 @@ export default {
                     Tone.Transport.scheduleRepeat(
                         () => {
                             this.node.triggerAttack(i === 0 ? 'C2' : 'C4')
+                            this.highlightBeat(i, tsTop)
                         },
                         '0:' + Tone.Transport.timeSignature + ':0',
                         '0:0:' + offset * i
@@ -83,6 +86,37 @@ export default {
                 this.$refs.toggleButton.classList.add('activeButton')
             }
             this.isActive = !this.isActive
+        },
+        highlightBeat(beatIndex, totalBeats) {
+            this.ctx.clearRect(0, 0, this.width, this.height)
+            const padding = 6
+            const beatWidth = this.width / totalBeats
+            for (let i = 0; i < totalBeats; i++) {
+                let fill = '#151515'
+                let stroke = '#ff9c33'
+                if (i === beatIndex) {
+                    fill = '#ff9c33'
+                    stroke = '#ff9c33'
+                }
+                utils.roundRect(
+                    this.ctx,
+                    i * beatWidth + padding,
+                    padding,
+                    beatWidth - padding * 2,
+                    this.height - padding * 2,
+                    6,
+                    fill,
+                    stroke,
+                    2
+                )
+
+                this.ctx.fillStyle = '#ff9c33'
+                if (i === beatIndex) {
+                    this.ctx.fillStyle = '#151515'
+                }
+                this.ctx.font = '30px Graphik Semibold'
+                this.ctx.fillText(i + 1, i * beatWidth + padding + beatWidth / 2 - 15, this.height * 0.72)
+            }
         },
         tapDown() {
             const elapsedTime = Tone.Transport.seconds
@@ -123,30 +157,23 @@ export default {
             this.$refs.bpm.select()
         },
         handleBPMKeypress(e) {
-            if (this.isActive) {
-                this.toggle()
-            }
             if (e.key === 'Enter') {
                 this.$refs.bpm.blur()
             }
         },
-        handleBPMChange() {
+        handleInputChange() {
             if (this.$refs.bpm.value != '---') {
                 this.lastSetBMP = this.$refs.bpm.value
             }
-        },
-        draw() {
-            this.ctx.clearRect(0, 0, this.width, this.height)
-
             if (this.isActive) {
-                window.requestAnimationFrame(this.draw)
+                this.toggle()
+                setTimeout(this.toggle, 500)
             } else {
                 this.drawOffState()
             }
         },
         drawOffState() {
-            this.ctx.fillStyle = '#444'
-            this.ctx.strokeStyle = '#444'
+            this.highlightBeat(999, this.$refs.top.value)
         },
     },
     data() {
@@ -170,11 +197,7 @@ export default {
         this.ctx = this.canvas.getContext('2d')
         this.canvas.style.backgroundColor = '#111'
 
-        this.ctx.lineWidth = 8
-        this.ctx.lineCap = 'round'
-        this.ctx.textAlign = 'center'
-
-        this.drawOffState()
+        setTimeout(this.drawOffState, 500)
     },
 }
 </script>
