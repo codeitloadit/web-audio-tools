@@ -102,7 +102,7 @@ h1 {
     vertical-align: top;
     position: relative;
     top: 34px;
-    margin: 0 12px 0 8px;
+    margin: 0 12px 0 4px;
     cursor: pointer;
     font-size: 12px;
     font-weight: bold;

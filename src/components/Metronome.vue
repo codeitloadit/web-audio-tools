@@ -2,12 +2,19 @@
     <div class="effectContainer">
         <h1>Metronome</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
-            <img class="buttonIcon" src="power.svg" />
+            <img class="buttonIcon" src="play.svg" />
         </span>
         <span id="tap" ref="tapButton" class="toggleButton" @mousedown="tapDown" @mouseup="tapUp">
             <img class="buttonIcon" src="tap.svg" />
         </span>
-        <canvas width="1" height="100"></canvas>
+        <br />
+        <br />
+        <span id="mute" ref="muteButton" class="toggleButton" @click="mute">
+            <img class="buttonIcon" src="mute.svg" />
+        </span>
+        <span id="settings" ref="settingsButton" class="toggleButton">
+            <img class="buttonIcon" src="settings.svg" />
+        </span>
         <canvas ref="canvas" :width="width" :height="height"></canvas>
         <div id="topRow">
             <label for="bpm">BPM:</label>
@@ -57,6 +64,11 @@ export default {
     name: 'Metronome',
     methods: {
         ...mapGetters(['stream']),
+        playNote(note) {
+            if (!this.isMuted) {
+                this.node.triggerAttack(note)
+            }
+        },
         toggle() {
             if (this.isActive) {
                 Tone.Transport.stop()
@@ -75,7 +87,7 @@ export default {
                 for (let i = 0; i < tsTop; i++) {
                     Tone.Transport.scheduleRepeat(
                         () => {
-                            this.node.triggerAttack(i === 0 ? 'C2' : 'C4')
+                            this.playNote(i === 0 ? 'C2' : 'C4')
                             this.highlightBeat(i, tsTop)
                         },
                         '0:' + Tone.Transport.timeSignature + ':0',
@@ -145,13 +157,20 @@ export default {
                 this.recentElapsedTimes = []
             }
 
-            if (this.isActive) {
-                this.node.triggerAttack('C2')
-            }
+            this.playNote('C2')
+
             this.$refs.tapButton.classList.add('activeButton')
         },
         tapUp() {
             this.$refs.tapButton.classList.remove('activeButton')
+        },
+        mute() {
+            if (this.isMuted) {
+                this.$refs.muteButton.classList.remove('muted')
+            } else {
+                this.$refs.muteButton.classList.add('muted')
+            }
+            this.isMuted = !this.isMuted
         },
         highlightBPM() {
             this.$refs.bpm.select()
@@ -206,6 +225,7 @@ export default {
 .effectContainer {
     font-family: 'Graphik Semibold', Avenir, Helvetica, Arial, sans-serif;
 }
+
 canvas {
     border-radius: 6px;
 }
@@ -218,6 +238,10 @@ canvas {
     width: 430px;
 }
 
+.toggleButton {
+    top: 18px;
+}
+
 #tap.toggleButton.activeButton {
     background-color: #ff9c33;
     box-shadow: 0 0 30px #ff9c33;
@@ -228,6 +252,11 @@ canvas {
     height: 24px;
     position: relative;
     top: -2px;
+}
+
+.muted {
+    background-color: #ff7077;
+    box-shadow: 0 0 30px #ff7077;
 }
 
 label {
