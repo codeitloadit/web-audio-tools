@@ -1,18 +1,28 @@
 <template>
     <div id="app">
+        <div id="browser">
+            <h1>Effects:</h1>
+            <span class="effectLabel" @click="addEffect(Reverb)">Reverb</span>
+            <span class="effectLabel" @click="addEffect(Compressor)">Compressor</span>
+            <span class="effectLabel" @click="addEffect(Gate)">Gate</span>
+            <span class="effectLabel" @click="addEffect(Limiter)">Limiter</span>
+            <span class="effectLabel" @click="addEffect(Delay)">Delay</span>
+            <span class="effectLabel" @click="addEffect(Equalizer)">Equalizer</span>
+            <h1>Tools:</h1>
+            <span class="effectLabel" @click="addEffect(Meter)">Meter</span>
+            <span class="effectLabel" @click="addEffect(Tuner)">Tuner</span>
+            <span class="effectLabel" @click="addEffect(Metronome)">Metronome</span>
+            <span class="effectLabel" @click="addEffect(Spectrum)">Spectrum</span>
+            <span class="effectLabel" @click="addEffect(Waveform)">Waveform</span>
+        </div>
+
         <AudioInput />
-        <Tuner />
-        <Metronome />
-        <Meter />
-        <Gate />
-        <Delay />
-        <Reverb />
-        <Compressor />
-        <Equalizer />
-        <Limiter />
+
+        <div class="effectWrapper" v-for="(effect, index) in effects" :key="index">
+            <component :is="effect" :name="effect.name"> </component>
+        </div>
+
         <MasterOutput />
-        <Spectrum />
-        <Waveform />
     </div>
 </template>
 
@@ -35,19 +45,30 @@ export default {
     name: 'App',
     components: {
         AudioInput, // TODO: Replace this with the WebRTC stream audio.
-        Gate,
-        Delay,
-        Reverb,
-        Compressor,
-        Equalizer,
-        Limiter,
         MasterOutput,
-        Meter,
-        Spectrum,
-        Waveform,
-        Tuner,
-        Metronome,
     },
+    methods: {
+        addEffect(effect) {
+            this.effects.push(effect)
+        },
+    },
+    data() {
+        return {
+            effects: [],
+            Tuner,
+            Metronome,
+            Gate,
+            Delay,
+            Reverb,
+            Compressor,
+            Equalizer,
+            Limiter,
+            Spectrum,
+            Waveform,
+            Meter,
+        }
+    },
+    mounted() {},
 }
 </script>
 
@@ -120,5 +141,39 @@ h1 {
 .buttonIcon {
     width: 20px;
     height: 20px;
+}
+
+#browser > h1 {
+    display: inline-block;
+    margin: 8px 16px 8px 4px;
+    color: #ff9c33;
+}
+
+#browser > .effectLabel {
+    font-family: 'Graphik Medium', Avenir, Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    margin: 4px 16px 4px 4px;
+    cursor: pointer;
+    border-radius: 4px;
+    padding: 4px 6px;
+    color: #151515;
+    background-color: #c9c9c9;
+}
+
+#browser > .effectLabel:hover {
+    background-color: #d6c771;
+    box-shadow: 0 0 30px #d6c771;
+}
+
+.effectWrapper {
+    display: inline-block;
+}
+
+.title {
+    color: #9c9c9c;
+}
+
+.title.active {
+    color: #ff9c33;
 }
 </style>

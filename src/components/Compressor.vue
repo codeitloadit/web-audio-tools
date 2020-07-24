@@ -1,6 +1,6 @@
 <template>
     <div class="effectContainer">
-        <h1>Compressor</h1>
+        <h1 ref="title" class="title active">Compressor</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="power.svg" />
         </span>
@@ -25,9 +25,11 @@ export default {
             if (this.isActive) {
                 this.node.threshold.value = 0
                 this.$refs.toggleButton.classList.remove('activeButton')
+                this.$refs.title.classList.remove('active')
             } else {
                 this.node.threshold.value = this.knobs.threshold.getValue()
                 this.$refs.toggleButton.classList.add('activeButton')
+                this.$refs.title.classList.add('active')
             }
             this.isActive = !this.isActive
 
@@ -67,6 +69,8 @@ export default {
         this.node.attack.value = this.knobs.attack.getValue() / 1000
         this.node.release.value = this.knobs.release.getValue() / 1000
         this.node.knee.value = this.knobs.knee.getValue()
+
+        this.toggle()
     },
 }
 </script>

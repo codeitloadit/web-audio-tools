@@ -1,6 +1,6 @@
 <template>
     <div class="effectContainer">
-        <h1>Metronome</h1>
+        <h1 ref="title" class="title">Metronome</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="play.svg" />
         </span>
@@ -74,6 +74,7 @@ export default {
                 Tone.Transport.stop()
                 this.drawOffState()
                 this.$refs.toggleButton.classList.remove('activeButton')
+                this.$refs.title.classList.remove('active')
             } else {
                 if (this.$refs.bpm.value === '---') {
                     this.$refs.bpm.value = this.lastSetBMP
@@ -96,6 +97,7 @@ export default {
                 }
                 Tone.Transport.start()
                 this.$refs.toggleButton.classList.add('activeButton')
+                this.$refs.title.classList.add('active')
             }
             this.isActive = !this.isActive
         },

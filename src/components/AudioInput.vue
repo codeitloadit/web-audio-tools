@@ -120,7 +120,6 @@ select {
     font-size: 16px;
     border: none;
     border-radius: 6px;
-    padding: 1px 5px 2px 1px;
     position: relative;
     top: -3px;
 }

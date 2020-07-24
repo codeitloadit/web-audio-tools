@@ -1,6 +1,6 @@
 <template>
     <div class="effectContainer">
-        <h1>Tuner</h1>
+        <h1 ref="title" class="title active">Tuner</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="power.svg" />
         </span>
@@ -20,8 +20,10 @@ export default {
         toggle() {
             if (this.isActive) {
                 this.$refs.toggleButton.classList.remove('activeButton')
+                this.$refs.title.classList.remove('active')
             } else {
                 this.$refs.toggleButton.classList.add('activeButton')
+                this.$refs.title.classList.add('active')
 
                 if (this.$store.getters.stream) {
                     this.node.setStream(this.$store.getters.stream)
@@ -182,6 +184,8 @@ export default {
         this.ctx.textAlign = 'center'
 
         this.drawOffState()
+
+        this.toggle()
     },
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div class="effectContainer">
-        <h1>Equalizer</h1>
+        <h1 ref="title" class="title active">Equalizer</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="power.svg" />
         </span>
@@ -27,6 +27,7 @@ export default {
                 this.node.mid.value = 0
                 this.node.high.value = 0
                 this.$refs.toggleButton.classList.remove('activeButton')
+                this.$refs.title.classList.remove('active')
             } else {
                 this.node.low.value = this.knobs.low.getValue()
                 this.node.lowFrequency.value = this.knobs.lowFreq.getValue()
@@ -34,6 +35,7 @@ export default {
                 this.node.highFrequency.value = this.knobs.highFreq.getValue()
                 this.node.high.value = this.knobs.high.getValue()
                 this.$refs.toggleButton.classList.add('activeButton')
+                this.$refs.title.classList.add('active')
             }
             this.isActive = !this.isActive
 
@@ -76,7 +78,7 @@ export default {
 
         this.node = new Tone.EQ3()
         this.appendToChain(this.node)
-        this.isActive = true
+
         this.toggle()
     },
 }

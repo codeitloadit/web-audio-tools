@@ -1,6 +1,6 @@
 <template>
     <div class="effectContainer">
-        <h1>Spectrum</h1>
+        <h1 ref="title" class="title active">Spectrum</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="power.svg" />
         </span>
@@ -20,8 +20,10 @@ export default {
         toggle() {
             if (this.isActive) {
                 this.$refs.toggleButton.classList.remove('activeButton')
+                this.$refs.title.classList.remove('active')
             } else {
                 this.$refs.toggleButton.classList.add('activeButton')
+                this.$refs.title.classList.add('active')
                 window.requestAnimationFrame(this.draw)
             }
             this.isActive = !this.isActive
@@ -66,6 +68,8 @@ export default {
         this.canvas.style.backgroundColor = '#111'
 
         this.ctx.fillStyle = '#F68432'
+
+        this.toggle()
     },
 }
 </script>

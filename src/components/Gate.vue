@@ -1,6 +1,6 @@
 <template>
     <div class="effectContainer">
-        <h1>Gate</h1>
+        <h1 ref="title" class="title active">Gate</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="power.svg" />
         </span>
@@ -22,9 +22,11 @@ export default {
             if (this.isActive) {
                 this.node.threshold = -1000
                 this.$refs.toggleButton.classList.remove('activeButton')
+                this.$refs.title.classList.remove('active')
             } else {
                 this.node.threshold = this.knobs.threshold.getValue()
                 this.$refs.toggleButton.classList.add('activeButton')
+                this.$refs.title.classList.add('active')
             }
             this.isActive = !this.isActive
 
@@ -51,6 +53,8 @@ export default {
         this.node = new Tone.Gate(-1000, 0.1)
         this.appendToChain(this.node)
         this.node.smoothing = this.knobs.smoothing.getValue() / 100
+
+        this.toggle()
     },
 }
 </script>

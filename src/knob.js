@@ -368,19 +368,19 @@ function Knob() {
             return value
         }
 
-        const doubleClickListener = function() {
-            // const properties = knob._properties;
-            // const readonly = properties.readonly;
-            //
-            // if (!readonly) {
-            // 	e.preventDefault();
-            // 	const inputDiv = knob._inputDiv;
-            // 	inputDiv.style.display = 'block';
-            // 	const inputElem = knob._input;
-            // 	inputElem.focus();
-            // 	knob.redraw();
-            // }
-        }
+        // const doubleClickListener = function() {
+        //     const properties = knob._properties;
+        //     const readonly = properties.readonly;
+
+        //     if (!readonly) {
+        //     	e.preventDefault();
+        //     	const inputDiv = knob._inputDiv;
+        //     	inputDiv.style.display = 'block';
+        //     	const inputElem = knob._input;
+        //     	inputElem.focus();
+        //     	knob.redraw();
+        //     }
+        // }
 
         const mouseDownListener = function(e) {
             const btn = e.buttons
@@ -560,53 +560,53 @@ function Knob() {
             knob.redraw()
         }
 
-        const scrollListener = function(e) {
-            const readonly = knob.getProperty('readonly')
+        // const scrollListener = function(e) {
+        //     const readonly = knob.getProperty('readonly')
 
-            if (!readonly) {
-                e.preventDefault()
-                const delta = e.deltaY
-                const direction = delta > 0 ? 1 : delta < 0 ? -1 : 0
-                let val = knob.getValue()
-                val += direction
-                knob.setValueFloating(val)
+        //     if (!readonly) {
+        //         e.preventDefault()
+        //         const delta = e.deltaY
+        //         const direction = delta > 0 ? 1 : delta < 0 ? -1 : 0
+        //         let val = knob.getValue()
+        //         val += direction
+        //         knob.setValueFloating(val)
 
-                const commit = function() {
-                    knob.commit()
-                }
+        //         const commit = function() {
+        //             knob.commit()
+        //         }
 
-                let timeout = knob._timeout
-                window.clearTimeout(timeout)
-                timeout = window.setTimeout(commit, 250)
-                knob._timeout = timeout
-            }
-        }
+        //         let timeout = knob._timeout
+        //         window.clearTimeout(timeout)
+        //         timeout = window.setTimeout(commit, 250)
+        //         knob._timeout = timeout
+        //     }
+        // }
 
-        const keyPressListener = function(e) {
-            const kc = e.keyCode
+        // const keyPressListener = function(e) {
+        //     const kc = e.keyCode
 
-            if (kc === 13 || kc === 27) {
-                const inputDiv = knob._inputDiv
-                inputDiv.style.display = 'none'
-                const input = e.target
+        //     if (kc === 13 || kc === 27) {
+        //         const inputDiv = knob._inputDiv
+        //         inputDiv.style.display = 'none'
+        //         const input = e.target
 
-                if (kc === 13) {
-                    const properties = knob._properties
-                    const value = input.value
-                    const stringToValue = properties.fnStringToValue
-                    const val = stringToValue(value)
-                    const valid = isFinite(val)
+        //         if (kc === 13) {
+        //             const properties = knob._properties
+        //             const value = input.value
+        //             const stringToValue = properties.fnStringToValue
+        //             const val = stringToValue(value)
+        //             const valid = isFinite(val)
 
-                    if (valid) {
-                        knob.setValue(val)
-                    }
-                }
+        //             if (valid) {
+        //                 knob.setValue(val)
+        //             }
+        //         }
 
-                input.value = ''
-            }
-        }
+        //         input.value = ''
+        //     }
+        // }
 
-        canvas.addEventListener('dblclick', doubleClickListener)
+        // canvas.addEventListener('dblclick', doubleClickListener)
         canvas.addEventListener('mousedown', mouseDownListener)
         canvas.addEventListener('mouseleave', mouseCancelListener)
         canvas.addEventListener('mousemove', mouseMoveListener)
@@ -616,8 +616,8 @@ function Knob() {
         canvas.addEventListener('touchmove', touchMoveListener, {passive: true})
         canvas.addEventListener('touchend', touchEndListener)
         canvas.addEventListener('touchcancel', touchCancelListener)
-        canvas.addEventListener('wheel', scrollListener, {passive: true})
-        input.addEventListener('keypress', keyPressListener)
+        // canvas.addEventListener('wheel', scrollListener, {passive: true})
+        // input.addEventListener('keypress', keyPressListener)
         knob.redraw()
         knob.addListener(listener)
         return knob

@@ -1,6 +1,6 @@
 <template>
     <div class="effectContainer">
-        <h1>Reverb</h1>
+        <h1 ref="title" class="title active">Reverb</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="power.svg" />
         </span>
@@ -23,9 +23,11 @@ export default {
             if (this.isActive) {
                 this.node.wet.value = 0
                 this.$refs.toggleButton.classList.remove('activeButton')
+                this.$refs.title.classList.remove('active')
             } else {
                 this.node.wet.value = this.knobs.wet.getValue() / 100
                 this.$refs.toggleButton.classList.add('activeButton')
+                this.$refs.title.classList.add('active')
             }
             this.isActive = !this.isActive
 
@@ -36,7 +38,7 @@ export default {
     },
     node: null,
     knobs: null,
-    isActive: false,
+    isActive: true,
     mounted() {
         this.knobs = {
             roomSize: knob.create(this.$refs.roomSize, 'Room Size', 20, 0, 100, false, (knob, value) => {
@@ -60,6 +62,8 @@ export default {
         this.node.roomSize.value = this.knobs.roomSize.getValue() / 100
         this.node.dampening.value = this.knobs.dampening.getValue()
         this.node.wet.value = 0
+
+        this.toggle()
     },
 }
 </script>

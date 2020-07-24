@@ -26,6 +26,10 @@ export default new Vuex.Store({
             state.chain.push(node)
             state.source.chain(...state.chain)
         },
+        deleteFromChain: (state, node) => {
+            state.chain.splice(state.chain.indexOf(node), 1)
+            state.source.chain(...state.chain)
+        },
     },
     actions: {
         setSource({commit}, source) {
@@ -36,6 +40,9 @@ export default new Vuex.Store({
         },
         appendToChain({commit}, node) {
             commit('addToChain', node)
+        },
+        removeFromChain({commit}, node) {
+            commit('deleteFromChain', node)
         },
     },
     modules: {},

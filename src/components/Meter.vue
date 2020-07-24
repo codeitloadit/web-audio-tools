@@ -1,6 +1,6 @@
 <template>
     <div class="effectContainer">
-        <h1>Meter</h1>
+        <h1 ref="title" class="title active">Meter</h1>
         <div ref="left"></div>
         <div ref="right"></div>
         <span ref="clipButton" class="toggleButton" @click="clearClip">
