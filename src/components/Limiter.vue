@@ -16,7 +16,7 @@ import {mapActions} from 'vuex'
 export default {
     name: 'Limiter',
     methods: {
-        ...mapActions(['appendToChain']),
+        ...mapActions(['appendToChain', 'removeFromChain']),
         toggle() {
             if (this.isActive) {
                 this.node.threshold.value = 0
@@ -50,6 +50,9 @@ export default {
         this.appendToChain(this.node)
 
         this.toggle()
+    },
+    beforeDestroy() {
+        this.removeFromChain(this.node)
     },
 }
 </script>

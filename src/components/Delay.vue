@@ -18,7 +18,7 @@ import {mapActions} from 'vuex'
 export default {
     name: 'Delay',
     methods: {
-        ...mapActions(['appendToChain']),
+        ...mapActions(['appendToChain', 'removeFromChain']),
         toggle() {
             if (this.isActive) {
                 this.node.wet.value = 0
@@ -61,6 +61,9 @@ export default {
         this.node.wet.value = 0
 
         this.toggle()
+    },
+    beforeDestroy() {
+        this.removeFromChain(this.node)
     },
 }
 </script>

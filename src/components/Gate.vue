@@ -17,7 +17,7 @@ import {mapActions} from 'vuex'
 export default {
     name: 'Gate',
     methods: {
-        ...mapActions(['appendToChain']),
+        ...mapActions(['appendToChain', 'removeFromChain']),
         toggle() {
             if (this.isActive) {
                 this.node.threshold = -1000
@@ -55,6 +55,9 @@ export default {
         this.node.smoothing = this.knobs.smoothing.getValue() / 100
 
         this.toggle()
+    },
+    beforeDestroy() {
+        this.removeFromChain(this.node)
     },
 }
 </script>

@@ -20,7 +20,7 @@ import {mapActions} from 'vuex'
 export default {
     name: 'Compressor',
     methods: {
-        ...mapActions(['appendToChain']),
+        ...mapActions(['appendToChain', 'removeFromChain']),
         toggle() {
             if (this.isActive) {
                 this.node.threshold.value = 0
@@ -71,6 +71,9 @@ export default {
         this.node.knee.value = this.knobs.knee.getValue()
 
         this.toggle()
+    },
+    beforeDestroy() {
+        this.removeFromChain(this.node)
     },
 }
 </script>

@@ -20,7 +20,7 @@ import {mapActions} from 'vuex'
 export default {
     name: 'Equalizer',
     methods: {
-        ...mapActions(['appendToChain']),
+        ...mapActions(['appendToChain', 'removeFromChain']),
         toggle() {
             if (this.isActive) {
                 this.node.low.value = 0
@@ -80,6 +80,9 @@ export default {
         this.appendToChain(this.node)
 
         this.toggle()
+    },
+    beforeDestroy() {
+        this.removeFromChain(this.node)
     },
 }
 </script>

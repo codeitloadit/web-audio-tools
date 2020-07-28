@@ -2,18 +2,18 @@
     <div id="app">
         <div id="browser">
             <h1>Effects:</h1>
-            <span class="effectLabel" @click="addEffect(Reverb)">Reverb</span>
-            <span class="effectLabel" @click="addEffect(Compressor)">Compressor</span>
-            <span class="effectLabel" @click="addEffect(Gate)">Gate</span>
-            <span class="effectLabel" @click="addEffect(Limiter)">Limiter</span>
-            <span class="effectLabel" @click="addEffect(Delay)">Delay</span>
-            <span class="effectLabel" @click="addEffect(Equalizer)">Equalizer</span>
+            <span class="effectLabel" @click="toggleEffect($event, Reverb)">Reverb</span>
+            <span class="effectLabel" @click="toggleEffect($event, Compressor)">Compressor</span>
+            <span class="effectLabel" @click="toggleEffect($event, Gate)">Gate</span>
+            <span class="effectLabel" @click="toggleEffect($event, Limiter)">Limiter</span>
+            <span class="effectLabel" @click="toggleEffect($event, Delay)">Delay</span>
+            <span class="effectLabel" @click="toggleEffect($event, Equalizer)">Equalizer</span>
             <h1>Tools:</h1>
-            <span class="effectLabel" @click="addEffect(Meter)">Meter</span>
-            <span class="effectLabel" @click="addEffect(Tuner)">Tuner</span>
-            <span class="effectLabel" @click="addEffect(Metronome)">Metronome</span>
-            <span class="effectLabel" @click="addEffect(Spectrum)">Spectrum</span>
-            <span class="effectLabel" @click="addEffect(Waveform)">Waveform</span>
+            <span class="effectLabel" @click="toggleEffect($event, Meter)">Meter</span>
+            <span class="effectLabel" @click="toggleEffect($event, Tuner)">Tuner</span>
+            <span class="effectLabel" @click="toggleEffect($event, Metronome)">Metronome</span>
+            <span class="effectLabel" @click="toggleEffect($event, Spectrum)">Spectrum</span>
+            <span class="effectLabel" @click="toggleEffect($event, Waveform)">Waveform</span>
         </div>
 
         <AudioInput />
@@ -48,8 +48,14 @@ export default {
         MasterOutput,
     },
     methods: {
-        addEffect(effect) {
-            this.effects.push(effect)
+        toggleEffect(event, effect) {
+            if (this.effects.some((e) => e.name === effect.name)) {
+                this.effects.splice(this.effects.indexOf(effect), 1)
+                event.target.classList.remove('active')
+            } else {
+                this.effects.push(effect)
+                event.target.classList.add('active')
+            }
         },
     },
     data() {
@@ -160,7 +166,7 @@ h1 {
     background-color: #c9c9c9;
 }
 
-#browser > .effectLabel:hover {
+#browser > .effectLabel.active {
     background-color: #d6c771;
     box-shadow: 0 0 30px #d6c771;
 }

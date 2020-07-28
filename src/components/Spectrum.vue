@@ -71,6 +71,9 @@ export default {
 
         this.toggle()
     },
+    beforeDestroy() {
+        Tone.disconnect(Tone.Master, this.node)
+    },
 }
 </script>
 

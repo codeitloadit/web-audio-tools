@@ -220,6 +220,9 @@ export default {
 
         setTimeout(this.drawOffState, 500)
     },
+    beforeDestroy() {
+        Tone.Transport.cancel().stop()
+    },
 }
 </script>
 
