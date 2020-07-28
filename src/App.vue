@@ -151,7 +151,7 @@ h1 {
 
 #browser > h1 {
     display: inline-block;
-    margin: 8px 16px 8px 4px;
+    margin: 8px 16px 12px 4px;
     color: #ff9c33;
 }
 
