@@ -194,7 +194,11 @@ export default {
             }
         },
         drawOffState() {
-            this.highlightBeat(999, this.$refs.top.value)
+            if (this.$refs.top) {
+                this.highlightBeat(999, this.$refs.top.value)
+            } else {
+                this.highlightBeat(999, 4)
+            }
         },
     },
     data() {

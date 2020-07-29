@@ -1,5 +1,7 @@
 <template>
     <div id="app">
+        <AudioInput />
+
         <div id="browser">
             <h1>Effects:</h1>
             <span class="effectLabel" @click="toggleEffect($event, Reverb)">Reverb</span>
@@ -16,17 +18,22 @@
             <span class="effectLabel" @click="toggleEffect($event, Waveform)">Waveform</span>
         </div>
 
-        <AudioInput />
+        <draggable v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
+            <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+                <div class="effectWrapper" v-for="(effect, index) in effects" :key="index">
+                    <component :is="effect" :name="effect.name"> </component>
+                </div>
+            </transition-group>
+        </draggable>
 
-        <div class="effectWrapper" v-for="(effect, index) in effects" :key="index">
-            <component :is="effect" :name="effect.name"> </component>
-        </div>
+        <!-- <div v-for="element in effects" :key="element.id">{{ element.name }}</div> -->
 
         <MasterOutput />
     </div>
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 import AudioInput from './components/AudioInput'
 import Gate from './components/Gate'
 import Delay from './components/Delay'
@@ -46,6 +53,7 @@ export default {
     components: {
         AudioInput, // TODO: Replace this with the WebRTC stream audio.
         MasterOutput,
+        draggable,
     },
     methods: {
         toggleEffect(event, effect) {
@@ -58,8 +66,18 @@ export default {
             }
         },
     },
+    computed: {
+        dragOptions() {
+            return {
+                animation: 300,
+                group: 'effects',
+                swapThreshold: 0.1,
+            }
+        },
+    },
     data() {
         return {
+            drag: false,
             effects: [],
             Tuner,
             Metronome,
@@ -115,6 +133,12 @@ h1 {
     border-radius: 12px;
     margin: 3px 2px;
     height: 125px;
+    border: 2px solid #151515;
+    cursor: move;
+}
+
+canvas {
+    cursor: default;
 }
 
 .toggleButton {
@@ -151,7 +175,7 @@ h1 {
 
 #browser > h1 {
     display: inline-block;
-    margin: 8px 16px 12px 4px;
+    margin: 16px 16px 12px 4px;
     color: #ff9c33;
 }
 
@@ -181,5 +205,13 @@ h1 {
 
 .title.active {
     color: #ff9c33;
+}
+
+.sortable-ghost {
+    opacity: 0.5;
+}
+
+.sortable-ghost > div {
+    border: 2px solid #ff9c33;
 }
 </style>
