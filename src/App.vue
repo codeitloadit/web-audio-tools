@@ -1,32 +1,42 @@
 <template>
     <div id="app">
-        <AudioInput />
+        <div id="debug">
+            <AudioInput />
 
-        <div id="browser">
-            <h1>Effects:</h1>
-            <span class="effectLabel" @click="toggleEffect($event, Reverb)">Reverb</span>
-            <span class="effectLabel" @click="toggleEffect($event, Compressor)">Compressor</span>
-            <span class="effectLabel" @click="toggleEffect($event, Gate)">Gate</span>
-            <span class="effectLabel" @click="toggleEffect($event, Limiter)">Limiter</span>
-            <span class="effectLabel" @click="toggleEffect($event, Delay)">Delay</span>
-            <span class="effectLabel" @click="toggleEffect($event, Equalizer)">Equalizer</span>
-            <h1>Tools:</h1>
-            <span class="effectLabel" @click="toggleEffect($event, Meter)">Meter</span>
-            <span class="effectLabel" @click="toggleEffect($event, Tuner)">Tuner</span>
-            <span class="effectLabel" @click="toggleEffect($event, Metronome)">Metronome</span>
-            <span class="effectLabel" @click="toggleEffect($event, Spectrum)">Spectrum</span>
-            <span class="effectLabel" @click="toggleEffect($event, Waveform)">Waveform</span>
+            <hr />
         </div>
 
-        <draggable v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
+        <draggable id="xdragContainer" v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
             <transition-group type="transition" :name="!drag ? 'flip-list' : null">
                 <div class="effectWrapper" v-for="(effect, index) in effects" :key="index">
                     <component :is="effect" :name="effect.name"> </component>
                 </div>
             </transition-group>
+            <div id="newEffect" class="effectContainer" @click="showBrowser" slot="footer">
+                <img src="plus_orange.svg" />
+                <h1 ref="newEffectLabel">Add an audio effect or tool</h1>
+            </div>
         </draggable>
 
-        <!-- <div v-for="element in effects" :key="element.id">{{ element.name }}</div> -->
+        <div id="browser" ref="browser" @click="hideBrowser">
+            <div id="browserContent" ref="browserContent">
+                <h1>Effects:</h1>
+                <img class="effectImage" @click="addEffect($event, Reverb)" src="reverb.png" />
+                <img class="effectImage" @click="addEffect($event, Compressor)" src="compressor.png" />
+                <img class="effectImage" @click="addEffect($event, Gate)" src="gate.png" />
+                <img class="effectImage" @click="addEffect($event, Limiter)" src="limiter.png" />
+                <img class="effectImage" @click="addEffect($event, Delay)" src="delay.png" />
+                <img class="effectImage" @click="addEffect($event, Equalizer)" src="equalizer.png" />
+                <br />
+                <br />
+                <h1>Tools:</h1>
+                <img class="effectImage" @click="addEffect($event, Meter)" src="meter.png" />
+                <img class="effectImage" @click="addEffect($event, Tuner)" src="tuner.png" />
+                <img class="effectImage" @click="addEffect($event, Spectrum)" src="spectrum.png" />
+                <img class="effectImage" @click="addEffect($event, Waveform)" src="waveform.png" />
+                <img class="effectImage" @click="addEffect($event, Metronome)" src="metronome.png" />
+            </div>
+        </div>
 
         <MasterOutput />
     </div>
@@ -56,14 +66,36 @@ export default {
         draggable,
     },
     methods: {
-        toggleEffect(event, effect) {
+        addEffect(event, effect) {
             if (this.effects.some((e) => e.name === effect.name)) {
                 this.effects.splice(this.effects.indexOf(effect), 1)
+                if (this.effects.length === 0) {
+                    this.$refs.newEffectLabel.style.display = 'inline-block'
+                }
                 event.target.classList.remove('active')
             } else {
                 this.effects.push(effect)
                 event.target.classList.add('active')
+                this.$refs.newEffectLabel.style.display = 'none'
             }
+        },
+        showBrowser() {
+            this.$refs.browser.style.display = 'block'
+            const overlayHeight = document.getElementById('browser').clientHeight
+            if (overlayHeight < 726) {
+                this.$refs.browserContent.style.maxHeight = `${overlayHeight - 64}px`
+                this.$refs.browserContent.style.width = '630px'
+                this.$refs.browserContent.style.overflowY = 'scroll'
+            } else {
+                this.$refs.browserContent.style.maxHeight = ''
+                this.$refs.browserContent.style.width = '614px'
+                this.$refs.browserContent.style.overflowY = ''
+            }
+            const topMargin = Math.max((overlayHeight - document.getElementById('browserContent').offsetHeight) / 2, 0)
+            this.$refs.browserContent.style.marginTop = `${topMargin}px`
+        },
+        hideBrowser() {
+            this.$refs.browser.style.display = 'none'
         },
     },
     computed: {
@@ -126,6 +158,35 @@ h1 {
     padding: 0;
 }
 
+#dragContainer {
+    display: inline-block;
+}
+
+#newEffect {
+    border: 2px solid #1e1e1e;
+    background-color: #1e1e1e;
+    cursor: pointer;
+    padding: 16px 0;
+}
+
+#newEffect > img {
+    display: inline-block;
+    width: 48px;
+    height: 122px;
+}
+
+#newEffect > h1 {
+    display: inline-block;
+    color: #ff9c33;
+    margin: 0 24px 110px 12px;
+    vertical-align: middle;
+}
+
+#newEffect:active,
+#newEffect > h1:active {
+    background-color: #333;
+}
+
 .effectContainer {
     display: inline-block;
     background-color: #1e1e1e;
@@ -133,7 +194,7 @@ h1 {
     border-radius: 12px;
     margin: 3px 2px;
     height: 125px;
-    border: 2px solid #151515;
+    border: 2px solid #1e1e1e;
     cursor: move;
 }
 
@@ -173,26 +234,38 @@ canvas {
     height: 20px;
 }
 
-#browser > h1 {
+#browser {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+#browserContent {
     display: inline-block;
-    margin: 16px 16px 12px 4px;
-    color: #ff9c33;
+    background-color: #333;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: left;
 }
 
-#browser > .effectLabel {
-    font-family: 'Graphik Medium', Avenir, Helvetica, Arial, sans-serif;
-    font-size: 18px;
-    margin: 4px 16px 4px 4px;
+#browserContent h1 {
+    color: #aaa;
+    margin-bottom: 4px;
+}
+
+.effectImage {
+    height: 100px;
     cursor: pointer;
-    border-radius: 4px;
-    padding: 4px 6px;
-    color: #151515;
-    background-color: #c9c9c9;
 }
 
-#browser > .effectLabel.active {
-    background-color: #d6c771;
-    box-shadow: 0 0 30px #d6c771;
+.effectImage.active {
+    opacity: 0.5;
+    cursor: default;
 }
 
 .effectWrapper {
@@ -213,5 +286,9 @@ canvas {
 
 .sortable-ghost > div {
     border: 2px solid #ff9c33;
+}
+
+#debug {
+    display: none;
 }
 </style>
