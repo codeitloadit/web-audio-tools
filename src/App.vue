@@ -131,7 +131,6 @@ export default {
             Meter,
         }
     },
-    mounted() {},
 }
 </script>
 
@@ -304,6 +303,6 @@ canvas {
 }
 
 #debug {
-    /* display: none; */
+    display: none;
 }
 </style>
