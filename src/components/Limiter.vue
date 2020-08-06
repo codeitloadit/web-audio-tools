@@ -46,11 +46,10 @@ export default {
             lmtThreshold: -50,
         }
     },
-    created() {
+    mounted() {
         this.node = new Tone.Limiter(0)
         this.appendToChain(this.node)
-    },
-    mounted() {
+
         this.lmtThreshold = localStorage.lmtThreshold || this.lmtThreshold
 
         this.knobs = {

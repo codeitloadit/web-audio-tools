@@ -48,11 +48,10 @@ export default {
             gateSmoothing: 10,
         }
     },
-    created() {
+    mounted() {
         this.node = new Tone.Gate(-1000, 0.1)
         this.appendToChain(this.node)
-    },
-    mounted() {
+
         this.gateThreshold = localStorage.gateThreshold || this.gateThreshold
         this.gateSmoothing = localStorage.gateSmoothing || this.gateSmoothing
 

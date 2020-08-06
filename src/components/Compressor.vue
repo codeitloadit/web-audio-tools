@@ -54,11 +54,10 @@ export default {
             cmpKnee: 30,
         }
     },
-    created() {
+    mounted() {
         this.node = new Tone.Compressor(0, 1)
         this.appendToChain(this.node)
-    },
-    mounted() {
+
         this.cmpThreshold = localStorage.cmpThreshold || this.cmpThreshold
         this.cmpRatio = localStorage.cmpRatio || this.cmpRatio
         this.cmpAttack = localStorage.cmpAttack || this.cmpAttack

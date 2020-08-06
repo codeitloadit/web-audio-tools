@@ -51,11 +51,10 @@ export default {
             dlyWet: 50,
         }
     },
-    created() {
+    mounted() {
         this.node = new Tone.FeedbackDelay()
         this.appendToChain(this.node)
-    },
-    mounted() {
+
         this.dlyTime = localStorage.dlyTime || this.dlyTime
         this.dlyFeedback = localStorage.dlyFeedback || this.dlyFeedback
         this.dlyWet = localStorage.dlyWet || this.dlyWet

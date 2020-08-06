@@ -51,11 +51,10 @@ export default {
             rvbWet: 30,
         }
     },
-    created() {
+    mounted() {
         this.node = new Tone.Freeverb()
         this.appendToChain(this.node)
-    },
-    mounted() {
+
         this.rvbRoomSize = localStorage.rvbRoomSize || this.rvbRoomSize
         this.rvbDampening = localStorage.rvbDampening || this.rvbDampening
         this.rvbWet = localStorage.rvbWet || this.rvbWet

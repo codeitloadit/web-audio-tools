@@ -60,11 +60,10 @@ export default {
             eqHigh: 0,
         }
     },
-    created() {
+    mounted() {
         this.node = new Tone.EQ3()
         this.appendToChain(this.node)
-    },
-    mounted() {
+
         this.eqLow = localStorage.eqLow || this.eqLow
         this.eqLowFreq = localStorage.eqLowFreq || this.eqLowFreq
         this.eqMid = localStorage.eqMid || this.eqMid
