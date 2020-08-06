@@ -1,5 +1,6 @@
 <template>
     <div class="effectContainer">
+        <img class="buttonIcon close" src="x_white.svg" @click="close" />
         <h1 ref="title" class="title active">Waveform</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="power.svg" />
@@ -13,8 +14,10 @@ import * as Tone from 'tone'
 import {mapActions} from 'vuex'
 import {utils} from '../utils'
 
+const effectName = 'Waveform'
+
 export default {
-    name: 'Waveform',
+    name: effectName,
     methods: {
         ...mapActions(['appendToChain']),
         toggle() {
@@ -27,6 +30,9 @@ export default {
                 window.requestAnimationFrame(this.draw)
             }
             this.isActive = !this.isActive
+        },
+        close() {
+            this.$emit('closeEffect', effectName)
         },
         draw() {
             this.ctx.clearRect(0, 0, this.width, this.height)

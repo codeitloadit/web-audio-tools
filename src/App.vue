@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <div id="debug">
-            <AudioInput />
+            <BackingTrack />
 
             <hr />
         </div>
@@ -9,7 +9,7 @@
         <draggable id="xdragContainer" v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
             <transition-group type="transition" :name="!drag ? 'flip-list' : null">
                 <div class="effectWrapper" v-for="(effect, index) in effects" :key="index">
-                    <component :is="effect" :name="effect.name"> </component>
+                    <component :is="effect" :name="effect.name" @closeEffect="closeEffect($event)"> </component>
                 </div>
             </transition-group>
             <div id="newEffect" class="effectContainer" @click="showBrowser" slot="footer">
@@ -21,37 +21,37 @@
         <div id="browser" ref="browser" @click="hideBrowser">
             <div id="browserContent" ref="browserContent">
                 <h1>Effects:</h1>
-                <img class="effectImage" @click="addEffect($event, Reverb)" src="reverb.png" />
-                <img class="effectImage" @click="addEffect($event, Compressor)" src="compressor.png" />
-                <img class="effectImage" @click="addEffect($event, Gate)" src="gate.png" />
-                <img class="effectImage" @click="addEffect($event, Limiter)" src="limiter.png" />
-                <img class="effectImage" @click="addEffect($event, Delay)" src="delay.png" />
-                <img class="effectImage" @click="addEffect($event, Equalizer)" src="equalizer.png" />
+                <img ref="Reverb" class="effectImage" @click="addEffect($event, Reverb)" src="reverb.png" />
+                <img ref="Compressor" class="effectImage" @click="addEffect($event, Compressor)" src="compressor.png" />
+                <img ref="Gate" class="effectImage" @click="addEffect($event, Gate)" src="gate.png" />
+                <img ref="Limiter" class="effectImage" @click="addEffect($event, Limiter)" src="limiter.png" />
+                <img ref="Delay" class="effectImage" @click="addEffect($event, Delay)" src="delay.png" />
+                <img ref="Equalizer" class="effectImage" @click="addEffect($event, Equalizer)" src="equalizer.png" />
                 <br />
                 <br />
                 <h1>Tools:</h1>
-                <img class="effectImage" @click="addEffect($event, Meter)" src="meter.png" />
-                <img class="effectImage" @click="addEffect($event, Tuner)" src="tuner.png" />
-                <img class="effectImage" @click="addEffect($event, Spectrum)" src="spectrum.png" />
-                <img class="effectImage" @click="addEffect($event, Waveform)" src="waveform.png" />
-                <img class="effectImage" @click="addEffect($event, Metronome)" src="metronome.png" />
+                <img ref="Meter" class="effectImage" @click="addEffect($event, Meter)" src="meter.png" />
+                <img ref="Tuner" class="effectImage" @click="addEffect($event, Tuner)" src="tuner.png" />
+                <img ref="Spectrum" class="effectImage" @click="addEffect($event, Spectrum)" src="spectrum.png" />
+                <img ref="Waveform" class="effectImage" @click="addEffect($event, Waveform)" src="waveform.png" />
+                <img ref="Metronome" class="effectImage" @click="addEffect($event, Metronome)" src="metronome.png" />
             </div>
         </div>
 
-        <MasterOutput />
+        <!-- <MasterOutput /> -->
     </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
-import AudioInput from './components/AudioInput'
+import BackingTrack from './components/BackingTrack'
 import Gate from './components/Gate'
 import Delay from './components/Delay'
 import Reverb from './components/Reverb'
 import Compressor from './components/Compressor'
 import Equalizer from './components/Equalizer'
 import Limiter from './components/Limiter'
-import MasterOutput from './components/MasterOutput'
+// import MasterOutput from './components/MasterOutput'
 import Meter from './components/Meter'
 import Spectrum from './components/Spectrum'
 import Waveform from './components/Waveform'
@@ -61,23 +61,30 @@ import Metronome from './components/Metronome'
 export default {
     name: 'App',
     components: {
-        AudioInput, // TODO: Replace this with the WebRTC stream audio.
-        MasterOutput,
+        BackingTrack, // TODO: Replace this with the WebRTC stream audio.
+        // MasterOutput,
         draggable,
     },
     methods: {
         addEffect(event, effect) {
-            if (this.effects.some((e) => e.name === effect.name)) {
-                this.effects.splice(this.effects.indexOf(effect), 1)
-                if (this.effects.length === 0) {
-                    this.$refs.newEffectLabel.style.display = 'inline-block'
-                }
-                event.target.classList.remove('active')
-            } else {
+            event.stopPropagation()
+            if (!this.effects.some((e) => e.name === effect.name)) {
                 this.effects.push(effect)
                 event.target.classList.add('active')
                 this.$refs.newEffectLabel.style.display = 'none'
+                this.hideBrowser()
             }
+        },
+        closeEffect(effectName) {
+            this.effects.forEach((e, i) => {
+                if (e.name === effectName) {
+                    this.effects.splice(i, 1)
+                    if (this.effects.length === 0) {
+                        this.$refs.newEffectLabel.style.display = 'inline-block'
+                    }
+                    this.$refs[effectName].classList.remove('active')
+                }
+            })
         },
         showBrowser() {
             this.$refs.browser.style.display = 'block'
@@ -234,6 +241,14 @@ canvas {
     height: 20px;
 }
 
+.buttonIcon.close {
+    float: right;
+    cursor: pointer;
+    position: relative;
+    right: -10px;
+    top: -10px;
+}
+
 #browser {
     display: none;
     position: fixed;
@@ -289,6 +304,6 @@ canvas {
 }
 
 #debug {
-    display: none;
+    /* display: none; */
 }
 </style>

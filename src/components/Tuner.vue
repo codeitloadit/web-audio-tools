@@ -1,5 +1,6 @@
 <template>
     <div class="effectContainer">
+        <img class="buttonIcon close" src="x_white.svg" @click="close" />
         <h1 ref="title" class="title active">Tuner</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="power.svg" />
@@ -13,8 +14,10 @@ import {mapGetters} from 'vuex'
 import {PitchDetector} from '../pitchDetector'
 import {utils} from '../utils'
 
+const effectName = 'Tuner'
+
 export default {
-    name: 'Tuner',
+    name: effectName,
     methods: {
         ...mapGetters(['stream']),
         toggle() {
@@ -33,6 +36,9 @@ export default {
                 }
             }
             this.isActive = !this.isActive
+        },
+        close() {
+            this.$emit('closeEffect', effectName)
         },
         draw() {
             this.ctx.clearRect(0, 0, this.width, this.height)

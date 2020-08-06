@@ -1,5 +1,6 @@
 <template>
     <div class="effectContainer">
+        <img class="buttonIcon close" src="x_white.svg" @click="close" />
         <h1 ref="title" class="title active">Meter</h1>
         <div ref="left"></div>
         <div ref="right"></div>
@@ -13,12 +14,17 @@
 import * as Tone from 'tone'
 import {bar} from '../bar'
 
+const effectName = 'Meter'
+
 export default {
-    name: 'Meter',
+    name: effectName,
     methods: {
         clearClip() {
             this.hasClipped = false
             this.$refs.clipButton.classList.remove('clip')
+        },
+        close() {
+            this.$emit('closeEffect', effectName)
         },
     },
     hasClipped: false,

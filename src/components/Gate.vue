@@ -1,5 +1,6 @@
 <template>
     <div class="effectContainer">
+        <img class="buttonIcon close" src="x_white.svg" @click="close" />
         <h1 ref="title" class="title active">Gate</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="power.svg" />
@@ -14,8 +15,10 @@ import * as Tone from 'tone'
 import {knob} from '../knob'
 import {mapActions} from 'vuex'
 
+const effectName = 'Gate'
+
 export default {
-    name: 'Gate',
+    name: effectName,
     methods: {
         ...mapActions(['appendToChain', 'removeFromChain']),
         toggle() {
@@ -34,6 +37,9 @@ export default {
                 knob.setActive(this.isActive)
             })
         },
+        close() {
+            this.$emit('closeEffect', effectName)
+        },
     },
     node: null,
     knobs: null,
@@ -50,13 +56,16 @@ export default {
             }),
         }
 
-        this.node = new Tone.Gate(-1000, 0.1)
-        this.appendToChain(this.node)
         this.node.smoothing = this.knobs.smoothing.getValue() / 100
 
         this.toggle()
     },
+    created() {
+        this.node = new Tone.Gate(-1000, 0.1)
+        this.appendToChain(this.node)
+    },
     beforeDestroy() {
+        this.node.disconnect()
         this.removeFromChain(this.node)
     },
 }

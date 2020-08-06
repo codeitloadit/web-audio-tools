@@ -1,5 +1,6 @@
 <template>
     <div class="effectContainer">
+        <img class="buttonIcon close" src="x_white.svg" @click="close" />
         <h1 ref="title" class="title">Metronome</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="play.svg" />
@@ -60,8 +61,10 @@ import * as Tone from 'tone'
 import {mapGetters} from 'vuex'
 import {utils} from '../utils'
 
+const effectName = 'Metronome'
+
 export default {
-    name: 'Metronome',
+    name: effectName,
     methods: {
         ...mapGetters(['stream']),
         playNote(note) {
@@ -100,6 +103,9 @@ export default {
                 this.$refs.title.classList.add('active')
             }
             this.isActive = !this.isActive
+        },
+        close() {
+            this.$emit('closeEffect', effectName)
         },
         highlightBeat(beatIndex, totalBeats) {
             this.ctx.clearRect(0, 0, this.width, this.height)

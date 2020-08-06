@@ -1,5 +1,6 @@
 <template>
     <div class="effectContainer">
+        <img class="buttonIcon close" src="x_white.svg" @click="close" />
         <h1 ref="title" class="title active">Reverb</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="power.svg" />
@@ -15,8 +16,10 @@ import * as Tone from 'tone'
 import {knob} from '../knob'
 import {mapActions} from 'vuex'
 
+const effectName = 'Reverb'
+
 export default {
-    name: 'Reverb',
+    name: effectName,
     methods: {
         ...mapActions(['appendToChain', 'removeFromChain']),
         toggle() {
@@ -34,6 +37,9 @@ export default {
             Object.values(this.knobs).forEach((knob) => {
                 knob.setActive(this.isActive)
             })
+        },
+        close() {
+            this.$emit('closeEffect', effectName)
         },
     },
     node: null,
@@ -54,18 +60,21 @@ export default {
             }),
         }
 
-        this.node = new Tone.Freeverb({
-            roomSize: 0.7,
-            dampening: 100,
-        })
-        this.appendToChain(this.node)
         this.node.roomSize.value = this.knobs.roomSize.getValue() / 100
         this.node.dampening.value = this.knobs.dampening.getValue()
         this.node.wet.value = 0
 
         this.toggle()
     },
+    created() {
+        this.node = new Tone.Freeverb({
+            roomSize: 0.7,
+            dampening: 100,
+        })
+        this.appendToChain(this.node)
+    },
     beforeDestroy() {
+        this.node.disconnect()
         this.removeFromChain(this.node)
     },
 }

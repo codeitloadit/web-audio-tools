@@ -1,5 +1,6 @@
 <template>
     <div class="effectContainer">
+        <img class="buttonIcon close" src="x_white.svg" @click="close" />
         <h1 ref="title" class="title active">Delay</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="power.svg" />
@@ -15,8 +16,10 @@ import * as Tone from 'tone'
 import {knob} from '../knob'
 import {mapActions} from 'vuex'
 
+const effectName = 'Delay'
+
 export default {
-    name: 'Delay',
+    name: effectName,
     methods: {
         ...mapActions(['appendToChain', 'removeFromChain']),
         toggle() {
@@ -34,6 +37,9 @@ export default {
             Object.values(this.knobs).forEach((knob) => {
                 knob.setActive(this.isActive)
             })
+        },
+        close() {
+            this.$emit('closeEffect', effectName)
         },
     },
     node: null,
@@ -63,6 +69,7 @@ export default {
         this.toggle()
     },
     beforeDestroy() {
+        this.node.disconnect()
         this.removeFromChain(this.node)
     },
 }
