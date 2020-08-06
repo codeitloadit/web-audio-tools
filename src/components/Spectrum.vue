@@ -54,16 +54,13 @@ export default {
             }
         },
     },
-    node: null,
-    isActive: false,
     data() {
         return {
+            isActive: false,
             width: 400,
             height: 100,
         }
     },
-    canvas: null,
-    ctx: null,
     mounted() {
         this.node = new Tone.FFT(4096)
         Tone.connect(Tone.Master, this.node)

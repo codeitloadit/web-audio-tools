@@ -166,17 +166,13 @@ export default {
             this.drawFlatTriangle()
         },
     },
-    recentPitchData: null,
-    node: null,
-    isActive: false,
     data() {
         return {
+            isActive: false,
             width: 400,
             height: 100,
         }
     },
-    canvas: null,
-    ctx: null,
     mounted() {
         this.node = new PitchDetector()
         this.recentPitchData = []

@@ -27,7 +27,11 @@ export default {
             this.$emit('closeEffect', effectName)
         },
     },
-    hasClipped: false,
+    data() {
+        return {
+            hasClipped: false,
+        }
+    },
     mounted() {
         const split = new Tone.Split()
         Tone.connect(Tone.Master, split)
