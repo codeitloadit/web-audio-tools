@@ -27,7 +27,7 @@ export default {
                 this.$refs.toggleButton.classList.remove('activeButton')
                 this.$refs.title.classList.remove('active')
             } else {
-                this.node.threshold = this.knobs.threshold.getValue()
+                this.node.threshold = this.gateThreshold = this.knobs.threshold.getValue()
                 this.$refs.toggleButton.classList.add('activeButton')
                 this.$refs.title.classList.add('active')
             }
@@ -41,18 +41,31 @@ export default {
             this.$emit('closeEffect', effectName)
         },
     },
-    node: null,
-    knobs: null,
-    isActive: false,
+    data() {
+        return {
+            isActive: false,
+            gateThreshold: -60,
+            gateSmoothing: 10,
+        }
+    },
+    created() {
+        this.node = new Tone.Gate(-1000, 0.1)
+        this.appendToChain(this.node)
+    },
     mounted() {
+        this.gateThreshold = localStorage.gateThreshold || this.gateThreshold
+        this.gateSmoothing = localStorage.gateSmoothing || this.gateSmoothing
+
         this.knobs = {
-            threshold: knob.create(this.$refs.threshold, 'Threshold', -60, -200, 0, false, (knob, value) => {
+            threshold: knob.create(this.$refs.threshold, 'Threshold', this.gateThreshold, -200, 0, false, (_, v) => {
                 if (this.isActive) {
-                    this.node.threshold = value
+                    this.node.threshold = v
+                    this.gateThreshold = v
                 }
             }),
-            smoothing: knob.create(this.$refs.smoothing, 'Smoothing', 10, 1, 100, false, (knob, value) => {
-                this.node.smoothing = value / 100
+            smoothing: knob.create(this.$refs.smoothing, 'Smoothing', this.gateSmoothing, 1, 100, false, (_, v) => {
+                this.node.smoothing = v / 100
+                this.gateSmoothing = v
             }),
         }
 
@@ -60,9 +73,13 @@ export default {
 
         this.toggle()
     },
-    created() {
-        this.node = new Tone.Gate(-1000, 0.1)
-        this.appendToChain(this.node)
+    watch: {
+        gateThreshold(value) {
+            localStorage.gateThreshold = value
+        },
+        gateSmoothing(value) {
+            localStorage.gateSmoothing = value
+        },
     },
     beforeDestroy() {
         this.node.disconnect()

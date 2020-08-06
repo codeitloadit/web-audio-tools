@@ -26,7 +26,7 @@ export default {
                 this.$refs.toggleButton.classList.remove('activeButton')
                 this.$refs.title.classList.remove('active')
             } else {
-                this.node.threshold.value = this.knobs.threshold.getValue()
+                this.node.threshold.value = this.lmtThreshold = this.knobs.threshold.getValue()
                 this.$refs.toggleButton.classList.add('activeButton')
                 this.$refs.title.classList.add('active')
             }
@@ -40,22 +40,34 @@ export default {
             this.$emit('closeEffect', effectName)
         },
     },
-    node: null,
-    knobs: null,
-    isActive: false,
+    data() {
+        return {
+            isActive: false,
+            lmtThreshold: -50,
+        }
+    },
+    created() {
+        this.node = new Tone.Limiter(0)
+        this.appendToChain(this.node)
+    },
     mounted() {
+        this.lmtThreshold = localStorage.lmtThreshold || this.lmtThreshold
+
         this.knobs = {
-            threshold: knob.create(this.$refs.threshold, 'Threshold', -50, -100, 0, false, (knob, value) => {
+            threshold: knob.create(this.$refs.threshold, 'Threshold', this.lmtThreshold, -100, 0, false, (_, v) => {
                 if (this.isActive) {
-                    this.node.threshold.value = value
+                    this.node.threshold.value = v
+                    this.lmtThreshold = v
                 }
             }),
         }
 
-        this.node = new Tone.Limiter(0)
-        this.appendToChain(this.node)
-
         this.toggle()
+    },
+    watch: {
+        lmtThreshold(value) {
+            localStorage.lmtThreshold = value
+        },
     },
     beforeDestroy() {
         this.node.disconnect()

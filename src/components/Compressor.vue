@@ -30,7 +30,7 @@ export default {
                 this.$refs.toggleButton.classList.remove('activeButton')
                 this.$refs.title.classList.remove('active')
             } else {
-                this.node.threshold.value = this.knobs.threshold.getValue()
+                this.node.threshold.value = this.cmpThreshold = this.knobs.threshold.getValue()
                 this.$refs.toggleButton.classList.add('activeButton')
                 this.$refs.title.classList.add('active')
             }
@@ -44,32 +44,52 @@ export default {
             this.$emit('closeEffect', effectName)
         },
     },
-    node: null,
-    knobs: null,
-    isActive: false,
+    data() {
+        return {
+            isActive: false,
+            cmpThreshold: -50,
+            cmpRatio: 4,
+            cmpAttack: 5,
+            cmpRelease: 255,
+            cmpKnee: 30,
+        }
+    },
+    created() {
+        this.node = new Tone.Compressor(0, 1)
+        this.appendToChain(this.node)
+    },
     mounted() {
+        this.cmpThreshold = localStorage.cmpThreshold || this.cmpThreshold
+        this.cmpRatio = localStorage.cmpRatio || this.cmpRatio
+        this.cmpAttack = localStorage.cmpAttack || this.cmpAttack
+        this.cmpRelease = localStorage.cmpRelease || this.cmpRelease
+        this.cmpKnee = localStorage.cmpKnee || this.cmpKnee
+
         this.knobs = {
-            threshold: knob.create(this.$refs.threshold, 'Threshold', -50, -100, 0, false, (knob, value) => {
+            threshold: knob.create(this.$refs.threshold, 'Threshold', this.cmpThreshold, -100, 0, false, (_, v) => {
                 if (this.isActive) {
-                    this.node.threshold.value = value
+                    this.node.threshold.value = v
+                    this.cmpThreshold = v
                 }
             }),
-            ratio: knob.create(this.$refs.ratio, 'Ratio', 4, 1, 20, false, (knob, value) => {
-                this.node.ratio.value = value
+            ratio: knob.create(this.$refs.ratio, 'Ratio', this.cmpRatio, 1, 20, false, (_, v) => {
+                this.node.ratio.value = v
+                this.cmpRatio = v
             }),
-            attack: knob.create(this.$refs.attack, 'Attack', 5, 0, 1000, false, (knob, value) => {
-                this.node.attack.value = value / 1000
+            attack: knob.create(this.$refs.attack, 'Attack', this.cmpAttack, 0, 1000, false, (_, v) => {
+                this.node.attack.value = v / 1000
+                this.cmpAttack = v
             }),
-            release: knob.create(this.$refs.release, 'Release', 255, 1, 1000, false, (knob, value) => {
-                this.node.release.value = value / 1000
+            release: knob.create(this.$refs.release, 'Release', this.cmpRelease, 1, 1000, false, (_, v) => {
+                this.node.release.value = v / 1000
+                this.cmpRelease = v
             }),
-            knee: knob.create(this.$refs.knee, 'Knee', 30, 0, 40, false, (knob, value) => {
-                this.node.knee.value = value
+            knee: knob.create(this.$refs.knee, 'Knee', this.cmpKnee, 0, 40, false, (_, v) => {
+                this.node.knee.value = v
+                this.cmpKnee = v
             }),
         }
 
-        this.node = new Tone.Compressor(0, 1)
-        this.appendToChain(this.node)
         this.node.threshold.value = 0
         this.node.ratio.value = this.knobs.ratio.getValue()
         this.node.attack.value = this.knobs.attack.getValue() / 1000
@@ -77,6 +97,23 @@ export default {
         this.node.knee.value = this.knobs.knee.getValue()
 
         this.toggle()
+    },
+    watch: {
+        cmpThreshold(value) {
+            localStorage.cmpThreshold = value
+        },
+        cmpRatio(value) {
+            localStorage.cmpRatio = value
+        },
+        cmpAttack(value) {
+            localStorage.cmpAttack = value
+        },
+        cmpRelease(value) {
+            localStorage.cmpRelease = value
+        },
+        cmpKnee(value) {
+            localStorage.cmpKnee = value
+        },
     },
     beforeDestroy() {
         this.node.disconnect()

@@ -29,6 +29,7 @@ export default {
                 this.$refs.title.classList.remove('active')
             } else {
                 this.node.wet.value = this.knobs.wet.getValue() / 100
+                this.dlyWet = this.knobs.wet.getValue()
                 this.$refs.toggleButton.classList.add('activeButton')
                 this.$refs.title.classList.add('active')
             }
@@ -42,31 +43,56 @@ export default {
             this.$emit('closeEffect', effectName)
         },
     },
-    node: null,
-    knobs: null,
-    isActive: false,
+    data() {
+        return {
+            isActive: false,
+            dlyTime: 6,
+            dlyFeedback: 10,
+            dlyWet: 50,
+        }
+    },
+    created() {
+        this.node = new Tone.FeedbackDelay()
+        this.appendToChain(this.node)
+    },
     mounted() {
+        this.dlyTime = localStorage.dlyTime || this.dlyTime
+        this.dlyFeedback = localStorage.dlyFeedback || this.dlyFeedback
+        this.dlyWet = localStorage.dlyWet || this.dlyWet
+
         this.knobs = {
-            time: knob.create(this.$refs.time, 'Time', 6, 0, 100, false, (knob, value) => {
-                this.node.delayTime.value = value / 100
+            time: knob.create(this.$refs.time, 'Time', this.dlyTime, 0, 100, false, (_, v) => {
+                this.node.delayTime.value = v / 100
+                this.dlyTime = v
             }),
-            feedback: knob.create(this.$refs.feedback, 'Feedback', 10, 0, 100, false, (knob, value) => {
-                this.node.feedback.value = value / 100
+            feedback: knob.create(this.$refs.feedback, 'Feedback', this.dlyFeedback, 0, 100, false, (_, v) => {
+                this.node.feedback.value = v / 100
+                this.dlyFeedback = v
             }),
-            wet: knob.create(this.$refs.wet, 'Dry/Wet', 50, 0, 100, true, (knob, value) => {
+            wet: knob.create(this.$refs.wet, 'Dry/Wet', this.dlyWet, 0, 100, true, (_, v) => {
                 if (this.isActive) {
-                    this.node.wet.value = value / 100
+                    this.node.wet.value = v / 100
+                    this.dlyWet = v
                 }
             }),
         }
 
-        this.node = new Tone.FeedbackDelay()
-        this.appendToChain(this.node)
         this.node.delayTime.value = this.knobs.time.getValue() / 100
         this.node.feedback.value = this.knobs.feedback.getValue() / 100
         this.node.wet.value = 0
 
         this.toggle()
+    },
+    watch: {
+        dlyTime(value) {
+            localStorage.dlyTime = value
+        },
+        dlyFeedback(value) {
+            localStorage.dlyFeedback = value
+        },
+        dlyWet(value) {
+            localStorage.dlyWet = value
+        },
     },
     beforeDestroy() {
         this.node.disconnect()
