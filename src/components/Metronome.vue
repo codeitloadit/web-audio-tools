@@ -90,9 +90,13 @@ export default {
                 Tone.Transport.timeSignature = [tsTop, tsBot]
                 for (let i = 0; i < tsTop; i++) {
                     Tone.Transport.scheduleRepeat(
-                        () => {
+                        (time) => {
                             this.playNote(i === 0 ? 'C2' : 'C4')
-                            this.highlightBeat(i, tsTop)
+
+                            const self = this
+                            Tone.Draw.schedule(function() {
+                                self.highlightBeat(i, tsTop)
+                            }, time)
                         },
                         '0:' + Tone.Transport.timeSignature + ':0',
                         '0:0:' + offset * i
