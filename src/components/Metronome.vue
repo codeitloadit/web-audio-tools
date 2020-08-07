@@ -14,7 +14,7 @@
             <img class="buttonIcon" src="mute.svg" />
         </span>
         <span id="settings" ref="settingsButton" class="toggleButton">
-            <img class="buttonIcon" src="settings.svg" />
+            <!-- <img class="buttonIcon" src="settings.svg" /> -->
         </span>
         <canvas ref="canvas" :width="width" :height="height"></canvas>
         <div id="topRow">
@@ -297,5 +297,11 @@ select {
     text-align: center;
     margin-right: 28px;
     padding: 5px 5px 5px 2px;
+}
+
+#settings {
+    background-color: #1e1e1e;
+    cursor: default;
+    opacity: 0;
 }
 </style>
