@@ -71,7 +71,7 @@ export default {
         this.eqHigh = localStorage.eqHigh || this.eqHigh
 
         this.knobs = {
-            low: knob.create(this.$refs.low, 'Low', this.eqLow, -50, 50, true, (_, v) => {
+            low: knob.create(this.$refs.low, 'Low', this.eqLow, -25, 25, true, (_, v) => {
                 if (this.isActive) {
                     this.node.low.value = v
                     this.eqLow = v
@@ -83,7 +83,7 @@ export default {
                     this.eqLowFreq = v
                 }
             }),
-            mid: knob.create(this.$refs.mid, 'Mid', this.eqMid, -50, 50, true, (_, v) => {
+            mid: knob.create(this.$refs.mid, 'Mid', this.eqMid, -25, 25, true, (_, v) => {
                 if (this.isActive) {
                     this.node.mid.value = v
                     this.eqMid = v
@@ -95,7 +95,7 @@ export default {
                     this.eqHighFreq = v
                 }
             }),
-            high: knob.create(this.$refs.high, 'High', this.eqHigh, -50, 50, true, (_, v) => {
+            high: knob.create(this.$refs.high, 'High', this.eqHigh, -25, 25, true, (_, v) => {
                 if (this.isActive) {
                     this.node.high.value = v
                     this.eqHigh = v
