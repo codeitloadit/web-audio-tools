@@ -70,7 +70,7 @@ export default {
 
         this.canvas.style.backgroundColor = '#111'
 
-        this.ctx.strokeStyle = '#F68432'
+        this.ctx.strokeStyle = '#ff9c33'
         this.ctx.lineWidth = 2
 
         this.toggle()

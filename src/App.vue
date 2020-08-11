@@ -1,9 +1,8 @@
 <template>
     <div id="app">
         <div id="debug">
-            <BackingTrack />
-
-            <hr />
+            <AudioInput />
+            <BackingTrackDebug />
         </div>
 
         <draggable id="xdragContainer" v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
@@ -35,6 +34,12 @@
                 <img ref="Spectrum" class="effectImage" @click="addEffect($event, Spectrum)" src="spectrum.png" />
                 <img ref="Waveform" class="effectImage" @click="addEffect($event, Waveform)" src="waveform.png" />
                 <img ref="Metronome" class="effectImage" @click="addEffect($event, Metronome)" src="metronome.png" />
+                <img
+                    ref="BackingTrack"
+                    class="effectImage"
+                    @click="addEffect($event, BackingTrack)"
+                    src="backing.png"
+                />
             </div>
         </div>
 
@@ -44,7 +49,9 @@
 
 <script>
 import draggable from 'vuedraggable'
+import AudioInput from './components/AudioInput'
 import BackingTrack from './components/BackingTrack'
+import BackingTrackDebug from './components/BackingTrackDebug'
 import Gate from './components/Gate'
 import Delay from './components/Delay'
 import Reverb from './components/Reverb'
@@ -61,7 +68,8 @@ import Metronome from './components/Metronome'
 export default {
     name: 'App',
     components: {
-        BackingTrack, // TODO: Replace this with the WebRTC stream audio.
+        AudioInput,
+        BackingTrackDebug, // TODO: Replace this with the WebRTC stream audio.
         // MasterOutput,
         draggable,
     },
@@ -91,11 +99,11 @@ export default {
             const overlayHeight = document.getElementById('browser').clientHeight
             if (overlayHeight < 726) {
                 this.$refs.browserContent.style.maxHeight = `${overlayHeight - 64}px`
-                this.$refs.browserContent.style.width = '630px'
+                this.$refs.browserContent.style.width = '642px'
                 this.$refs.browserContent.style.overflowY = 'scroll'
             } else {
                 this.$refs.browserContent.style.maxHeight = ''
-                this.$refs.browserContent.style.width = '614px'
+                this.$refs.browserContent.style.width = '622px'
                 this.$refs.browserContent.style.overflowY = ''
             }
             const topMargin = Math.max((overlayHeight - document.getElementById('browserContent').offsetHeight) / 2, 0)
@@ -129,6 +137,7 @@ export default {
             Spectrum,
             Waveform,
             Meter,
+            BackingTrack,
         }
     },
 }
@@ -263,7 +272,7 @@ canvas {
     display: inline-block;
     background-color: #333;
     border-radius: 12px;
-    padding: 16px;
+    padding: 16px 16px 16px 20px;
     text-align: left;
 }
 
@@ -273,6 +282,7 @@ canvas {
 }
 
 .effectImage {
+    margin-right: 4px;
     height: 100px;
     cursor: pointer;
 }
@@ -302,7 +312,7 @@ canvas {
     border: 2px solid #ff9c33;
 }
 
-#debug {
+/* #debug {
     display: none;
-}
+} */
 </style>

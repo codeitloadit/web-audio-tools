@@ -74,11 +74,12 @@ export default {
         },
         toggle() {
             if (this.isActive) {
-                Tone.Transport.stop()
+                Tone.Transport.cancel()
                 this.drawOffState()
                 this.$refs.toggleButton.classList.remove('activeButton')
                 this.$refs.title.classList.remove('active')
             } else {
+                Tone.Transport.emit('stopTransport', effectName)
                 if (this.$refs.bpm.value === '---') {
                     this.$refs.bpm.value = this.lastSetBMP
                 }
@@ -145,8 +146,6 @@ export default {
         tapDown() {
             const elapsedTime = Tone.Transport.seconds
             Tone.Transport.cancel()
-                .stop()
-                .start()
             if (this.isActive) {
                 this.toggle()
             }
@@ -228,6 +227,12 @@ export default {
 
         Tone.Transport.start(0)
 
+        Tone.Transport.on('stopTransport', (emitter) => {
+            if (emitter.toString() !== effectName && this.isActive) {
+                this.toggle()
+            }
+        })
+
         this.canvas = this.$refs.canvas
         this.ctx = this.canvas.getContext('2d')
         this.canvas.style.backgroundColor = '#111'
@@ -235,7 +240,7 @@ export default {
         setTimeout(this.drawOffState, 500)
     },
     beforeDestroy() {
-        Tone.Transport.cancel().stop()
+        Tone.Transport.cancel()
     },
 }
 </script>
@@ -258,7 +263,12 @@ canvas {
 }
 
 .toggleButton {
-    top: 18px;
+    top: 9px;
+}
+
+#mute,
+#settings {
+    top: 7px;
 }
 
 #tap.toggleButton.activeButton {

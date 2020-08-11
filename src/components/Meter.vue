@@ -33,14 +33,14 @@ export default {
         }
     },
     mounted() {
-        const split = new Tone.Split()
-        Tone.connect(Tone.Master, split)
+        this.split = new Tone.Split()
+        Tone.connect(Tone.Master, this.split)
 
         this.leftMeter = new Tone.Meter()
-        split.left.connect(this.leftMeter)
+        this.split.left.connect(this.leftMeter)
 
         this.rightMeter = new Tone.Meter()
-        split.right.connect(this.rightMeter)
+        this.split.right.connect(this.rightMeter)
 
         const graphLeft = bar.create(this.$refs.left, 0, -70, 10, -70, 10, 5, [0])
         const graphRight = bar.create(this.$refs.right, 0, -70, 10, -70, 10, 5, [0])
@@ -60,6 +60,11 @@ export default {
             window.requestAnimationFrame(draw)
         }
         window.requestAnimationFrame(draw)
+    },
+    beforeDestroy() {
+        this.rightMeter.disconnect()
+        this.leftMeter.disconnect()
+        this.split.disconnect()
     },
 }
 </script>
