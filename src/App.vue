@@ -312,7 +312,7 @@ canvas {
     border: 2px solid #ff9c33;
 }
 
-/* #debug {
+#debug {
     display: none;
-} */
+}
 </style>

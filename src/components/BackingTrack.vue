@@ -38,7 +38,7 @@ export default {
     methods: {
         toggle() {
             if (this.isActive) {
-                Tone.Transport.stop()
+                Tone.Transport.pause()
                 this.node.stop()
                 this.$refs.playEnabled.style.display = 'inline'
                 this.$refs.stop.style.display = 'none'
@@ -52,8 +52,10 @@ export default {
                     return
                 }
                 Tone.Transport.emit('stopTransport', effectName)
+                Tone.Transport.seconds = this.pauseTime
                 Tone.Transport.start()
-                this.node.start()
+                this.node.start(0, this.pauseTime)
+                this.pauseTime = 0
                 this.$refs.playEnabled.style.display = 'none'
                 this.$refs.stop.style.display = 'inline'
                 this.$refs.pauseDisabled.style.display = 'none'
@@ -69,17 +71,19 @@ export default {
             window.requestAnimationFrame(this.draw)
         },
         pause() {
-            // TODO: this.pauseTime = Tone.Transport.seconds
-        },
-        triggerFileInput() {
-            this.$refs.file.click()
+            if (this.pauseTime === 0) {
+                const pauseTime = Tone.Transport.seconds
+                this.toggle()
+                Tone.Transport.seconds = this.pauseTime = pauseTime
+            }
         },
         playAtMousePos() {
-            if (!this.isActive && this.node.loaded) {
-                this.toggle()
-            }
             this.node.seek(this.duration / (this.width / this.mousePos.x))
             Tone.Transport.seconds = this.duration / (this.width / this.mousePos.x)
+
+            if (!this.isActive && this.node.loaded) {
+                this.pauseTime = Tone.Transport.seconds
+            }
         },
         mute() {
             if (this.isMuted) {
@@ -88,6 +92,7 @@ export default {
                 this.$refs.muteButton.classList.add('muted')
             }
             this.isMuted = !this.isMuted
+            this.node.mute = this.isMuted
         },
         loadFile(event) {
             const file = event.target.files[0]
@@ -97,7 +102,17 @@ export default {
                 if (this.isActive) {
                     this.toggle()
                 }
+                this.duration = 0
+                this.pauseTime = 0
+                Tone.Transport.seconds = 0
+
                 this.node.load(e.target.result, () => {
+                    this.$refs.playDisabled.style.display = 'none'
+                    this.$refs.playEnabled.style.display = 'inline'
+                    this.$refs.pauseDisabled.style.display = 'inline'
+                    this.$refs.pauseEnabled.style.display = 'none'
+                    this.$refs.fileName.innerText = event.target.files[0].name
+
                     this.duration = this.node.buffer.duration
                     this.waveData.left = []
                     this.waveData.right = []
@@ -145,13 +160,13 @@ export default {
                     this.ctx.restore()
                 })
 
-                this.$refs.playDisabled.style.display = 'none'
-                this.$refs.playEnabled.style.display = 'inline'
-                this.$refs.pauseDisabled.style.display = 'inline'
-                this.$refs.pauseEnabled.style.display = 'none'
-                this.$refs.fileName.innerText = event.target.files[0].name
+                this.$refs.fileName.innerText = 'Loading...'
+                this.$refs.timeData.innerText = '0:00 / 0:00'
             }
             reader.readAsDataURL(file)
+        },
+        triggerFileInput() {
+            this.$refs.file.click()
         },
         draw() {
             this.ctx.clearRect(0, 0, this.width, this.height)
@@ -160,7 +175,7 @@ export default {
                 .toISOString()
                 .substr(14, 5)} / ${new Date(this.duration * 1000).toISOString().substr(14, 5)}`
 
-            if (this.isActive) {
+            if (this.isActive || this.pauseTime !== 0) {
                 const progress = this.width / elapsed + 1
 
                 if (progress > this.width) {
@@ -262,6 +277,7 @@ export default {
     data() {
         return {
             isActive: false,
+            isMuted: false,
             width: 400,
             height: 100,
             waveData: {
@@ -269,6 +285,7 @@ export default {
                 right: [],
             },
             duration: 0,
+            pauseTime: 0,
             mousePos: {},
         }
     },
@@ -285,9 +302,14 @@ export default {
         this.node = new Tone.Player(null, () => {
             this.$refs.toggleButton.classList.remove('disabled')
         })
+        window.bt = this.node
 
         this.panner = new Tone.Panner().toMaster()
         this.node.connect(this.panner)
+
+        Tone.Transport.on('stop', () => {
+            Tone.Transport.start()
+        })
 
         Tone.Transport.on('stopTransport', (emitter) => {
             if (emitter.toString() !== effectName && this.isActive) {
