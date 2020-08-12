@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <div id="debug">
+        <div v-if="this.debug">
             <AudioInput />
             <BackingTrackDebug />
         </div>
@@ -138,6 +138,7 @@ export default {
             Waveform,
             Meter,
             BackingTrack,
+            debug: false,
         }
     },
 }
@@ -310,9 +311,5 @@ canvas {
 
 .sortable-ghost > div {
     border: 2px solid #ff9c33;
-}
-
-#debug {
-    display: none;
 }
 </style>
