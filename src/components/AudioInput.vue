@@ -53,10 +53,12 @@ export default {
             })
         },
     },
-    node: null,
-    knobs: null,
-    isActive: false,
-    isMuted: false,
+    data() {
+        return {
+            isActive: false,
+            isMuted: false,
+        }
+    },
     mounted() {
         this.knobs = {
             volume: knob.create(this.$refs.volume, 'Volume', 0, -10, 10, true, (knob, value) => {
