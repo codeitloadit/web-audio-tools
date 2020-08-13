@@ -33,6 +33,10 @@ import {utils} from '../utils'
 
 const effectName = 'BackingTrack'
 
+const secondsToMinutes = (seconds) => {
+    return new Date(seconds * 1000).toISOString().substr(14, 5)
+}
+
 export default {
     name: effectName,
     methods: {
@@ -54,7 +58,8 @@ export default {
                 Tone.Transport.emit('stopTransport', effectName)
                 Tone.Transport.seconds = this.pauseTime
                 Tone.Transport.start()
-                this.node.start(0, this.pauseTime)
+                console.log('STARTING AT:', secondsToMinutes(this.pauseTime))
+                this.node.restart(0, this.pauseTime)
                 this.pauseTime = 0
                 this.$refs.playEnabled.style.display = 'none'
                 this.$refs.stop.style.display = 'inline'
@@ -74,7 +79,7 @@ export default {
             if (this.pauseTime === 0) {
                 const pauseTime = Tone.Transport.seconds
                 this.toggle()
-                Tone.Transport.seconds = this.pauseTime = pauseTime
+                this.pauseTime = pauseTime
             }
         },
         playAtMousePos() {
@@ -171,9 +176,9 @@ export default {
         draw() {
             this.ctx.clearRect(0, 0, this.width, this.height)
             const elapsed = this.duration / Tone.Transport.seconds
-            this.$refs.timeData.innerText = `${new Date(Tone.Transport.seconds * 1000)
-                .toISOString()
-                .substr(14, 5)} / ${new Date(this.duration * 1000).toISOString().substr(14, 5)}`
+            this.$refs.timeData.innerText = `${secondsToMinutes(Tone.Transport.seconds)} / ${secondsToMinutes(
+                this.duration
+            )}`
 
             if (this.isActive || this.pauseTime !== 0) {
                 const progress = this.width / elapsed + 1
