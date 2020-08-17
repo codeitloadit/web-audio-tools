@@ -58,8 +58,8 @@ export default {
                 Tone.Transport.emit('stopTransport', effectName)
                 Tone.Transport.seconds = this.pauseTime
                 Tone.Transport.start()
-                console.log('STARTING AT:', secondsToMinutes(this.pauseTime))
-                this.node.restart(0, this.pauseTime)
+                this.node.start()
+                this.node.seek(this.pauseTime)
                 this.pauseTime = 0
                 this.$refs.playEnabled.style.display = 'none'
                 this.$refs.stop.style.display = 'inline'
@@ -86,8 +86,10 @@ export default {
             this.node.seek(this.duration / (this.width / this.mousePos.x))
             Tone.Transport.seconds = this.duration / (this.width / this.mousePos.x)
 
-            if (!this.isActive && this.node.loaded) {
-                this.pauseTime = Tone.Transport.seconds
+            this.pauseTime = Tone.Transport.seconds
+            if (this.isActive) {
+                this.toggle()
+                this.toggle()
             }
         },
         mute() {
