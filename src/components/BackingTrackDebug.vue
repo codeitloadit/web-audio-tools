@@ -2,12 +2,12 @@
     <div class="effectContainer">
         <h1 ref="title" class="title">Backing Track for Testing</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
-            <img ref="playDisabled" class="buttonIcon" src="play_grey.svg" />
-            <img id="playEnabled" ref="playEnabled" class="buttonIcon" src="play.svg" />
-            <img id="stop" ref="stop" class="buttonIcon" src="stop.svg" />
+            <img ref="playDisabled" class="buttonIcon" src="/static/wat/play_grey.svg" />
+            <img id="playEnabled" ref="playEnabled" class="buttonIcon" src="/static/wat/play.svg" />
+            <img id="stop" ref="stop" class="buttonIcon" src="/static/wat/stop.svg" />
         </span>
         <span ref="loadButton" class="toggleButton" @click="triggerFileInput">
-            <img class="buttonIcon" src="load.svg" />
+            <img class="buttonIcon" src="/static/wat/load.svg" />
         </span>
         <span id="fileName" ref="fileName"></span>
         <div ref="volume"></div>

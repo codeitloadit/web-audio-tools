@@ -1,9 +1,9 @@
 <template>
     <div class="effectContainer">
-        <img class="buttonIcon close" src="x_white.svg" @click="close" />
+        <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
         <h1 ref="title" class="title active">Delay</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
-            <img class="buttonIcon" src="power.svg" />
+            <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
         <div ref="time"></div>
         <div ref="feedback"></div>

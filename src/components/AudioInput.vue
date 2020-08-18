@@ -3,10 +3,10 @@
         <select ref="select"></select>
         <h1>Audio Input</h1>
         <span ref="toggleButton" class="toggleButton activeButton" @click="toggle">
-            <img class="buttonIcon" src="power.svg" />
+            <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
         <span ref="muteButton" class="toggleButton" @click="mute">
-            <img class="buttonIcon" src="mute.svg" />
+            <img class="buttonIcon" src="/static/wat/mute.svg" />
         </span>
         <div ref="volume"></div>
         <div ref="pan"></div>
@@ -70,7 +70,7 @@ export default {
         }
 
         // TODO: Understand why the UserMedia is not working as the source.
-        const player = new Tone.Player('One and Done.mp3')
+        const player = new Tone.Player()
         this.setSource(player)
         player.autostart = true
 

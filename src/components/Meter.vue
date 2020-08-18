@@ -1,11 +1,11 @@
 <template>
     <div class="effectContainer">
-        <img class="buttonIcon close" src="x_white.svg" @click="close" />
+        <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
         <h1 ref="title" class="title active">Meter</h1>
         <div ref="left"></div>
         <div ref="right"></div>
         <span ref="clipButton" class="toggleButton" @click="clearClip">
-            <img class="buttonIcon" src="clip.svg" />
+            <img class="buttonIcon" src="/static/wat/clip.svg" />
         </span>
     </div>
 </template>

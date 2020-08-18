@@ -1,23 +1,23 @@
 <template>
     <div class="effectContainer">
-        <img class="buttonIcon close" src="x_white.svg" @click="close" />
+        <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
         <h1 ref="title" class="title">Backing Track</h1>
         <span id="fileName" ref="fileName"></span>
         <span id="timeData" ref="timeData">0:00 / 0:00</span>
         <span ref="loadButton" class="toggleButton" @click="triggerFileInput">
-            <img class="buttonIcon" src="load.svg" />
+            <img class="buttonIcon" src="/static/wat/load.svg" />
         </span>
         <span id="mute" ref="muteButton" class="toggleButton" @click="mute">
-            <img class="buttonIcon" src="mute.svg" />
+            <img class="buttonIcon" src="/static/wat/mute.svg" />
         </span>
         <span id="play" ref="toggleButton" class="toggleButton" @click="toggle">
-            <img ref="playDisabled" class="buttonIcon" src="play_grey.svg" />
-            <img id="playEnabled" ref="playEnabled" class="buttonIcon" src="play.svg" />
-            <img id="stop" ref="stop" class="buttonIcon" src="stop.svg" />
+            <img ref="playDisabled" class="buttonIcon" src="/static/wat/play_grey.svg" />
+            <img id="playEnabled" ref="playEnabled" class="buttonIcon" src="/static/wat/play.svg" />
+            <img id="stop" ref="stop" class="buttonIcon" src="/static/wat/stop.svg" />
         </span>
         <span id="pause" ref="pauseButton" class="toggleButton" @click="pause">
-            <img ref="pauseDisabled" class="buttonIcon" src="pause_grey.svg" />
-            <img id="pauseEnabled" ref="pauseEnabled" class="buttonIcon" src="pause.svg" />
+            <img ref="pauseDisabled" class="buttonIcon" src="/static/wat/pause_grey.svg" />
+            <img id="pauseEnabled" ref="pauseEnabled" class="buttonIcon" src="/static/wat/pause.svg" />
         </span>
         <canvas ref="canvas" :width="width" :height="height"></canvas>
         <div ref="volume"></div>

@@ -1,20 +1,20 @@
 <template>
     <div class="effectContainer">
-        <img class="buttonIcon close" src="x_white.svg" @click="close" />
+        <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
         <h1 ref="title" class="title">Metronome</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
-            <img class="buttonIcon" src="play.svg" />
+            <img class="buttonIcon" src="/static/wat/play.svg" />
         </span>
         <span id="tap" ref="tapButton" class="toggleButton" @mousedown="tapDown" @mouseup="tapUp">
-            <img class="buttonIcon" src="tap.svg" />
+            <img class="buttonIcon" src="/static/wat/tap.svg" />
         </span>
         <br />
         <br />
         <span id="mute" ref="muteButton" class="toggleButton" @click="mute">
-            <img class="buttonIcon" src="mute.svg" />
+            <img class="buttonIcon" src="/static/wat/mute.svg" />
         </span>
         <span id="settings" ref="settingsButton" class="toggleButton">
-            <!-- <img class="buttonIcon" src="settings.svg" /> -->
+            <!-- <img class="buttonIcon" src="/static/wat/settings.svg" /> -->
         </span>
         <canvas ref="canvas" :width="width" :height="height"></canvas>
         <div id="topRow">
@@ -221,8 +221,8 @@ export default {
         this.lastSetBMP = 120
 
         this.node = new Tone.Sampler({
-            C2: 'metro_bar.wav',
-            C4: 'metro_beat.wav',
+            C2: '/static/wat/metro_bar.wav',
+            C4: '/static/wat/metro_beat.wav',
         }).toMaster()
 
         Tone.Transport.start(0)

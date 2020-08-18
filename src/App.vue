@@ -12,7 +12,7 @@
                 </div>
             </transition-group>
             <div id="newEffect" class="effectContainer" @click="showBrowser" slot="footer">
-                <img src="plus_orange.svg" />
+                <img src="/static/wat/plus_orange.svg" />
                 <h1 ref="newEffectLabel">Add an audio effect or tool</h1>
             </div>
         </draggable>
@@ -20,25 +20,55 @@
         <div id="browser" ref="browser" @click="hideBrowser">
             <div id="browserContent" ref="browserContent">
                 <h1>Effects:</h1>
-                <img ref="Reverb" class="effectImage" @click="addEffect($event, Reverb)" src="reverb.png" />
-                <img ref="Compressor" class="effectImage" @click="addEffect($event, Compressor)" src="compressor.png" />
-                <img ref="Gate" class="effectImage" @click="addEffect($event, Gate)" src="gate.png" />
-                <img ref="Limiter" class="effectImage" @click="addEffect($event, Limiter)" src="limiter.png" />
-                <img ref="Delay" class="effectImage" @click="addEffect($event, Delay)" src="delay.png" />
-                <img ref="Equalizer" class="effectImage" @click="addEffect($event, Equalizer)" src="equalizer.png" />
+                <img ref="Reverb" class="effectImage" @click="addEffect($event, Reverb)" src="/static/wat/reverb.png" />
+                <img
+                    ref="Compressor"
+                    class="effectImage"
+                    @click="addEffect($event, Compressor)"
+                    src="/static/wat/compressor.png"
+                />
+                <img ref="Gate" class="effectImage" @click="addEffect($event, Gate)" src="/static/wat/gate.png" />
+                <img
+                    ref="Limiter"
+                    class="effectImage"
+                    @click="addEffect($event, Limiter)"
+                    src="/static/wat/limiter.png"
+                />
+                <img ref="Delay" class="effectImage" @click="addEffect($event, Delay)" src="/static/wat/delay.png" />
+                <img
+                    ref="Equalizer"
+                    class="effectImage"
+                    @click="addEffect($event, Equalizer)"
+                    src="/static/wat/equalizer.png"
+                />
                 <br />
                 <br />
                 <h1>Tools:</h1>
-                <img ref="Meter" class="effectImage" @click="addEffect($event, Meter)" src="meter.png" />
-                <img ref="Tuner" class="effectImage" @click="addEffect($event, Tuner)" src="tuner.png" />
-                <img ref="Spectrum" class="effectImage" @click="addEffect($event, Spectrum)" src="spectrum.png" />
-                <img ref="Waveform" class="effectImage" @click="addEffect($event, Waveform)" src="waveform.png" />
-                <img ref="Metronome" class="effectImage" @click="addEffect($event, Metronome)" src="metronome.png" />
+                <img ref="Meter" class="effectImage" @click="addEffect($event, Meter)" src="/static/wat/meter.png" />
+                <img ref="Tuner" class="effectImage" @click="addEffect($event, Tuner)" src="/static/wat/tuner.png" />
+                <img
+                    ref="Spectrum"
+                    class="effectImage"
+                    @click="addEffect($event, Spectrum)"
+                    src="/static/wat/spectrum.png"
+                />
+                <img
+                    ref="Waveform"
+                    class="effectImage"
+                    @click="addEffect($event, Waveform)"
+                    src="/static/wat/waveform.png"
+                />
+                <img
+                    ref="Metronome"
+                    class="effectImage"
+                    @click="addEffect($event, Metronome)"
+                    src="/static/wat/metronome.png"
+                />
                 <img
                     ref="BackingTrack"
                     class="effectImage"
                     @click="addEffect($event, BackingTrack)"
-                    src="backing.png"
+                    src="/static/wat/backing.png"
                 />
             </div>
         </div>
@@ -95,6 +125,7 @@ export default {
             })
         },
         showBrowser() {
+            console.log(process.env)
             this.$refs.browser.style.display = 'block'
             const overlayHeight = document.getElementById('browser').clientHeight
             if (overlayHeight < 726) {
