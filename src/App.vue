@@ -1,9 +1,6 @@
 <template>
     <div id="app">
-        <div id="debug">
-            <AudioInput />
-            <BackingTrackDebug />
-        </div>
+        <WebRTCInput />
 
         <draggable id="xdragContainer" v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
             <transition-group type="transition" :name="!drag ? 'flip-list' : null">
@@ -79,9 +76,9 @@
 
 <script>
 import draggable from 'vuedraggable'
-import AudioInput from './components/AudioInput'
+import WebRTCInput from './components/WebRTCInput'
 import BackingTrack from './components/BackingTrack'
-import BackingTrackDebug from './components/BackingTrackDebug'
+// import BackingTrackDebug from './components/BackingTrackDebug'
 import Gate from './components/Gate'
 import Delay from './components/Delay'
 import Reverb from './components/Reverb'
@@ -98,8 +95,8 @@ import Metronome from './components/Metronome'
 export default {
     name: 'App',
     components: {
-        AudioInput,
-        BackingTrackDebug, // TODO: Replace this with the WebRTC stream audio.
+        WebRTCInput,
+        // BackingTrackDebug, // TODO: Replace this with the WebRTC stream audio.
         // MasterOutput,
         draggable,
     },
@@ -125,7 +122,6 @@ export default {
             })
         },
         showBrowser() {
-            console.log(process.env)
             this.$refs.browser.style.display = 'block'
             const overlayHeight = document.getElementById('browser').clientHeight
             if (overlayHeight < 726) {
@@ -341,9 +337,5 @@ canvas {
 
 .sortable-ghost > div {
     border: 2px solid #ff9c33;
-}
-
-#debug {
-    display: none;
 }
 </style>
