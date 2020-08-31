@@ -13,12 +13,14 @@
 <script>
 import * as Tone from 'tone'
 import {bar} from '../bar'
+import {mapGetters} from 'vuex'
 
 const effectName = 'Meter'
 
 export default {
     name: effectName,
     methods: {
+        ...mapGetters(['master']),
         clearClip() {
             this.hasClipped = false
             this.$refs.clipButton.classList.remove('clip')
@@ -34,7 +36,7 @@ export default {
     },
     mounted() {
         this.split = new Tone.Split()
-        Tone.connect(Tone.Master, this.split)
+        Tone.connect(this.$store.getters.master, this.split)
 
         this.leftMeter = new Tone.Meter()
         this.split.left.connect(this.leftMeter)

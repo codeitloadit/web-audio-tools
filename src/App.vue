@@ -1,13 +1,16 @@
 <template>
     <div id="app">
-        <WebRTCInput />
+        <audio v-if="debug" ref="stream1" src="/static/wat/oad.mp3" controls autoplay></audio>
+        <audio v-if="debug" ref="stream2" src="/static/wat/smoc.mp3" controls></audio>
 
-        <draggable id="xdragContainer" v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
-            <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+        <draggable v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
+            <MasterOutput />
+            <transition-group v-if="!reloading" type="transition" :name="!drag ? 'flip-list' : null">
                 <div class="effectWrapper" v-for="(effect, index) in effects" :key="index">
-                    <component :is="effect" :name="effect.name" @closeEffect="closeEffect($event)"> </component>
+                    <component :is="effect" :name="effect.name" @closeEffect="closeEffect($event)"></component>
                 </div>
             </transition-group>
+
             <div id="newEffect" class="effectContainer" @click="showBrowser" slot="footer">
                 <img src="/static/wat/plus_orange.svg" />
                 <h1 ref="newEffectLabel">Add an audio effect or tool</h1>
@@ -69,38 +72,37 @@
                 />
             </div>
         </div>
-
-        <!-- <MasterOutput /> -->
     </div>
 </template>
 
 <script>
 import draggable from 'vuedraggable'
-import WebRTCInput from './components/WebRTCInput'
 import BackingTrack from './components/BackingTrack'
-// import BackingTrackDebug from './components/BackingTrackDebug'
 import Gate from './components/Gate'
 import Delay from './components/Delay'
 import Reverb from './components/Reverb'
 import Compressor from './components/Compressor'
 import Equalizer from './components/Equalizer'
 import Limiter from './components/Limiter'
-// import MasterOutput from './components/MasterOutput'
+import MasterOutput from './components/MasterOutput'
 import Meter from './components/Meter'
 import Spectrum from './components/Spectrum'
 import Waveform from './components/Waveform'
 import Tuner from './components/Tuner'
 import Metronome from './components/Metronome'
 
+import * as Tone from 'tone'
+window.Tone = Tone
+import {mapActions} from 'vuex'
+
 export default {
     name: 'App',
     components: {
-        WebRTCInput,
-        // BackingTrackDebug, // TODO: Replace this with the WebRTC stream audio.
-        // MasterOutput,
+        MasterOutput,
         draggable,
     },
     methods: {
+        ...mapActions(['setSource', 'setStream', 'appendToChain']),
         addEffect(event, effect) {
             event.stopPropagation()
             if (!this.effects.some((e) => e.name === effect.name)) {
@@ -151,6 +153,7 @@ export default {
     },
     data() {
         return {
+            reloading: false,
             drag: false,
             effects: [],
             Tuner,
@@ -165,6 +168,49 @@ export default {
             Waveform,
             Meter,
             BackingTrack,
+            debug: window.webpackHotUpdate,
+        }
+    },
+    mounted() {
+        window.connectAudioEffects = (stream) => {
+            window.stream = stream
+
+            let source = null
+
+            if (this.debug) {
+                source = Tone.context.createMediaElementSource(stream)
+            } else {
+                source = Tone.context.createMediaStreamSource(stream)
+            }
+
+            console.log('STREAM SOURCE', source)
+            this.setStream(source)
+
+            const player = new Tone.Player()
+            this.setSource(player)
+            player.autostart = true
+
+            const gain = new Tone.Gain()
+            this.appendToChain(gain)
+
+            Tone.connect(source, gain)
+            Tone.connect(gain, Tone.context.destination)
+
+            this.reloading = true
+            setTimeout(() => {
+                this.reloading = false
+            }, 0)
+        }
+
+        if (this.debug) {
+            this.$refs.stream2.onplay = () => {
+                this.$refs.stream1.pause()
+                window.connectAudioEffects(this.$refs.stream2)
+            }
+            this.$refs.stream1.onplay = () => {
+                this.$refs.stream2.pause()
+                window.connectAudioEffects(this.$refs.stream1)
+            }
         }
     },
 }

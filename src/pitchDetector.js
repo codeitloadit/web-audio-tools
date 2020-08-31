@@ -2,7 +2,6 @@
 
 const noteStrings = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 const minSamples = 0
-const goodEnoughCorrelation = 0.99
 const bufSize = 4096
 const maxSamples = bufSize / 2
 
@@ -10,6 +9,11 @@ export class PitchDetector {
     buf = new Float32Array(bufSize)
     audioContext = null
     analyser = null
+    tolerance = 0.9
+
+    setTolerance(tolerance) {
+        this.tolerance = tolerance
+    }
 
     setStream(mediaStreamSource) {
         this.audioContext = mediaStreamSource.context
@@ -56,7 +60,7 @@ export class PitchDetector {
             }
             correlation = 1 - correlation / maxSamples
             correlations[offset] = correlation
-            if (correlation > goodEnoughCorrelation && correlation > lastCorrelation) {
+            if (correlation > this.tolerance && correlation > lastCorrelation) {
                 foundGoodCorrelation = true
                 if (correlation > bestCorrelation) {
                     bestCorrelation = correlation

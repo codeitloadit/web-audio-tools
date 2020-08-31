@@ -11,7 +11,7 @@
 
 <script>
 import * as Tone from 'tone'
-import {mapActions} from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 import {utils} from '../utils'
 
 const effectName = 'Spectrum'
@@ -20,6 +20,7 @@ export default {
     name: effectName,
     methods: {
         ...mapActions(['appendToChain']),
+        ...mapGetters(['master']),
         toggle() {
             if (this.isActive) {
                 this.$refs.toggleButton.classList.remove('activeButton')
@@ -63,7 +64,7 @@ export default {
     },
     mounted() {
         this.node = new Tone.FFT(4096)
-        Tone.connect(Tone.Master, this.node)
+        Tone.connect(this.$store.getters.master, this.node)
 
         this.canvas = this.$refs.canvas
         this.ctx = this.canvas.getContext('2d')
@@ -75,7 +76,7 @@ export default {
         this.toggle()
     },
     beforeDestroy() {
-        Tone.disconnect(Tone.Master, this.node)
+        this.node.disconnect()
     },
 }
 </script>

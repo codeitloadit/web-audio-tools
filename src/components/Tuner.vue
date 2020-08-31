@@ -5,7 +5,9 @@
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
+        <div ref="tolerance"></div>
         <canvas ref="canvas" :width="width" :height="height"></canvas>
+        <div ref="sensitivity"></div>
     </div>
 </template>
 
@@ -13,6 +15,7 @@
 import {mapGetters} from 'vuex'
 import {PitchDetector} from '../pitchDetector'
 import {utils} from '../utils'
+import {knob} from '../knob'
 
 const effectName = 'Tuner'
 
@@ -36,6 +39,10 @@ export default {
                 }
             }
             this.isActive = !this.isActive
+
+            Object.values(this.knobs).forEach((knob) => {
+                knob.setActive(this.isActive)
+            })
         },
         close() {
             this.$emit('closeEffect', effectName)
@@ -45,13 +52,14 @@ export default {
 
             if (this.isActive) {
                 const pitchData = this.node.getPitchData()
+                // console.log(pitchData)
                 this.recentPitchData.push(pitchData)
 
                 this.ctx.strokeStyle = '#444'
                 this.drawArc(250, 268)
                 this.drawArc(272, 290)
 
-                if (this.recentPitchData.length > 50) {
+                if (this.recentPitchData.length > this.tunerSensitivity) {
                     this.recentPitchData.shift()
 
                     const recentNotes = []
@@ -124,7 +132,9 @@ export default {
                     this.drawOffState()
                 }
 
-                window.requestAnimationFrame(this.draw)
+                if (this.isActive) {
+                    window.requestAnimationFrame(this.draw)
+                }
             } else {
                 this.drawOffState()
             }
@@ -171,11 +181,34 @@ export default {
             isActive: false,
             width: 400,
             height: 100,
+            tunerTolerance: 90,
+            tunerSensitivity: 25,
         }
     },
     mounted() {
         this.node = new PitchDetector()
         this.recentPitchData = []
+
+        this.tunerTolerance = localStorage.tunerTolerance || this.tunerTolerance
+        this.tunerSensitivity = localStorage.tunerSensitivity || this.tunerSensitivity
+
+        this.knobs = {
+            tolerance: knob.create(this.$refs.tolerance, 'Tolerance', this.tunerTolerance, 50, 99, false, (_, v) => {
+                this.node.tolerance = v / 100
+                this.tunerTolerance = v
+            }),
+            sensitivity: knob.create(
+                this.$refs.sensitivity,
+                'Sample Size',
+                this.tunerSensitivity,
+                1,
+                100,
+                false,
+                (_, v) => {
+                    this.tunerSensitivity = v
+                }
+            ),
+        }
 
         this.canvas = this.$refs.canvas
         this.ctx = this.canvas.getContext('2d')
@@ -189,11 +222,25 @@ export default {
 
         this.toggle()
     },
+    watch: {
+        tunerTolerance(value) {
+            localStorage.tunerTolerance = value
+        },
+        tunerSensitivity(value) {
+            localStorage.tunerSensitivity = value
+        },
+    },
+    beforeDestroy() {
+        if (this.isActive) {
+            this.toggle()
+        }
+    },
 }
 </script>
 
 <style scoped>
 canvas {
     border-radius: 6px;
+    margin: 0 8px;
 }
 </style>
