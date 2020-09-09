@@ -30,6 +30,7 @@
 import * as Tone from 'tone'
 import {knob} from '../knob'
 import {utils} from '../utils'
+import {Events} from '../events'
 
 const effectName = 'BackingTrack'
 
@@ -313,6 +314,15 @@ export default {
 
         this.panner = new Tone.Panner().toMaster()
         this.node.connect(this.panner)
+
+        Events.$on('toggleMonitor', (isMonitorActive) => {
+            this.panner.disconnect()
+            if (isMonitorActive) {
+                Tone.connect(this.panner, this.$store.getters.streamOutput)
+            } else {
+                Tone.connect(this.panner, Tone.Master)
+            }
+        })
 
         Tone.Transport.on('stop', () => {
             Tone.Transport.start()

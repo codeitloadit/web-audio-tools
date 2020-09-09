@@ -11,7 +11,7 @@
 
 <script>
 import * as Tone from 'tone'
-import {mapActions, mapGetters} from 'vuex'
+import {mapActions} from 'vuex'
 import {utils} from '../utils'
 
 const effectName = 'Waveform'
@@ -20,7 +20,6 @@ export default {
     name: effectName,
     methods: {
         ...mapActions(['appendToChain']),
-        ...mapGetters(['master']),
         toggle() {
             if (this.isActive) {
                 this.$refs.toggleButton.classList.remove('activeButton')
@@ -58,13 +57,13 @@ export default {
     data() {
         return {
             isActive: false,
-            width: 400,
+            width: 200,
             height: 100,
         }
     },
     mounted() {
         this.node = new Tone.Waveform(4096)
-        Tone.connect(this.$store.getters.master, this.node)
+        Tone.connect(this.$store.getters.streamOutput, this.node)
 
         this.canvas = this.$refs.canvas
         this.ctx = this.canvas.getContext('2d')

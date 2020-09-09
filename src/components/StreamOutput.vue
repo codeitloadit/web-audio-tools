@@ -1,7 +1,7 @@
 <template>
     <div class="effectContainer">
         <h1>Monitor</h1>
-        <span ref="toggleButton" class="toggleButton activeButton" @click="toggle">
+        <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
         <div ref="volume"></div>
@@ -13,20 +13,23 @@ import * as Tone from 'tone'
 import {mapActions} from 'vuex'
 import {knob} from '../knob'
 import {utils} from '../utils'
+import {Events} from '../events'
 
 export default {
-    name: 'MasterOutput',
+    name: 'StreamOutput',
     methods: {
-        ...mapActions(['setMaster']),
+        ...mapActions(['setStreamOutput', 'connectMaster', 'disconnectMaster']),
         toggle() {
             if (this.isActive) {
-                Tone.Master.mute = true
+                this.disconnectMaster()
                 this.$refs.toggleButton.classList.remove('activeButton')
             } else {
-                Tone.Master.mute = false
+                this.connectMaster()
                 this.$refs.toggleButton.classList.add('activeButton')
             }
             this.isActive = !this.isActive
+
+            Events.$emit('toggleMonitor', this.isActive)
 
             Object.values(this.knobs).forEach((knob) => {
                 knob.setActive(this.isActive)
@@ -40,12 +43,13 @@ export default {
             }),
         }
 
-        this.setMaster(new Tone.Gain())
-
-        this.toggle()
-        this.toggle()
+        this.setStreamOutput(new Tone.Gain())
     },
 }
 </script>
 
-<style></style>
+<style scoped>
+.effectContainer {
+    cursor: default;
+}
+</style>

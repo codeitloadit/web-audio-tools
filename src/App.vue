@@ -4,14 +4,14 @@
         <audio v-if="debug" ref="stream2" src="/static/wat/smoc.mp3" controls></audio>
 
         <draggable v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
-            <MasterOutput />
-            <transition-group v-if="!reloading" type="transition" :name="!drag ? 'flip-list' : null">
-                <div class="effectWrapper" v-for="(effect, index) in effects" :key="index">
-                    <component :is="effect" :name="effect.name" @closeEffect="closeEffect($event)"></component>
-                </div>
-            </transition-group>
+            <!-- <transition-group type="transition" :name="!drag ? 'flip-list' : null"> -->
+            <div class="effectWrapper" v-for="(effect, index) in effects" :key="index">
+                <component :is="effect" :name="effect.name" @closeEffect="closeEffect($event)"></component>
+            </div>
+            <!-- </transition-group> -->
 
-            <div id="newEffect" class="effectContainer" @click="showBrowser" slot="footer">
+            <StreamOutput slot="footer" class="nodrag" />
+            <div id="newEffect" class="effectContainer nodrag" @click="showBrowser" slot="footer">
                 <img src="/static/wat/plus_orange.svg" />
                 <h1 ref="newEffectLabel">Add an audio effect or tool</h1>
             </div>
@@ -84,7 +84,7 @@ import Reverb from './components/Reverb'
 import Compressor from './components/Compressor'
 import Equalizer from './components/Equalizer'
 import Limiter from './components/Limiter'
-import MasterOutput from './components/MasterOutput'
+import StreamOutput from './components/StreamOutput'
 import Meter from './components/Meter'
 import Spectrum from './components/Spectrum'
 import Waveform from './components/Waveform'
@@ -98,11 +98,11 @@ import {mapActions} from 'vuex'
 export default {
     name: 'App',
     components: {
-        MasterOutput,
+        StreamOutput,
         draggable,
     },
     methods: {
-        ...mapActions(['setSource', 'setStream', 'appendToChain']),
+        ...mapActions(['setSource', 'setStream', 'appendToChain', 'removeFromChain']),
         addEffect(event, effect) {
             event.stopPropagation()
             if (!this.effects.some((e) => e.name === effect.name)) {
@@ -148,6 +148,7 @@ export default {
                 animation: 300,
                 group: 'effects',
                 swapThreshold: 0.1,
+                filter: '.nodrag',
             }
         },
     },
@@ -183,7 +184,6 @@ export default {
                 source = Tone.context.createMediaStreamSource(stream)
             }
 
-            console.log('STREAM SOURCE', source)
             this.setStream(source)
 
             const player = new Tone.Player()
@@ -194,10 +194,13 @@ export default {
             this.appendToChain(gain)
 
             Tone.connect(source, gain)
-            Tone.connect(gain, Tone.context.destination)
 
             this.reloading = true
+            // TODO: Figure out why we need this appendToChain in order for the stream to start working
+            const wtf = new Tone.FeedbackDelay()
+            this.appendToChain(wtf)
             setTimeout(() => {
+                this.removeFromChain(wtf)
                 this.reloading = false
             }, 0)
         }

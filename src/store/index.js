@@ -9,49 +9,67 @@ export default new Vuex.Store({
         chain: [],
         source: null,
         stream: null,
-        master: null,
+        streamOutput: null,
     },
     getters: {
         chain: (state) => state.chain,
         stream: (state) => state.stream,
-        master: (state) => state.master,
+        streamOutput: (state) => state.streamOutput,
     },
     mutations: {
         setTheSource: (state, source) => {
+            console.log('Setting source to:', source)
             if (state.source !== null) {
                 state.source.disconnect()
                 state.chain.forEach((i) => {
                     i.disconnect()
                 })
-                state.master.disconnect()
             }
             state.source = source
             state.source.chain(...state.chain)
         },
         setTheStream: (state, stream) => {
+            console.log('Setting stream to:', stream)
             if (state.stream !== null) {
                 state.stream.disconnect()
             }
             state.stream = stream
         },
-        setTheMaster: (state, node) => {
-            state.master = node
+        setTheStreamOutput: (state, node) => {
+            window.streamOutput = node
+            console.log('Setting stream output to:', node)
+            state.streamOutput = node
+
+            window.watSreamer = Tone.context.createMediaStreamDestination()
+            Tone.connect(state.streamOutput, window.watSreamer)
         },
         addToChain: (state, node) => {
+            console.log('Appending to chain:', node)
             state.chain.push(node)
             state.source.disconnect()
             state.chain.forEach((i) => {
                 i.disconnect()
             })
-            state.source.chain(...state.chain, state.master, Tone.Master)
+            state.source.chain(...state.chain, state.streamOutput)
+            console.log('Updated chain:', state.chain)
         },
         deleteFromChain: (state, node) => {
+            console.log('Removing from chain:', node)
             state.source.disconnect()
             state.chain.forEach((i) => {
                 i.disconnect()
             })
             state.chain.splice(state.chain.indexOf(node), 1)
-            state.source.chain(...state.chain, state.master, Tone.Master)
+            state.source.chain(...state.chain, state.streamOutput)
+            console.log('Updated chain:', state.chain)
+        },
+        connectTheMaster: (state) => {
+            console.log('Connecting Master')
+            Tone.connect(state.streamOutput, Tone.Master)
+        },
+        disconnectTheMaster: (state) => {
+            console.log('Disconnecting Master')
+            Tone.disconnect(state.streamOutput, Tone.Master)
         },
     },
     actions: {
@@ -61,14 +79,20 @@ export default new Vuex.Store({
         setStream({commit}, stream) {
             commit('setTheStream', stream)
         },
-        setMaster({commit}, node) {
-            commit('setTheMaster', node)
+        setStreamOutput({commit}, node) {
+            commit('setTheStreamOutput', node)
         },
         appendToChain({commit}, node) {
             commit('addToChain', node)
         },
         removeFromChain({commit}, node) {
             commit('deleteFromChain', node)
+        },
+        connectMaster({commit}) {
+            commit('connectTheMaster')
+        },
+        disconnectMaster({commit}) {
+            commit('disconnectTheMaster')
         },
     },
     modules: {},

@@ -2,7 +2,7 @@
 
 function Bar() {
     this.create = function(div, value, valMin, valMax, markerStart, markerEnd, markerStep, peaks) {
-        const width = 400
+        const width = 200
         const height = 50
         const heightString = height.toString()
         const widthString = width.toString()
