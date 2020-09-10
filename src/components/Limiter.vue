@@ -1,7 +1,7 @@
 <template>
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
-        <h1 ref="title" class="title active">Limiter</h1>
+        <h1 ref="title" class="title">Limiter</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -43,6 +43,7 @@ export default {
     data() {
         return {
             isActive: false,
+            lmtWasActive: true,
             lmtThreshold: -50,
         }
     },
@@ -50,6 +51,7 @@ export default {
         this.node = new Tone.Limiter(0)
         this.appendToChain(this.node)
 
+        this.lmtWasActive = localStorage.lmtWasActive === 'false' ? false : true
         this.lmtThreshold = localStorage.lmtThreshold || this.lmtThreshold
 
         this.knobs = {
@@ -61,9 +63,14 @@ export default {
             }),
         }
 
-        this.toggle()
+        if (this.lmtWasActive) {
+            this.toggle()
+        }
     },
     watch: {
+        isActive(value) {
+            localStorage.lmtWasActive = value
+        },
         lmtThreshold(value) {
             localStorage.lmtThreshold = value
         },

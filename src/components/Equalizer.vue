@@ -1,7 +1,7 @@
 <template>
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
-        <h1 ref="title" class="title active">Equalizer</h1>
+        <h1 ref="title" class="title">Equalizer</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -53,6 +53,7 @@ export default {
     data() {
         return {
             isActive: false,
+            eqWasActive: true,
             eqLow: 0,
             eqLowFreq: 400,
             eqMid: 0,
@@ -64,6 +65,7 @@ export default {
         this.node = new Tone.EQ3()
         this.appendToChain(this.node)
 
+        this.eqWasActive = localStorage.eqWasActive === 'false' ? false : true
         this.eqLow = localStorage.eqLow || this.eqLow
         this.eqLowFreq = localStorage.eqLowFreq || this.eqLowFreq
         this.eqMid = localStorage.eqMid || this.eqMid
@@ -103,9 +105,14 @@ export default {
             }),
         }
 
-        this.toggle()
+        if (this.eqWasActive) {
+            this.toggle()
+        }
     },
     watch: {
+        isActive(value) {
+            localStorage.eqWasActive = value
+        },
         eqLow(value) {
             localStorage.eqLow = value
         },

@@ -1,7 +1,7 @@
 <template>
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
-        <h1 ref="title" class="title active">Gate</h1>
+        <h1 ref="title" class="title">Gate</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -44,6 +44,7 @@ export default {
     data() {
         return {
             isActive: false,
+            gateWasActive: true,
             gateThreshold: -60,
             gateSmoothing: 10,
         }
@@ -52,6 +53,7 @@ export default {
         this.node = new Tone.Gate(-1000, 0.1)
         this.appendToChain(this.node)
 
+        this.gateWasActive = localStorage.gateWasActive === 'false' ? false : true
         this.gateThreshold = localStorage.gateThreshold || this.gateThreshold
         this.gateSmoothing = localStorage.gateSmoothing || this.gateSmoothing
 
@@ -70,9 +72,14 @@ export default {
 
         this.node.smoothing = this.knobs.smoothing.getValue() / 100
 
-        this.toggle()
+        if (this.gateWasActive) {
+            this.toggle()
+        }
     },
     watch: {
+        isActive(value) {
+            localStorage.gateWasActive = value
+        },
         gateThreshold(value) {
             localStorage.gateThreshold = value
         },

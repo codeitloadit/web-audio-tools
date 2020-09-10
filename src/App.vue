@@ -6,11 +6,16 @@
         <draggable v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
             <!-- <transition-group type="transition" :name="!drag ? 'flip-list' : null"> -->
             <div class="effectWrapper" v-for="(effect, index) in effects" :key="index">
-                <component :is="effect" :name="effect.name" @closeEffect="closeEffect($event)"></component>
+                <component
+                    v-if="!reloading"
+                    :is="effect"
+                    :name="effect.name"
+                    @closeEffect="closeEffect($event)"
+                ></component>
             </div>
             <!-- </transition-group> -->
 
-            <StreamOutput slot="footer" class="nodrag" />
+            <StreamOutput slot="footer" class="xnodrag" />
             <div id="newEffect" class="effectContainer nodrag" @click="showBrowser" slot="footer">
                 <img src="/static/wat/plus_orange.svg" />
                 <h1 ref="newEffectLabel">Add an audio effect or tool</h1>
@@ -102,7 +107,7 @@ export default {
         draggable,
     },
     methods: {
-        ...mapActions(['setSource', 'setStream', 'appendToChain', 'removeFromChain']),
+        ...mapActions(['setStreamOutput', 'setSource', 'setStream', 'appendToChain', 'removeFromChain']),
         addEffect(event, effect) {
             event.stopPropagation()
             if (!this.effects.some((e) => e.name === effect.name)) {
@@ -174,6 +179,8 @@ export default {
     },
     mounted() {
         window.connectAudioEffects = (stream) => {
+            this.setStreamOutput(new Tone.Gain())
+
             window.stream = stream
 
             let source = null
@@ -195,12 +202,9 @@ export default {
 
             Tone.connect(source, gain)
 
+            // Refresh the active effects
             this.reloading = true
-            // TODO: Figure out why we need this appendToChain in order for the stream to start working
-            const wtf = new Tone.FeedbackDelay()
-            this.appendToChain(wtf)
             setTimeout(() => {
-                this.removeFromChain(wtf)
                 this.reloading = false
             }, 0)
         }

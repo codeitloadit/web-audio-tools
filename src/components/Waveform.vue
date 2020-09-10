@@ -1,7 +1,7 @@
 <template>
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
-        <h1 ref="title" class="title active">Waveform</h1>
+        <h1 ref="title" class="title">Waveform</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -57,6 +57,7 @@ export default {
     data() {
         return {
             isActive: false,
+            wavWasActive: true,
             width: 200,
             height: 100,
         }
@@ -64,6 +65,8 @@ export default {
     mounted() {
         this.node = new Tone.Waveform(4096)
         Tone.connect(this.$store.getters.streamOutput, this.node)
+
+        this.wavWasActive = localStorage.wavWasActive === 'false' ? false : true
 
         this.canvas = this.$refs.canvas
         this.ctx = this.canvas.getContext('2d')
@@ -73,7 +76,14 @@ export default {
         this.ctx.strokeStyle = '#ff9c33'
         this.ctx.lineWidth = 2
 
-        this.toggle()
+        if (this.wavWasActive) {
+            this.toggle()
+        }
+    },
+    watch: {
+        isActive(value) {
+            localStorage.wavWasActive = value
+        },
     },
     beforeDestroy() {
         this.node.disconnect()

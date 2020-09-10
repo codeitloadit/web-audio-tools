@@ -22,7 +22,7 @@ function Knob() {
         input.style.appearance = 'textfield'
         input.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'
         input.style.border = 'none'
-        input.style.color = '#ff8800'
+        input.style.color = '#ff9c33'
         input.style.fontFamily = 'Graphik Regular'
         input.style.fontSize = fontSizeString + 'px'
         input.style.height = heightString + 'px'

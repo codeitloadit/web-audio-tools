@@ -1,7 +1,7 @@
 <template>
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
-        <h1 ref="title" class="title active">Compressor</h1>
+        <h1 ref="title" class="title">Compressor</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -47,6 +47,7 @@ export default {
     data() {
         return {
             isActive: false,
+            cmpWasActive: true,
             cmpThreshold: -50,
             cmpRatio: 4,
             cmpAttack: 5,
@@ -58,6 +59,7 @@ export default {
         this.node = new Tone.Compressor(0, 1)
         this.appendToChain(this.node)
 
+        this.cmpWasActive = localStorage.cmpWasActive === 'false' ? false : true
         this.cmpThreshold = localStorage.cmpThreshold || this.cmpThreshold
         this.cmpRatio = localStorage.cmpRatio || this.cmpRatio
         this.cmpAttack = localStorage.cmpAttack || this.cmpAttack
@@ -95,9 +97,14 @@ export default {
         this.node.release.value = this.knobs.release.getValue() / 1000
         this.node.knee.value = this.knobs.knee.getValue()
 
-        this.toggle()
+        if (this.cmpWasActive) {
+            this.toggle()
+        }
     },
     watch: {
+        isActive(value) {
+            localStorage.cmpWasActive = value
+        },
         cmpThreshold(value) {
             localStorage.cmpThreshold = value
         },

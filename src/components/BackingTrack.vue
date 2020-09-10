@@ -314,11 +314,11 @@ export default {
 
         this.panner = new Tone.Panner().toMaster()
         this.node.connect(this.panner)
+        Tone.connect(this.panner, this.$store.getters.streamOutput)
 
         Events.$on('toggleMonitor', (isMonitorActive) => {
-            this.panner.disconnect()
             if (isMonitorActive) {
-                Tone.connect(this.panner, this.$store.getters.streamOutput)
+                Tone.disconnect(this.panner, Tone.Master)
             } else {
                 Tone.connect(this.panner, Tone.Master)
             }

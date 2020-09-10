@@ -42,8 +42,6 @@ export default {
                 Tone.Master.volume.value = utils.map(value, 0, 100, -50, 0)
             }),
         }
-
-        this.setStreamOutput(new Tone.Gain())
     },
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
-        <h1 ref="title" class="title active">Reverb</h1>
+        <h1 ref="title" class="title">Reverb</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -46,6 +46,7 @@ export default {
     data() {
         return {
             isActive: false,
+            rvbWasActive: true,
             rvbRoomSize: 20,
             rvbDampening: 2000,
             rvbWet: 30,
@@ -55,6 +56,7 @@ export default {
         this.node = new Tone.Freeverb()
         this.appendToChain(this.node)
 
+        this.rvbWasActive = localStorage.rvbWasActive === 'false' ? false : true
         this.rvbRoomSize = localStorage.rvbRoomSize || this.rvbRoomSize
         this.rvbDampening = localStorage.rvbDampening || this.rvbDampening
         this.rvbWet = localStorage.rvbWet || this.rvbWet
@@ -80,9 +82,14 @@ export default {
         this.node.dampening.value = this.knobs.dampening.getValue()
         this.node.wet.value = 0
 
-        this.toggle()
+        if (this.rvbWasActive) {
+            this.toggle()
+        }
     },
     watch: {
+        isActive(value) {
+            localStorage.rvbWasActive = value
+        },
         rvbRoomSize(value) {
             localStorage.rvbRoomSize = value
         },

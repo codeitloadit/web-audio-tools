@@ -1,7 +1,7 @@
 <template>
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
-        <h1 ref="title" class="title active">Tuner</h1>
+        <h1 ref="title" class="title">Tuner</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -59,7 +59,7 @@ export default {
                 this.drawArc(250, 268)
                 this.drawArc(272, 290)
 
-                if (this.recentPitchData.length > this.tunerSensitivity) {
+                if (this.recentPitchData.length > this.tunSensitivity) {
                     this.recentPitchData.shift()
 
                     const recentNotes = []
@@ -85,8 +85,8 @@ export default {
                         })
                         const averageDetune = detuneSum / relaventNoteCount
 
-                        this.ctx.strokeStyle = '#F68432'
-                        this.ctx.fillStyle = '#F68432'
+                        this.ctx.strokeStyle = '#ff9c33'
+                        this.ctx.fillStyle = '#ff9c33'
                         if (Math.abs(averageDetune) < 2) {
                             this.ctx.strokeStyle = '#00ff5e'
                             this.ctx.fillStyle = '#00ff5e'
@@ -179,33 +179,35 @@ export default {
     data() {
         return {
             isActive: false,
+            tunWasActive: true,
             width: 400,
             height: 100,
-            tunerTolerance: 90,
-            tunerSensitivity: 25,
+            tunTolerance: 90,
+            tunSensitivity: 25,
         }
     },
     mounted() {
         this.node = new PitchDetector()
         this.recentPitchData = []
 
-        this.tunerTolerance = localStorage.tunerTolerance || this.tunerTolerance
-        this.tunerSensitivity = localStorage.tunerSensitivity || this.tunerSensitivity
+        this.tunWasActive = localStorage.tunWasActive === 'false' ? false : true
+        this.tunTolerance = localStorage.tunTolerance || this.tunTolerance
+        this.tunSensitivity = localStorage.tunSensitivity || this.tunSensitivity
 
         this.knobs = {
-            tolerance: knob.create(this.$refs.tolerance, 'Tolerance', this.tunerTolerance, 50, 99, false, (_, v) => {
+            tolerance: knob.create(this.$refs.tolerance, 'Tolerance', this.tunTolerance, 50, 99, false, (_, v) => {
                 this.node.tolerance = v / 100
-                this.tunerTolerance = v
+                this.tunTolerance = v
             }),
             sensitivity: knob.create(
                 this.$refs.sensitivity,
                 'Sample Size',
-                this.tunerSensitivity,
+                this.tunSensitivity,
                 1,
                 100,
                 false,
                 (_, v) => {
-                    this.tunerSensitivity = v
+                    this.tunSensitivity = v
                 }
             ),
         }
@@ -220,14 +222,19 @@ export default {
 
         this.drawOffState()
 
-        this.toggle()
+        if (this.tunWasActive) {
+            this.toggle()
+        }
     },
     watch: {
-        tunerTolerance(value) {
-            localStorage.tunerTolerance = value
+        isActive(value) {
+            localStorage.tunWasActive = value
         },
-        tunerSensitivity(value) {
-            localStorage.tunerSensitivity = value
+        tunTolerance(value) {
+            localStorage.tunTolerance = value
+        },
+        tunSensitivity(value) {
+            localStorage.tunSensitivity = value
         },
     },
     beforeDestroy() {

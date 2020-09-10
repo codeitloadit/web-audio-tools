@@ -1,7 +1,7 @@
 <template>
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
-        <h1 ref="title" class="title active">Spectrum</h1>
+        <h1 ref="title" class="title">Spectrum</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -57,6 +57,7 @@ export default {
     data() {
         return {
             isActive: false,
+            spcWasActive: true,
             width: 200,
             height: 100,
         }
@@ -65,14 +66,23 @@ export default {
         this.node = new Tone.FFT(4096)
         Tone.connect(this.$store.getters.streamOutput, this.node)
 
+        this.spcWasActive = localStorage.spcWasActive === 'false' ? false : true
+
         this.canvas = this.$refs.canvas
         this.ctx = this.canvas.getContext('2d')
 
         this.canvas.style.backgroundColor = '#111'
 
-        this.ctx.fillStyle = '#F68432'
+        this.ctx.fillStyle = '#ff9c33'
 
-        this.toggle()
+        if (this.spcWasActive) {
+            this.toggle()
+        }
+    },
+    watch: {
+        isActive(value) {
+            localStorage.spcWasActive = value
+        },
     },
     beforeDestroy() {
         this.node.disconnect()

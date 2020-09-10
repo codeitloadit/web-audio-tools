@@ -1,7 +1,7 @@
 <template>
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
-        <h1 ref="title" class="title active">Delay</h1>
+        <h1 ref="title" class="title">Delay</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -46,6 +46,7 @@ export default {
     data() {
         return {
             isActive: false,
+            dlyWasActive: true,
             dlyTime: 6,
             dlyFeedback: 10,
             dlyWet: 50,
@@ -55,6 +56,7 @@ export default {
         this.node = new Tone.FeedbackDelay()
         this.appendToChain(this.node)
 
+        this.dlyWasActive = localStorage.dlyWasActive === 'false' ? false : true
         this.dlyTime = localStorage.dlyTime || this.dlyTime
         this.dlyFeedback = localStorage.dlyFeedback || this.dlyFeedback
         this.dlyWet = localStorage.dlyWet || this.dlyWet
@@ -80,9 +82,14 @@ export default {
         this.node.feedback.value = this.knobs.feedback.getValue() / 100
         this.node.wet.value = 0
 
-        this.toggle()
+        if (this.dlyWasActive) {
+            this.toggle()
+        }
     },
     watch: {
+        isActive(value) {
+            localStorage.dlyWasActive = value
+        },
         dlyTime(value) {
             localStorage.dlyTime = value
         },
