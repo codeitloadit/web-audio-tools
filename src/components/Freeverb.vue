@@ -1,12 +1,12 @@
 <template>
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
-        <h1 ref="title" class="title">Reverb</h1>
+        <h1 ref="title" class="title">Freeverb</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
-        <div ref="decay"></div>
-        <div ref="preDelay"></div>
+        <div ref="roomSize"></div>
+        <div ref="dampening"></div>
         <div ref="wet"></div>
     </div>
 </template>
@@ -16,7 +16,7 @@ import * as Tone from 'tone'
 import {knob} from '../knob'
 import {mapActions} from 'vuex'
 
-const effectName = 'Reverb'
+const effectName = 'Freeverb'
 
 export default {
     name: effectName,
@@ -29,7 +29,7 @@ export default {
                 this.$refs.title.classList.remove('active')
             } else {
                 this.node.wet.value = this.knobs.wet.getValue() / 100
-                this.rvbWet = this.knobs.wet.getValue()
+                this.frvbWet = this.knobs.wet.getValue()
                 this.$refs.toggleButton.classList.add('activeButton')
                 this.$refs.title.classList.add('active')
             }
@@ -46,62 +46,59 @@ export default {
     data() {
         return {
             isActive: false,
-            rvbWasActive: true,
-            rvbDecay: 20,
-            rvbPreDelay: 2000,
-            rvbWet: 30,
+            frvbWasActive: true,
+            frvbRoomSize: 20,
+            frvbDampening: 2000,
+            frvbWet: 30,
         }
     },
     mounted() {
-        this.node = new Tone.Reverb()
-        this.node.generate()
+        this.node = new Tone.Freeverb()
         this.appendToChain(this.node)
         window[effectName] = this.node
 
-        this.rvbWasActive = localStorage.rvbWasActive === 'false' ? false : true
-        this.rvbDecay = localStorage.rvbDecay || this.rvbDecay
-        this.rvbPreDelay = localStorage.rvbPreDelay || this.rvbPreDelay
-        this.rvbWet = localStorage.rvbWet || this.rvbWet
+        this.frvbWasActive = localStorage.frvbWasActive === 'false' ? false : true
+        this.frvbRoomSize = localStorage.frvbRoomSize || this.frvbRoomSize
+        this.frvbDampening = localStorage.frvbDampening || this.frvbDampening
+        this.frvbWet = localStorage.frvbWet || this.frvbWet
 
         this.knobs = {
-            decay: knob.create(this.$refs.decay, 'Decay', this.rvbDecay, 0.0, 1000, false, (_, v) => {
-                this.node.decay = v / 100
-                this.rvbDecay = v
-                this.node.generate()
+            roomSize: knob.create(this.$refs.roomSize, 'Room Size', this.frvbRoomSize, 0, 100, false, (_, v) => {
+                this.node.roomSize.value = v / 100
+                this.frvbRoomSize = v
             }),
-            preDelay: knob.create(this.$refs.preDelay, 'Pre Delay', this.rvbPreDelay, 1, 100, false, (_, v) => {
-                this.node.preDelay = v / 1000
-                this.rvbPreDelay = v
-                this.node.generate()
+            dampening: knob.create(this.$refs.dampening, 'Dampening', this.frvbDampening, 0, 10000, false, (_, v) => {
+                this.node.dampening.value = v
+                this.frvbDampening = v
             }),
-            wet: knob.create(this.$refs.wet, 'Dry/Wet', this.rvbWet, 0, 100, true, (_, v) => {
+            wet: knob.create(this.$refs.wet, 'Dry/Wet', this.frvbWet, 0, 100, true, (_, v) => {
                 if (this.isActive) {
                     this.node.wet.value = v / 100
-                    this.rvbWet = v
+                    this.frvbWet = v
                 }
             }),
         }
 
-        this.node.decay = this.knobs.decay.getValue() / 100
-        this.node.preDelay = this.knobs.preDelay.getValue() / 1000
+        this.node.roomSize.value = this.knobs.roomSize.getValue() / 100
+        this.node.dampening.value = this.knobs.dampening.getValue()
         this.node.wet.value = 0
 
-        if (this.rvbWasActive) {
+        if (this.frvbWasActive) {
             this.toggle()
         }
     },
     watch: {
         isActive(value) {
-            localStorage.rvbWasActive = value
+            localStorage.frvbWasActive = value
         },
-        rvbDecay(value) {
-            localStorage.rvbDecay = value
+        frvbRoomSize(value) {
+            localStorage.frvbRoomSize = value
         },
-        rvbPreDelay(value) {
-            localStorage.rvbPreDelay = value
+        frvbDampening(value) {
+            localStorage.frvbDampening = value
         },
-        rvbWet(value) {
-            localStorage.rvbWet = value
+        frvbWet(value) {
+            localStorage.frvbWet = value
         },
     },
     beforeDestroy() {

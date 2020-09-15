@@ -25,6 +25,18 @@
         <div id="browser" ref="browser" @click="hideBrowser">
             <div id="browserContent" ref="browserContent">
                 <h1>Effects:</h1>
+                <img
+                    ref="Freeverb"
+                    class="effectImage"
+                    @click="addEffect($event, Freeverb)"
+                    src="/static/wat/reverb.png"
+                />
+                <img
+                    ref="JCReverb"
+                    class="effectImage"
+                    @click="addEffect($event, JCReverb)"
+                    src="/static/wat/reverb.png"
+                />
                 <img ref="Reverb" class="effectImage" @click="addEffect($event, Reverb)" src="/static/wat/reverb.png" />
                 <img
                     ref="Compressor"
@@ -86,6 +98,8 @@ import BackingTrack from './components/BackingTrack'
 import Gate from './components/Gate'
 import Delay from './components/Delay'
 import Reverb from './components/Reverb'
+import JCReverb from './components/JCReverb'
+import Freeverb from './components/Freeverb'
 import Compressor from './components/Compressor'
 import Equalizer from './components/Equalizer'
 import Limiter from './components/Limiter'
@@ -166,6 +180,8 @@ export default {
             Metronome,
             Gate,
             Delay,
+            Freeverb,
+            JCReverb,
             Reverb,
             Compressor,
             Equalizer,
@@ -204,7 +220,11 @@ export default {
 
             // Refresh the active effects
             this.reloading = true
+            // TODO: Figure out why we need this appendToChain in order for the stream to start working
+            const wtf = new Tone.FeedbackDelay()
+            this.appendToChain(wtf)
             setTimeout(() => {
+                this.removeFromChain(wtf)
                 this.reloading = false
             }, 0)
         }
