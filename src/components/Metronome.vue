@@ -73,22 +73,22 @@ export default {
             }
         },
         toggle() {
+            Tone.Transport.cancel()
             if (this.isActive) {
-                Tone.Transport.cancel()
-                this.drawOffState()
                 this.$refs.toggleButton.classList.remove('activeButton')
                 this.$refs.title.classList.remove('active')
+                this.drawOffState()
             } else {
-                Tone.Transport.emit('stopTransport', effectName)
+                Tone.Transport.stop()
                 if (this.$refs.bpm.value === '---') {
                     this.$refs.bpm.value = this.lastSetBMP
                 }
-                Tone.Transport.cancel().stop()
                 Tone.Transport.bpm.value = parseInt(this.$refs.bpm.value, 10)
                 const tsTop = parseInt(this.$refs.top.value, 10)
                 const tsBot = parseInt(this.$refs.bottom.value, 10)
                 const offset = 16 / tsBot
                 Tone.Transport.timeSignature = [tsTop, tsBot]
+
                 for (let i = 0; i < tsTop; i++) {
                     Tone.Transport.scheduleRepeat(
                         (time) => {
@@ -119,7 +119,7 @@ export default {
             for (let i = 0; i < totalBeats; i++) {
                 let fill = '#151515'
                 let stroke = '#ff9c33'
-                if (i === beatIndex) {
+                if (i === beatIndex && this.isActive) {
                     fill = '#ff9c33'
                     stroke = '#ff9c33'
                 }
@@ -136,7 +136,7 @@ export default {
                 )
 
                 this.ctx.fillStyle = '#ff9c33'
-                if (i === beatIndex) {
+                if (i === beatIndex && this.isActive) {
                     this.ctx.fillStyle = '#151515'
                 }
                 this.ctx.font = '30px Graphik Semibold'
@@ -144,17 +144,19 @@ export default {
             }
         },
         tapDown() {
-            const elapsedTime = Tone.Transport.seconds
-            Tone.Transport.cancel()
+            const transportSeconds = Tone.Transport.seconds
+            const elapsedTime = transportSeconds - this.previousElapsedTime
+            this.previousElapsedTime = transportSeconds
             if (this.isActive) {
                 this.toggle()
             }
-            if (elapsedTime < 5) {
+            if (elapsedTime < 5 && elapsedTime > 0) {
                 this.recentElapsedTimes.push(elapsedTime)
                 if (this.recentElapsedTimes.length > 1) {
                     if (this.recentElapsedTimes.length > 5) {
                         this.recentElapsedTimes.shift()
                     }
+                    console.log(this.recentElapsedTimes)
                     let sum = 0
                     for (let i = 0; i < this.recentElapsedTimes.length; i++) {
                         sum += parseFloat(this.recentElapsedTimes[i])
@@ -217,7 +219,9 @@ export default {
         }
     },
     mounted() {
+        this.previousElapsedTime = 0
         this.recentElapsedTimes = []
+        window.recentElapsedTimes = this.recentElapsedTimes
         this.lastSetBMP = 120
 
         this.node = new Tone.Sampler({
@@ -226,12 +230,6 @@ export default {
         }).toMaster()
 
         Tone.Transport.start(0)
-
-        Tone.Transport.on('stopTransport', (emitter) => {
-            if (emitter.toString() !== effectName && this.isActive) {
-                this.toggle()
-            }
-        })
 
         this.canvas = this.$refs.canvas
         this.ctx = this.canvas.getContext('2d')

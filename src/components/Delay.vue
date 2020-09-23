@@ -62,7 +62,7 @@ export default {
         this.dlyWet = localStorage.dlyWet || this.dlyWet
 
         this.knobs = {
-            time: knob.create(this.$refs.time, 'Time', this.dlyTime, 1, 100, false, (_, v) => {
+            time: knob.create(this.$refs.time, 'Time', this.dlyTime, 0, 100, false, (_, v) => {
                 this.node.delayTime.value = v / 100
                 this.dlyTime = v
             }),

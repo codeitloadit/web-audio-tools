@@ -25,7 +25,7 @@
         <div id="browser" ref="browser" @click="hideBrowser">
             <div id="browserContent" ref="browserContent">
                 <h1>Effects:</h1>
-                <img
+                <!-- <img
                     ref="Freeverb"
                     class="effectImage"
                     @click="addEffect($event, Freeverb)"
@@ -36,7 +36,7 @@
                     class="effectImage"
                     @click="addEffect($event, JCReverb)"
                     src="/static/wat/reverb.png"
-                />
+                /> -->
                 <img ref="Reverb" class="effectImage" @click="addEffect($event, Reverb)" src="/static/wat/reverb.png" />
                 <img
                     ref="Compressor"
@@ -98,8 +98,8 @@ import BackingTrack from './components/BackingTrack'
 import Gate from './components/Gate'
 import Delay from './components/Delay'
 import Reverb from './components/Reverb'
-import JCReverb from './components/JCReverb'
-import Freeverb from './components/Freeverb'
+// import JCReverb from './components/JCReverb'
+// import Freeverb from './components/Freeverb'
 import Compressor from './components/Compressor'
 import Equalizer from './components/Equalizer'
 import Limiter from './components/Limiter'
@@ -180,8 +180,8 @@ export default {
             Metronome,
             Gate,
             Delay,
-            Freeverb,
-            JCReverb,
+            // Freeverb,
+            // JCReverb,
             Reverb,
             Compressor,
             Equalizer,

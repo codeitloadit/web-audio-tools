@@ -39,6 +39,20 @@ export default {
                 knob.setActive(this.isActive)
             })
         },
+        generateReverb() {
+            if (this.isGenerating) {
+                this.isGeneratePending = true
+            } else {
+                this.isGeneratePending = false
+                this.isGenerating = true
+                this.node.generate().then(() => {
+                    this.isGenerating = false
+                    if (this.isGeneratePending) {
+                        this.generateReverb()
+                    }
+                })
+            }
+        },
         close() {
             this.$emit('closeEffect', effectName)
         },
@@ -46,6 +60,8 @@ export default {
     data() {
         return {
             isActive: false,
+            isGenerating: false,
+            isGeneratePending: false,
             rvbWasActive: true,
             rvbDecay: 20,
             rvbPreDelay: 2000,
@@ -54,7 +70,7 @@ export default {
     },
     mounted() {
         this.node = new Tone.Reverb()
-        this.node.generate()
+        this.generateReverb()
         this.appendToChain(this.node)
         window[effectName] = this.node
 
@@ -67,12 +83,12 @@ export default {
             decay: knob.create(this.$refs.decay, 'Decay', this.rvbDecay, 0.0, 1000, false, (_, v) => {
                 this.node.decay = v / 100
                 this.rvbDecay = v
-                this.node.generate()
+                this.generateReverb()
             }),
             preDelay: knob.create(this.$refs.preDelay, 'Pre Delay', this.rvbPreDelay, 1, 100, false, (_, v) => {
                 this.node.preDelay = v / 1000
                 this.rvbPreDelay = v
-                this.node.generate()
+                this.generateReverb()
             }),
             wet: knob.create(this.$refs.wet, 'Dry/Wet', this.rvbWet, 0, 100, true, (_, v) => {
                 if (this.isActive) {
