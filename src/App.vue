@@ -15,8 +15,8 @@
             </div>
             <!-- </transition-group> -->
 
-            <StreamOutput slot="footer" class="xnodrag" />
-            <div id="newEffect" class="effectContainer nodrag" @click="showBrowser" slot="footer">
+            <StreamOutput />
+            <div id="newEffect" ref="newEffect" class="effectContainer" @click="showBrowser">
                 <img src="/static/wat/plus_orange.svg" />
                 <h1 ref="newEffectLabel">Add an audio effect or tool</h1>
             </div>
@@ -239,6 +239,14 @@ export default {
                 window.connectAudioEffects(this.$refs.stream1)
             }
         }
+
+        const overrides = ['ondragstart', 'ondragenter', 'ondragover', 'onclick']
+        overrides.forEach((event) => {
+            this.$refs.newEffect[event] = (e) => {
+                e.preventDefault()
+                e.stopPropagation()
+            }
+        })
     },
 }
 </script>

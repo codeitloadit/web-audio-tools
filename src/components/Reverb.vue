@@ -64,7 +64,7 @@ export default {
             isGeneratePending: false,
             rvbWasActive: true,
             rvbDecay: 20,
-            rvbPreDelay: 2000,
+            rvbPreDelay: 50,
             rvbWet: 30,
         }
     },
