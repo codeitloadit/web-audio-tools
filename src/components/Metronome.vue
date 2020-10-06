@@ -227,7 +227,7 @@ export default {
         this.node = new Tone.Sampler({
             C2: '/static/wat/metro_bar.wav',
             C4: '/static/wat/metro_beat.wav',
-        }).toMaster()
+        }).toDestination()
 
         Tone.Transport.start(0)
 

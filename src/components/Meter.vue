@@ -37,17 +37,17 @@ export default {
         Tone.connect(this.$store.getters.streamOutput, this.split)
 
         this.leftMeter = new Tone.Meter()
-        this.split.left.connect(this.leftMeter)
+        this.split.connect(this.leftMeter, 0)
 
         this.rightMeter = new Tone.Meter()
-        this.split.right.connect(this.rightMeter)
+        this.split.connect(this.rightMeter, 1)
 
         const graphLeft = bar.create(this.$refs.left, 0, -70, 10, -70, 10, 5, [0])
         const graphRight = bar.create(this.$refs.right, 0, -70, 10, -70, 10, 5, [0])
 
         const draw = () => {
-            const leftLevel = this.leftMeter.getLevel()
-            const rightLevel = this.rightMeter.getLevel()
+            const leftLevel = this.leftMeter.getValue()
+            const rightLevel = this.rightMeter.getValue()
 
             if (!this.hasClipped && (leftLevel > 0 || rightLevel > 0)) {
                 this.hasClipped = true

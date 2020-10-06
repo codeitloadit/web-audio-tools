@@ -312,7 +312,7 @@ export default {
         })
         window.bt = this.node
 
-        this.panner = new Tone.Panner().toMaster()
+        this.panner = new Tone.Panner().toDestination()
         this.node.connect(this.panner)
         Tone.connect(this.panner, this.$store.getters.streamOutput)
 
