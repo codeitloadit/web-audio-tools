@@ -1,5 +1,5 @@
 <template>
-    <div class="effectContainer">
+    <div class="effectContainer" ref="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
         <h1 ref="title" class="title">Backing Track</h1>
         <span id="fileName" ref="fileName"></span>
@@ -114,7 +114,7 @@ export default {
                 this.pauseTime = 0
                 Tone.Transport.seconds = 0
 
-                this.node.load(e.target.result, () => {
+                this.node.load(e.target.result).then(() => {
                     this.$refs.playDisabled.style.display = 'none'
                     this.$refs.playEnabled.style.display = 'inline'
                     this.$refs.pauseDisabled.style.display = 'inline'

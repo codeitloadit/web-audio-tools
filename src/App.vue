@@ -3,6 +3,8 @@
         <audio v-if="debug" ref="stream1" src="/static/wat/oad.mp3" controls autoplay></audio>
         <audio v-if="debug" ref="stream2" src="/static/wat/smoc.mp3" controls></audio>
 
+        <audio ref="backing" controls></audio>
+
         <draggable v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
             <!-- <transition-group type="transition" :name="!drag ? 'flip-list' : null"> -->
             <div class="effectWrapper" v-for="(effect, index) in effects" :key="index">
@@ -113,6 +115,7 @@ import Metronome from './components/Metronome'
 import * as Tone from 'tone'
 window.Tone = Tone
 import {mapActions} from 'vuex'
+import {utils} from './utils'
 
 export default {
     name: 'App',
@@ -240,13 +243,7 @@ export default {
             }
         }
 
-        const overrides = ['ondragstart', 'ondragenter', 'ondragover', 'onclick']
-        overrides.forEach((event) => {
-            this.$refs.newEffect[event] = (e) => {
-                e.preventDefault()
-                e.stopPropagation()
-            }
-        })
+        utils.preventDrag(this.$refs.newEffect)
     },
 }
 </script>

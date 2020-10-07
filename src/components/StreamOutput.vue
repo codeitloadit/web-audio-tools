@@ -42,14 +42,7 @@ export default {
                 Tone.Master.volume.value = utils.map(value, 0, 100, -50, 0)
             }),
         }
-
-        const overrides = ['ondragstart', 'ondragenter', 'ondragover', 'onclick']
-        overrides.forEach((event) => {
-            this.$refs.effectContainer[event] = (e) => {
-                e.preventDefault()
-                e.stopPropagation()
-            }
-        })
+        utils.preventDrag(this.$refs.effectContainer)
     },
 }
 </script>
