@@ -42,7 +42,7 @@
             </select>
 
             <label for="noteLength">Beat Length:</label>
-            <select ref="bottom" name="noteLength" @change="handleInputChange">
+            <select ref="bot" name="noteLength" @change="handleInputChange">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -80,23 +80,21 @@ export default {
                 this.drawOffState()
             } else {
                 Tone.Transport.stop()
-                if (this.$refs.bpm.value === '---') {
-                    this.$refs.bpm.value = this.lastSetBMP
+                if (this.bpm === '---') {
+                    this.bpm = this.lastSetBMP
                 }
-                Tone.Transport.bpm.value = parseInt(this.$refs.bpm.value, 10)
-                const tsTop = parseInt(this.$refs.top.value, 10)
-                const tsBot = parseInt(this.$refs.bottom.value, 10)
-                const offset = 16 / tsBot
-                Tone.Transport.timeSignature = [tsTop, tsBot]
+                Tone.Transport.bpm.value = this.bpm
+                const offset = 16 / this.bot
+                Tone.Transport.timeSignature = [this.top, this.bot]
 
-                for (let i = 0; i < tsTop; i++) {
+                for (let i = 0; i < this.top; i++) {
                     Tone.Transport.scheduleRepeat(
                         (time) => {
                             this.playNote(i === 0 ? 'C2' : 'C4')
 
                             const self = this
                             Tone.Draw.schedule(function() {
-                                self.highlightBeat(i, tsTop)
+                                self.highlightBeat(i, self.top)
                             }, time)
                         },
                         '0:' + Tone.Transport.timeSignature + ':0',
@@ -156,14 +154,13 @@ export default {
                     if (this.recentElapsedTimes.length > 5) {
                         this.recentElapsedTimes.shift()
                     }
-                    console.log(this.recentElapsedTimes)
                     let sum = 0
                     for (let i = 0; i < this.recentElapsedTimes.length; i++) {
                         sum += parseFloat(this.recentElapsedTimes[i])
                     }
-                    let bpm = Math.round(60 / (sum / this.recentElapsedTimes.length))
-                    this.$refs.bpm.value = bpm
-                    this.lastSetBMP = this.$refs.bpm.value
+                    this.bpm = Math.round(60 / (sum / this.recentElapsedTimes.length))
+                    this.$refs.bpm.value = this.bpm
+                    this.lastSetBMP = this.bpm
                 }
             } else {
                 this.$refs.bpm.value = '---'
@@ -194,9 +191,14 @@ export default {
             }
         },
         handleInputChange() {
-            if (this.$refs.bpm.value != '---') {
-                this.lastSetBMP = this.$refs.bpm.value
+            this.bpm = parseInt(this.$refs.bpm.value, 10)
+            this.top = parseInt(this.$refs.top.value, 10)
+            this.bot = parseInt(this.$refs.bot.value, 10)
+
+            if (this.bpm != '---') {
+                this.lastSetBMP = this.bpm
             }
+
             if (this.isActive) {
                 this.toggle()
                 setTimeout(this.toggle, 500)
@@ -205,20 +207,31 @@ export default {
             }
         },
         drawOffState() {
-            if (this.$refs.top) {
-                this.highlightBeat(999, this.$refs.top.value)
-            } else {
-                this.highlightBeat(999, 4)
-            }
+            this.highlightBeat(999, this.top)
         },
     },
     data() {
         return {
+            isActive: false,
+            isMuted: false,
+            wasMuted: false,
+            bpm: 120,
+            top: 4,
+            bot: 4,
             width: 400,
             height: 50,
         }
     },
     mounted() {
+        this.wasMuted = localStorage.metWasMuted === 'true' ? true : false
+        this.bpm = localStorage.metBpm || this.bpm
+        this.top = localStorage.metTop || this.top
+        this.bot = localStorage.metBot || this.bot
+
+        this.$refs.bpm.value = this.bpm
+        this.$refs.top.value = this.top
+        this.$refs.bot.value = this.bot
+
         this.previousElapsedTime = 0
         this.recentElapsedTimes = []
         window.recentElapsedTimes = this.recentElapsedTimes
@@ -235,7 +248,25 @@ export default {
         this.ctx = this.canvas.getContext('2d')
         this.canvas.style.backgroundColor = '#111'
 
-        setTimeout(this.drawOffState, 500)
+        this.drawOffState()
+
+        if (this.wasMuted) {
+            this.mute()
+        }
+    },
+    watch: {
+        isMuted(value) {
+            localStorage.metWasMuted = value
+        },
+        bpm(value) {
+            localStorage.metBpm = value
+        },
+        top(value) {
+            localStorage.metTop = value
+        },
+        bot(value) {
+            localStorage.metBot = value
+        },
     },
     beforeDestroy() {
         Tone.Transport.cancel()

@@ -3,7 +3,7 @@
         <audio v-if="debug" ref="stream1" src="/static/wat/oad.mp3" controls autoplay></audio>
         <audio v-if="debug" ref="stream2" src="/static/wat/smoc.mp3" controls></audio>
 
-        <audio ref="backing" controls></audio>
+        <!-- <audio ref="backing" controls></audio> -->
 
         <draggable v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
             <!-- <transition-group type="transition" :name="!drag ? 'flip-list' : null"> -->
