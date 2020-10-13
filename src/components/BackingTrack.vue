@@ -22,7 +22,7 @@
         <canvas ref="canvas" :width="width" :height="height"></canvas>
         <div ref="volume"></div>
         <div ref="pan"></div>
-        <input type="file" id="file" ref="file" @change="loadFile" />
+        <input type="file" id="file" ref="file" @change="loadFile" accept="audio/*" />
     </div>
 </template>
 
@@ -377,6 +377,7 @@ export default {
 
 .effectContainer {
     position: relative;
+    min-width: 708px;
 }
 
 .toggleButton {

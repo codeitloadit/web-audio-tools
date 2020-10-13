@@ -21,7 +21,7 @@
             <label for="bpm">BPM:</label>
             <input
                 ref="bpm"
-                type="text"
+                type="number"
                 name="bpm"
                 value="120"
                 @click="highlightBPM"
@@ -325,6 +325,7 @@ label {
 }
 
 input[type='text'],
+input[type='number'],
 select {
     font-family: 'Graphik Regular', Avenir, Helvetica, Arial, sans-serif;
     width: 44px;
@@ -336,6 +337,18 @@ select {
     text-align: center;
     margin-right: 23px;
     padding: 5px 5px 5px 2px;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+    -moz-appearance: textfield;
 }
 
 select {
