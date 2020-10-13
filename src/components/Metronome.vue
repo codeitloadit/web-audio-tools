@@ -223,6 +223,8 @@ export default {
                 return true
             } else if (isNaN(v) && !isNaN(e.key)) {
                 return true
+            } else if (this.$refs.bpm.selectionEnd > 0 && (!isNaN(e.key) || isAllowedKey())) {
+                return true
             } else if (isNaN(e.key) || v.length >= 3) {
                 e.preventDefault()
             }
@@ -378,6 +380,10 @@ select {
     text-align: center;
     margin-right: 23px;
     padding: 5px 5px 5px 2px;
+    user-select: initial;
+    -moz-user-select: initial;
+    -ms-user-select: initial;
+    -webkit-user-select: initial;
 }
 
 select {
