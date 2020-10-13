@@ -21,11 +21,13 @@
             <label for="bpm">BPM:</label>
             <input
                 ref="bpm"
-                type="number"
+                type="text"
                 name="bpm"
                 value="120"
                 @click="highlightBPM"
                 @keypress="handleBPMKeypress"
+                @keydown="handleBPMKeydown"
+                @keyup="handleBPMKeyup"
                 @change="handleInputChange"
             />
 
@@ -190,7 +192,47 @@ export default {
                 this.$refs.bpm.blur()
             }
         },
+        handleBPMKeyup() {
+            if (isNaN(this.$refs.bpm.value)) {
+                this.$refs.bpm.value = '---'
+                this.$refs.bpm.select()
+            }
+        },
+        handleBPMKeydown(e) {
+            const v = this.$refs.bpm.value
+
+            const isAllowedKey = () => {
+                return (
+                    [
+                        'Backspace',
+                        'Enter',
+                        'Meta',
+                        'Control',
+                        'Shift',
+                        'Tab',
+                        'ArrowUp',
+                        'ArrowDown',
+                        'ArrowLeft',
+                        'ArrowRight',
+                    ].indexOf(e.key) >= 0 ||
+                    (e.metaKey && ['a', 'x', 'c', 'v'].indexOf(e.key) >= 0)
+                )
+            }
+
+            if (isAllowedKey()) {
+                return true
+            } else if (isNaN(v) && !isNaN(e.key)) {
+                return true
+            } else if (isNaN(e.key) || v.length >= 3) {
+                e.preventDefault()
+            }
+        },
         handleInputChange() {
+            if (isNaN(this.$refs.bpm.value)) {
+                this.$refs.bpm.value = '---'
+                this.$refs.bpm.select()
+            }
+
             this.bpm = parseInt(this.$refs.bpm.value, 10)
             this.top = parseInt(this.$refs.top.value, 10)
             this.bot = parseInt(this.$refs.bot.value, 10)
@@ -325,7 +367,6 @@ label {
 }
 
 input[type='text'],
-input[type='number'],
 select {
     font-family: 'Graphik Regular', Avenir, Helvetica, Arial, sans-serif;
     width: 44px;
@@ -337,18 +378,6 @@ select {
     text-align: center;
     margin-right: 23px;
     padding: 5px 5px 5px 2px;
-}
-
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-/* Firefox */
-input[type='number'] {
-    -moz-appearance: textfield;
 }
 
 select {
