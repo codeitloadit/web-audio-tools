@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <audio v-if="debug" ref="stream1" src="/static/wat/oad.mp3" controls autoplay></audio>
+        <audio v-if="debug" ref="stream1" src="/static/wat/EADGBE.mp3" controls autoplay></audio>
         <audio v-if="debug" ref="stream2" src="/static/wat/smoc.mp3" controls></audio>
 
         <!-- <audio ref="backing" controls></audio> -->
@@ -66,6 +66,12 @@
                 <img ref="Meter" class="effectImage" @click="addEffect($event, Meter)" src="/static/wat/meter.png" />
                 <img ref="Tuner" class="effectImage" @click="addEffect($event, Tuner)" src="/static/wat/tuner.png" />
                 <img
+                    ref="TunerFFT"
+                    class="effectImage"
+                    @click="addEffect($event, TunerFFT)"
+                    src="/static/wat/tuner.png"
+                />
+                <img
                     ref="Spectrum"
                     class="effectImage"
                     @click="addEffect($event, Spectrum)"
@@ -110,6 +116,7 @@ import Meter from './components/Meter'
 import Spectrum from './components/Spectrum'
 import Waveform from './components/Waveform'
 import Tuner from './components/Tuner'
+import TunerFFT from './components/TunerFFT'
 import Metronome from './components/Metronome'
 
 import * as Tone from 'tone'
@@ -180,6 +187,7 @@ export default {
             drag: false,
             effects: [],
             Tuner,
+            TunerFFT,
             Metronome,
             Gate,
             Delay,
