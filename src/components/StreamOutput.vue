@@ -1,6 +1,6 @@
 <template>
     <div class="effectContainer" ref="effectContainer">
-        <h1>Monitor</h1>
+        <h1 ref="title" class="title">Monitor</h1>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -23,9 +23,11 @@ export default {
             if (this.isActive) {
                 this.disconnectMaster()
                 this.$refs.toggleButton.classList.remove('activeButton')
+                this.$refs.title.classList.remove('active')
             } else {
                 this.connectMaster()
                 this.$refs.toggleButton.classList.add('activeButton')
+                this.$refs.title.classList.add('active')
             }
             this.isActive = !this.isActive
 

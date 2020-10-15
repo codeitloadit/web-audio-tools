@@ -92,28 +92,28 @@ export default {
 
             const fundamentalNote = utils.mode(notes)
 
-            let noteIndexClosestToFrequency = null
-            let frequencyOffset = Infinity
-            dominantPeaks.forEach((peak, i) => {
-                if (notes[i] === fundamentalNote) {
-                    const offset = Math.abs(frequencies[i] - 440)
-                    if (offset < frequencyOffset) {
-                        frequencyOffset = offset
-                        noteIndexClosestToFrequency = i
-                    }
-                }
-            })
+            // let noteIndexClosestToFrequency = null
+            // let frequencyOffset = Infinity
+            // dominantPeaks.forEach((peak, i) => {
+            //     if (notes[i] === fundamentalNote) {
+            //         const offset = Math.abs(frequencies[i] - 440)
+            //         if (offset < frequencyOffset) {
+            //             frequencyOffset = offset
+            //             noteIndexClosestToFrequency = i
+            //         }
+            //     }
+            // })
 
-            const fundamentalFrequency = this.node.getFrequencyOfIndex(dominantPeaks[noteIndexClosestToFrequency].index)
+            // const fundamentalFrequency = this.node.getFrequencyOfIndex(dominantPeaks[noteIndexClosestToFrequency].index)
 
-            // let fundamentalFrequency = ''
-            // if (fundamentalNote === notes[0] && notes[0] === notes[1]) {
-            //     fundamentalFrequency = this.node.getFrequencyOfIndex(dominantPeaks[1].index)
-            // } else {
-            //     fundamentalFrequency = this.node.getFrequencyOfIndex(
-            //         dominantPeaks[notes.indexOf(fundamentalNote)].index
-            //     )
-            // }
+            let fundamentalFrequency = ''
+            if (fundamentalNote === notes[0] && notes[0] === notes[1]) {
+                fundamentalFrequency = this.node.getFrequencyOfIndex(dominantPeaks[1].index)
+            } else {
+                fundamentalFrequency = this.node.getFrequencyOfIndex(
+                    dominantPeaks[notes.indexOf(fundamentalNote)].index
+                )
+            }
             const noteNumber = utils.noteNumberFromFrequency(fundamentalFrequency)
             const centsOff = utils.centsOffFromFrequency(fundamentalFrequency, noteNumber)
 

@@ -97,7 +97,6 @@ function Knob() {
                 label: label,
                 labelScale: 3.6,
                 needle: isNeedle,
-                centerLine: true,
                 readonly: false,
                 textScale: 1.0,
                 trackWidth: 0.1,
@@ -147,7 +146,6 @@ function Knob() {
                 this.resize()
                 const properties = this._properties
                 const needle = properties.needle
-                const centerLine = properties.centerLine
                 const angleStart = properties.angleStart
                 const angleOffset = properties.angleOffset
                 const angleEnd = properties.angleEnd
@@ -214,14 +212,13 @@ function Knob() {
                 ctx.strokeStyle = colorFilling
                 ctx.stroke()
 
-                if (centerLine) {
-                    ctx.moveTo(centerX, centerY)
-                    ctx.lineTo(radius * Math.cos(angleVal) + centerX, radius * Math.sin(angleVal) + centerY)
-                    ctx.lineCap = 'round'
-                    ctx.lineWidth = lineWidth
-                    ctx.strokeStyle = colorFilling
-                    ctx.stroke()
-                }
+                ctx.beginPath()
+                ctx.moveTo(centerX, centerY)
+                ctx.lineTo(radius * Math.cos(angleVal) + centerX, radius * Math.sin(angleVal) + centerY)
+                ctx.lineCap = 'round'
+                ctx.lineWidth = lineWidth
+                ctx.strokeStyle = colorFilling
+                ctx.stroke()
 
                 ctx.font = fontSizeString + 'px Graphik Regular'
                 ctx.fillStyle = colorFilling
