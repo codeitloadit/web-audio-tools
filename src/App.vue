@@ -379,6 +379,7 @@ canvas {
     right: 0;
     background-color: rgba(0, 0, 0, 0.5);
     text-align: center;
+    z-index: 999;
 }
 
 #browserContent {

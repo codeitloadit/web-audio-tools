@@ -465,32 +465,32 @@ function Knob() {
                 if (singleTouch) {
                     knob._mousebutton = true
 
-                    if (knob._touchCount === 0) {
-                        const f = function() {
-                            if (knob._touchCount === 2) {
-                                const properties = knob._properties
-                                const readonly = properties.readonly
+                    // if (knob._touchCount === 0) {
+                    //     const f = function() {
+                    //         if (knob._touchCount === 2) {
+                    //             const properties = knob._properties
+                    //             const readonly = properties.readonly
 
-                                if (!readonly) {
-                                    e.preventDefault()
-                                    const inputDiv = knob._inputDiv
-                                    inputDiv.style.display = 'block'
-                                    const inputElem = knob._input
-                                    inputElem.focus()
-                                    knob.redraw()
-                                }
-                            }
+                    //             if (!readonly) {
+                    //                 e.preventDefault()
+                    //                 const inputDiv = knob._inputDiv
+                    //                 inputDiv.style.display = 'block'
+                    //                 const inputElem = knob._input
+                    //                 inputElem.focus()
+                    //                 knob.redraw()
+                    //             }
+                    //         }
 
-                            knob._touchCount = 0
-                        }
+                    //         knob._touchCount = 0
+                    //     }
 
-                        let timeout = knob._timeoutDoubleTap
-                        window.clearTimeout(timeout)
-                        timeout = window.setTimeout(f, 500)
-                        knob._timeoutDoubleTap = timeout
-                    }
+                    //     let timeout = knob._timeoutDoubleTap
+                    //     window.clearTimeout(timeout)
+                    //     timeout = window.setTimeout(f, 500)
+                    //     knob._timeoutDoubleTap = timeout
+                    // }
 
-                    knob._touchCount++
+                    // knob._touchCount++
                     const val = touchEventToValue(e, properties)
                     knob.setValueFloating(val)
                 }
