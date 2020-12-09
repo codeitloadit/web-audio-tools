@@ -151,8 +151,8 @@ export default {
                 } else if (i === beatIndex && this.isActive) {
                     this.ctx.fillStyle = '#151515'
                 }
-                this.ctx.font = '24px Graphik Semibold'
-                this.ctx.fillText(i + 1, i * beatWidth + padding + beatWidth / 2 - 10, this.height * 0.6)
+                this.ctx.font = '22px Graphik Semibold'
+                this.ctx.fillText(i + 1, i * beatWidth + padding + beatWidth / 2 - 9, this.height * 0.6)
             }
         },
         tapDown() {
