@@ -77,6 +77,7 @@ function Knob() {
 
             setActive: function(isActive) {
                 this._isActive = isActive
+                this._properties.readonly = !isActive
                 this.redraw()
             },
 
@@ -97,7 +98,7 @@ function Knob() {
                 label: label,
                 labelScale: 3.6,
                 needle: isNeedle,
-                readonly: false,
+                readonly: true,
                 textScale: 1.0,
                 trackWidth: 0.1,
                 valMin: valMin,
