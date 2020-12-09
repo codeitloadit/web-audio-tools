@@ -2,21 +2,21 @@
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
         <h1 ref="title" class="title">Metronome</h1>
-        <span ref="toggleButton" class="toggleButton" @click="toggle">
-            <img class="buttonIcon" src="/static/wat/play.svg" />
-        </span>
-        <span id="tap" ref="tapButton" class="toggleButton" @mousedown="tapDown" @mouseup="tapUp">
-            <img class="buttonIcon" src="/static/wat/tap.svg" />
-        </span>
-        <br />
-        <br />
-        <span id="mute" ref="muteButton" class="toggleButton" @click="mute">
-            <img class="buttonIcon" src="/static/wat/mute.svg" />
-        </span>
-        <span id="settings" ref="settingsButton" class="toggleButton">
-            <!-- <img class="buttonIcon" src="/static/wat/settings.svg" /> -->
-        </span>
-        <canvas ref="canvas" :width="width" :height="height"></canvas>
+
+        <div id="buttons">
+            <span ref="toggleButton" class="toggleButton" @click="toggle">
+                <img class="buttonIcon" src="/static/wat/play.svg" />
+            </span>
+            <span id="mute" ref="muteButton" class="toggleButton" @click="mute">
+                <img class="buttonIcon" src="/static/wat/mute.svg" />
+            </span>
+            <br />
+            <span id="tap" ref="tapButton" class="toggleButton" @mousedown="tapDown" @mouseup="tapUp">
+                <!-- <img class="buttonIcon" src="/static/wat/tap.svg" /> -->
+                TAP
+            </span>
+        </div>
+
         <div id="topRow">
             <label for="bpm">BPM:</label>
             <input
@@ -30,7 +30,7 @@
                 @keyup="handleBPMKeyup"
                 @change="handleInputChange"
             />
-
+            <br />
             <label for="beats">Beats:</label>
             <select ref="top" name="beats" @change="handleInputChange">
                 <option value="1">1</option>
@@ -42,8 +42,8 @@
                 <option value="7">7</option>
                 <option value="8">8</option>
             </select>
-
-            <label for="noteLength">Beat Length:</label>
+            <br />
+            <label for="noteLength">Notes:</label>
             <select ref="bot" name="noteLength" @change="handleInputChange">
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -55,6 +55,9 @@
                 <option value="8">8</option>
             </select>
         </div>
+        <canvas ref="canvas" :width="width" :height="height"></canvas>
+
+        <div ref="volume"></div>
     </div>
 </template>
 
@@ -62,6 +65,7 @@
 import * as Tone from 'tone'
 import {mapGetters} from 'vuex'
 import {utils} from '../utils'
+import {knob} from '../knob'
 
 const effectName = 'Metronome'
 
@@ -79,7 +83,7 @@ export default {
             if (this.isActive) {
                 this.$refs.toggleButton.classList.remove('activeButton')
                 this.$refs.title.classList.remove('active')
-                this.drawOffState()
+                setTimeout(this.drawOffState, 0)
             } else {
                 Tone.Transport.stop()
                 if (this.bpm === '---') {
@@ -108,18 +112,24 @@ export default {
                 this.$refs.title.classList.add('active')
             }
             this.isActive = !this.isActive
+
+            Object.values(this.knobs).forEach((knob) => {
+                knob.setActive(this.isActive)
+            })
         },
         close() {
             this.$emit('closeEffect', effectName)
         },
         highlightBeat(beatIndex, totalBeats) {
             this.ctx.clearRect(0, 0, this.width, this.height)
-            const padding = 6
+            const padding = 2
             const beatWidth = this.width / totalBeats
             for (let i = 0; i < totalBeats; i++) {
                 let fill = '#151515'
                 let stroke = '#ff9c33'
-                if (i === beatIndex && this.isActive) {
+                if (!this.isActive) {
+                    stroke = '#c9c9c9'
+                } else if (i === beatIndex && this.isActive) {
                     fill = '#ff9c33'
                     stroke = '#ff9c33'
                 }
@@ -129,18 +139,20 @@ export default {
                     padding,
                     beatWidth - padding * 2,
                     this.height - padding * 2,
-                    6,
+                    4,
                     fill,
                     stroke,
                     2
                 )
 
                 this.ctx.fillStyle = '#ff9c33'
-                if (i === beatIndex && this.isActive) {
+                if (!this.isActive) {
+                    this.ctx.fillStyle = '#c9c9c9'
+                } else if (i === beatIndex && this.isActive) {
                     this.ctx.fillStyle = '#151515'
                 }
-                this.ctx.font = '30px Graphik Semibold'
-                this.ctx.fillText(i + 1, i * beatWidth + padding + beatWidth / 2 - 15, this.height * 0.72)
+                this.ctx.font = '24px Graphik Semibold'
+                this.ctx.fillText(i + 1, i * beatWidth + padding + beatWidth / 2 - 10, this.height * 0.6)
             }
         },
         tapDown() {
@@ -262,8 +274,9 @@ export default {
             bpm: 120,
             top: 4,
             bot: 4,
-            width: 400,
-            height: 50,
+            volume: 100,
+            width: 200,
+            height: 100,
         }
     },
     mounted() {
@@ -271,6 +284,15 @@ export default {
         this.bpm = localStorage.metBpm || this.bpm
         this.top = localStorage.metTop || this.top
         this.bot = localStorage.metBot || this.bot
+        this.volume = localStorage.metVolume || this.volume
+
+        this.knobs = {
+            volume: knob.create(this.$refs.volume, 'Volume', 100, 0, 100, false, (knob, value) => {
+                const v = utils.map(value, 0, 100, -25, 0)
+                this.node.volume.value = v
+                this.volume = v
+            }),
+        }
 
         this.$refs.bpm.value = this.bpm
         this.$refs.top.value = this.top
@@ -311,6 +333,9 @@ export default {
         bot(value) {
             localStorage.metBot = value
         },
+        volume(value) {
+            localStorage.metVolume = value
+        },
     },
     beforeDestroy() {
         Tone.Transport.cancel()
@@ -323,25 +348,35 @@ export default {
     font-family: 'Graphik Semibold', Avenir, Helvetica, Arial, sans-serif;
 }
 
+#buttons {
+    display: inline-block;
+    width: 110px;
+}
+
 canvas {
     border-radius: 6px;
 }
 
 #topRow {
-    display: table;
+    display: inline-block;
+    text-align: right;
     position: relative;
-    top: -100px;
-    left: 118px;
-    width: 430px;
+    top: -12px;
+    cursor: default;
+}
+
+label {
+    padding-top: 10px;
 }
 
 .toggleButton {
-    top: 9px;
+    top: -45px;
 }
 
-#mute,
-#settings {
-    top: 7px;
+#tap {
+    top: -27px;
+    width: 84px;
+    font-size: 22px;
 }
 
 #tap.toggleButton.activeButton {
@@ -371,7 +406,7 @@ label {
 input[type='text'],
 select {
     font-family: 'Graphik Regular', Avenir, Helvetica, Arial, sans-serif;
-    width: 44px;
+    width: 40px;
     color: #c9c9c9;
     background-color: #111111;
     font-size: 16px;
@@ -398,6 +433,7 @@ select {
     background-color: #111111;
     padding-left: 12px;
     text-align: left;
+    width: 47px;
 }
 
 #settings {
