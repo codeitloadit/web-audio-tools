@@ -264,7 +264,7 @@ button:focus {
     outline: none;
 }
 
-*:not(input[type='text']) {
+*:not(input, textarea) {
     user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
