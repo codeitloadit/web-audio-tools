@@ -151,7 +151,7 @@ export default {
                 } else if (i === beatIndex && this.isActive) {
                     this.ctx.fillStyle = '#151515'
                 }
-                this.ctx.font = '22px Graphik Semibold'
+                this.ctx.font = '22px Metropolis Black'
                 this.ctx.fillText(i + 1, i * beatWidth + padding + beatWidth / 2 - 9, this.height * 0.6)
             }
         },
@@ -345,7 +345,7 @@ export default {
 
 <style scoped>
 .effectContainer {
-    font-family: 'Graphik Semibold', Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Metropolis Black', Avenir, Helvetica, Arial, sans-serif;
 }
 
 #buttons {
@@ -408,7 +408,7 @@ label {
 
 input[type='text'],
 select {
-    font-family: 'Graphik Regular', Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Metropolis Regular', Avenir, Helvetica, Arial, sans-serif;
     width: 40px;
     color: #c9c9c9;
     background-color: #111111;

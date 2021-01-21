@@ -298,13 +298,13 @@ button:focus {
 html {
     color: #aaa;
     background-color: #101010;
-    font-family: 'Graphik Regular', Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Metropolis Regular', Avenir, Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
 h1 {
-    font-family: 'Graphik Semibold', Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Metropolis Black', Avenir, Helvetica, Arial, sans-serif;
     font-size: 20px;
     margin: 0;
     padding: 0;
@@ -318,7 +318,7 @@ h1 {
     border: 2px solid #1e1e1e;
     background-color: #1e1e1e;
     cursor: pointer;
-    padding: 16px 0;
+    padding: 14px 0 18px;
 }
 
 #newEffect > img {

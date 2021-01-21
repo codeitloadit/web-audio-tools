@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'Metropolis Regular';
+    src: url(fonts/Metropolis-Regular.otf);
+}
+@font-face {
+    font-family: 'Metropolis Medium';
+    src: url(fonts/Metropolis-Medium.otf);
+}
+@font-face {
+    font-family: 'Metropolis Black';
+    src: url(fonts/Metropolis-Black.otf);
+}

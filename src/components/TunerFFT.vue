@@ -170,18 +170,18 @@ export default {
                         const baseNote = dominantNote[0]
                         const isSharp = dominantNote[1] === '#'
 
-                        this.ctx.font = '60px Graphik Regular'
+                        this.ctx.font = '60px Metropolis Regular'
                         this.ctx.fillText(baseNote, 200, 85)
 
                         if (isSharp) {
-                            this.ctx.font = '30px Graphik Regular'
+                            this.ctx.font = '30px Metropolis Regular'
                             this.ctx.fillText('#', 232, 62)
                         }
 
                         const angle = utils.map(averageDetune, -50, 50, 250, 290)
                         this.drawArc(angle - 1, angle + 1)
 
-                        this.ctx.font = '30px Graphik Regular'
+                        this.ctx.font = '30px Metropolis Regular'
                         if (Math.abs(averageDetune) < 2) {
                             this.ctx.fillText('♭', 20, 38)
                             this.ctx.fillText('♯', 380, 34)
@@ -240,11 +240,11 @@ export default {
             this.drawArc(250, 268)
             this.drawArc(272, 290)
 
-            this.ctx.font = '30px Graphik Regular'
+            this.ctx.font = '30px Metropolis Regular'
             this.ctx.fillText('♯', 380, 34)
             this.ctx.fillText('♭', 20, 38)
 
-            this.ctx.font = '60px Graphik Regular'
+            this.ctx.font = '60px Metropolis Regular'
             this.ctx.fillText('--', 200, 85)
 
             this.drawSharpTriangle()

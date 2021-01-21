@@ -23,7 +23,7 @@ function Knob() {
         input.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'
         input.style.border = 'none'
         input.style.color = '#ff9c33'
-        input.style.fontFamily = 'Graphik Regular'
+        input.style.fontFamily = 'Metropolis Regular'
         input.style.fontSize = fontSizeString + 'px'
         input.style.height = heightString + 'px'
         input.style.margin = 'auto'
@@ -221,14 +221,14 @@ function Knob() {
                 ctx.strokeStyle = colorFilling
                 ctx.stroke()
 
-                ctx.font = fontSizeString + 'px Graphik Regular'
+                ctx.font = fontSizeString + 'px Metropolis Regular'
                 ctx.fillStyle = colorFilling
                 ctx.textAlign = 'center'
                 ctx.textBaseline = 'bottom'
                 ctx.fillText(valueStr, centerX, centerY + radius - 7)
 
                 if (label !== null) {
-                    ctx.font = labelSizeString + 'px Graphik Regular'
+                    ctx.font = labelSizeString + 'px Metropolis Regular'
                     ctx.fillStyle = colorLabel
                     ctx.textAlign = 'center'
                     ctx.textBaseline = 'middle'
