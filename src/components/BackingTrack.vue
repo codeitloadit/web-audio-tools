@@ -308,7 +308,7 @@ export default {
             this.mousePos = {x: -100, y: 0}
         })
 
-        this.canvas.addEventListener('click', () => {
+        this.canvas.addEventListener('mousedown', () => {
             this.playAtMousePos()
         })
 
@@ -359,7 +359,7 @@ export default {
 
 #fileName {
     position: absolute;
-    left: 160px;
+    left: 168px;
     top: 22px;
     font-size: 14px;
     text-align: center;
@@ -372,7 +372,7 @@ export default {
 
 #timeData {
     position: absolute;
-    right: 220px;
+    right: 224px;
     top: 22px;
     font-size: 14px;
     font-family: 'Menlo', 'Monaco', 'Courier New', Courier, monospace;

@@ -304,7 +304,7 @@ html {
 }
 
 h1 {
-    font-family: 'Metropolis Black', Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Metropolis Medium', Avenir, Helvetica, Arial, sans-serif;
     font-size: 20px;
     margin: 0;
     padding: 0;
