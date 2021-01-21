@@ -13,7 +13,14 @@
 
         <script>
             $(document).ready(function() {
-                const timeScale = 100
+                const urlParams = new URLSearchParams(window.location.search);
+                const tsParam = urlParams.get('ts')
+                let timeScale = parseFloat(tsParam) || 100
+                if (timeScale < 0.1) {
+                    timeScale = 0.1
+                } else if (timeScale > 100) {
+                    timeScale = 100
+                }
 
                 const logo = $('#logo')
                 const text = $('#text')
@@ -232,16 +239,16 @@
                                                 setTimeout(showRestOfPage, 15 * timeScale)
                                             }
                                         }
-                                        bar.height += Math.random() + 3
+                                        bar.height += Math.random() + 3 * (100 / timeScale)
                                     } else if (stopCount === 8) {
-                                        bar.height -= 2
+                                        bar.height -= 2 * (100 / timeScale)
                                         if (bar.height < 0) {
                                             bar.height = 0
                                         }
                                     }
                                 } else {
                                     if (bar.height < 360) {
-                                        bar.height += Math.random() + 3
+                                        bar.height += Math.random() + 3 * (100 / timeScale)
                                     } else {
                                         bar.height = Math.floor(Math.random() * (360 - bar.minHeight) + bar.minHeight)
                                     }
@@ -251,7 +258,7 @@
                         } else {
                             eCtx.clearRect(0, 0, 75, 100)
                             eCtx.fillRect(0, 0, 75, eHeight)
-                            eHeight -= 1
+                            eHeight -= Math.min(1 * (100 / timeScale), eHeight)
                         }
 
                         if (eHeight >= 0) {
