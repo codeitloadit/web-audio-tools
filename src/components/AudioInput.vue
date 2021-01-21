@@ -39,10 +39,10 @@ export default {
         },
         mute() {
             if (this.isMuted) {
-                Tone.Master.mute = false
+                Tone.Destination.mute = false
                 this.$refs.muteButton.classList.remove('muted')
             } else {
-                Tone.Master.mute = true
+                Tone.Destination.mute = true
                 this.$refs.muteButton.classList.add('muted')
             }
             this.isMuted = !this.isMuted

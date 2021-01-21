@@ -29,7 +29,7 @@ export default new Vuex.Store({
             state.source = source
             state.source.chain(...state.chain)
             if (state.isMasterConnected) {
-                Tone.connect(state.streamOutput, Tone.Master)
+                Tone.connect(state.streamOutput, Tone.Destination)
             }
         },
         setTheStream: (state, stream) => {
@@ -69,12 +69,12 @@ export default new Vuex.Store({
         },
         connectTheMaster: (state) => {
             console.log('Connecting Master')
-            Tone.connect(state.streamOutput, Tone.Master)
+            Tone.connect(state.streamOutput, Tone.Destination)
             state.isMasterConnected = true
         },
         disconnectTheMaster: (state) => {
             console.log('Disconnecting Master')
-            Tone.disconnect(state.streamOutput, Tone.Master)
+            Tone.disconnect(state.streamOutput, Tone.Destination)
             state.isMasterConnected = false
         },
     },

@@ -21,7 +21,7 @@
         </span>
         <canvas ref="canvas" :width="width" :height="height"></canvas>
         <div ref="volume"></div>
-        <div ref="speed"></div>
+        <div ref="pan"></div>
         <input type="file" id="file" ref="file" @change="loadFile" accept="audio/*" />
     </div>
 </template>
@@ -30,85 +30,77 @@
 import * as Tone from 'tone'
 import {knob} from '../knob'
 import {utils} from '../utils'
+import {Events} from '../events'
 
 const effectName = 'BackingTrack'
 
 const secondsToMinutes = (seconds) => {
-    if (!seconds) {
-        return '0:00'
-    }
     return new Date(seconds * 1000).toISOString().substr(14, 5)
-}
-
-const drawWaveLine = (ctx, x, y) => {
-    ctx.beginPath()
-    ctx.moveTo(x, 0)
-    ctx.lineTo(x, y)
-    ctx.stroke()
-    ctx.beginPath()
-    ctx.moveTo(x, 0)
-    ctx.lineTo(x, y * -1)
-    ctx.stroke()
 }
 
 export default {
     name: effectName,
     methods: {
         toggle() {
-            if (this.audioElement.readyState <= 1) {
-                return
-            }
             if (this.isActive) {
-                this.audioElement.pause()
-                this.audioElement.currentTime = 0
-                this.setStopState()
+                Tone.Transport.pause()
+                this.node.stop()
+                this.$refs.playEnabled.style.display = 'inline'
+                this.$refs.stop.style.display = 'none'
+                this.$refs.pauseDisabled.style.display = 'inline'
+                this.$refs.pauseEnabled.style.display = 'none'
+                this.$refs.toggleButton.classList.remove('activeButton')
+                this.$refs.title.classList.remove('active')
+                this.isActive = false
             } else {
-                this.audioElement.play()
-                this.setPlayState()
-            }
-        },
-        setPlayState() {
-            this.isActive = true
-            this.$refs.playDisabled.style.display = 'none'
-            this.$refs.playEnabled.style.display = 'none'
-            this.$refs.stop.style.display = 'inline'
-            this.$refs.pauseDisabled.style.display = 'none'
-            this.$refs.pauseEnabled.style.display = 'inline'
-            this.$refs.toggleButton.classList.add('activeButton')
-            this.$refs.title.classList.add('active')
-        },
-        setStopState() {
-            this.isActive = false
-            this.$refs.playDisabled.style.display = 'none'
-            this.$refs.playEnabled.style.display = 'inline'
-            this.$refs.stop.style.display = 'none'
-            this.$refs.pauseDisabled.style.display = 'inline'
-            this.$refs.pauseEnabled.style.display = 'none'
-            this.$refs.toggleButton.classList.remove('activeButton')
-            this.$refs.title.classList.remove('active')
-        },
-        pause() {
-            if (this.audioElement.src) {
-                const pauseTime = this.audioElement.currentTime
-                this.toggle()
-                this.audioElement.currentTime = pauseTime
-
+                if (!this.node.loaded) {
+                    return
+                }
+                Tone.Transport.emit('stopTransport', effectName)
+                Tone.Transport.seconds = this.pauseTime
+                Tone.Transport.start()
+                this.node.start()
+                this.node.seek(this.pauseTime)
+                this.pauseTime = 0
+                this.$refs.playEnabled.style.display = 'none'
+                this.$refs.stop.style.display = 'inline'
                 this.$refs.pauseDisabled.style.display = 'none'
                 this.$refs.pauseEnabled.style.display = 'inline'
+                this.$refs.toggleButton.classList.add('activeButton')
+                this.$refs.title.classList.add('active')
+                this.isActive = true
+            }
+
+            Object.values(this.knobs).forEach((knob) => {
+                knob.setActive(this.isActive)
+            })
+            window.requestAnimationFrame(this.draw)
+        },
+        pause() {
+            if (this.pauseTime === 0) {
+                const pauseTime = Tone.Transport.seconds
+                this.toggle()
+                this.pauseTime = pauseTime
             }
         },
         playAtMousePos() {
-            if (this.audioElement.src) {
-                this.audioElement.currentTime = this.audioElement.duration / (this.width / this.mousePos.x)
+            this.node.seek(this.duration / (this.width / this.mousePos.x))
+            Tone.Transport.seconds = this.duration / (this.width / this.mousePos.x)
+
+            this.pauseTime = Tone.Transport.seconds
+            if (this.isActive) {
+                this.toggle()
+                this.toggle()
             }
         },
         mute() {
-            if (this.audioElement.muted) {
+            if (this.isMuted) {
                 this.$refs.muteButton.classList.remove('muted')
             } else {
                 this.$refs.muteButton.classList.add('muted')
             }
-            this.audioElement.muted = !this.audioElement.muted
+            this.isMuted = !this.isMuted
+            this.node.mute = this.isMuted
         },
         loadFile(event) {
             const file = event.target.files[0]
@@ -118,8 +110,9 @@ export default {
                 if (this.isActive) {
                     this.toggle()
                 }
-
-                this.audioElement.src = e.target.result
+                this.duration = 0
+                this.pauseTime = 0
+                Tone.Transport.seconds = 0
 
                 this.node.load(e.target.result).then(() => {
                     this.$refs.playDisabled.style.display = 'none'
@@ -127,29 +120,52 @@ export default {
                     this.$refs.pauseDisabled.style.display = 'inline'
                     this.$refs.pauseEnabled.style.display = 'none'
                     this.$refs.fileName.innerText = event.target.files[0].name
-                    this.btFileName = event.target.files[0].name
-                    this.$refs.timeData.innerText = `0:00 / ${secondsToMinutes(this.audioElement.duration)}`
 
-                    this.waveDataLeft = []
-                    this.waveDataRight = []
+                    this.duration = this.node.buffer.duration
+                    this.waveData.left = []
+                    this.waveData.right = []
 
                     this.ctx.clearRect(0, 0, this.width, this.height)
 
                     this.ctx.strokeStyle = '#666'
 
+                    const p = 1
+
                     const leftChannel = this.node.buffer.getChannelData(0)
-                    for (let i = 0; i < this.width; i++) {
-                        const x = i
+                    this.ctx.save()
+                    this.ctx.translate(0, this.height * 0.25)
+                    for (let i = 0; i < this.width * p; i++) {
+                        const x = i / p
                         const y = leftChannel[x * Math.round(leftChannel.length / this.width)] * this.height * 0.25
-                        this.waveDataLeft.push(y)
+                        this.waveData.left.push([x, y])
+                        this.ctx.beginPath()
+                        this.ctx.moveTo(x, 0)
+                        this.ctx.lineTo(x, y)
+                        this.ctx.stroke()
+                        this.ctx.beginPath()
+                        this.ctx.moveTo(x, 0)
+                        this.ctx.lineTo(x, y * -1)
+                        this.ctx.stroke()
                     }
+                    this.ctx.restore()
 
                     const rightChannel = this.node.buffer.getChannelData(1)
-                    for (let i = 0; i < this.width; i++) {
-                        const x = i
+                    this.ctx.save()
+                    this.ctx.translate(0, this.height * 0.75)
+                    for (let i = 0; i < this.width * p; i++) {
+                        const x = i / p
                         const y = rightChannel[x * Math.round(rightChannel.length / this.width)] * this.height * 0.25
-                        this.waveDataRight.push(y)
+                        this.waveData.right.push([x, y])
+                        this.ctx.beginPath()
+                        this.ctx.moveTo(x, 0)
+                        this.ctx.lineTo(x, y)
+                        this.ctx.stroke()
+                        this.ctx.beginPath()
+                        this.ctx.moveTo(x, 0)
+                        this.ctx.lineTo(x, y * -1)
+                        this.ctx.stroke()
                     }
+                    this.ctx.restore()
                 })
 
                 this.$refs.fileName.innerText = 'Loading...'
@@ -162,14 +178,12 @@ export default {
         },
         draw() {
             this.ctx.clearRect(0, 0, this.width, this.height)
-            const elapsed = this.audioElement.duration / this.audioElement.currentTime
-            if (this.$refs.timeData) {
-                this.$refs.timeData.innerText = `${secondsToMinutes(
-                    this.audioElement.currentTime
-                )} / ${secondsToMinutes(this.audioElement.duration)}`
-            }
+            const elapsed = this.duration / Tone.Transport.seconds
+            this.$refs.timeData.innerText = `${secondsToMinutes(Tone.Transport.seconds)} / ${secondsToMinutes(
+                this.duration
+            )}`
 
-            if (this.isActive || this.audioElement.currentTime > 0) {
+            if (this.isActive || this.pauseTime !== 0) {
                 const progress = this.width / elapsed + 1
 
                 if (progress > this.width) {
@@ -181,12 +195,19 @@ export default {
 
                 this.ctx.strokeStyle = '#ff9c33'
                 let hasChangedColor = false
-                this.waveDataLeft.forEach((y, x) => {
-                    if (!hasChangedColor && x > progress) {
+                this.waveData.left.forEach((i) => {
+                    if (!hasChangedColor && i[0] > progress) {
                         this.ctx.strokeStyle = '#666'
                         hasChangedColor = true
                     }
-                    drawWaveLine(this.ctx, x, y)
+                    this.ctx.beginPath()
+                    this.ctx.moveTo(i[0], 0)
+                    this.ctx.lineTo(i[0], i[1])
+                    this.ctx.stroke()
+                    this.ctx.beginPath()
+                    this.ctx.moveTo(i[0], 0)
+                    this.ctx.lineTo(i[0], i[1] * -1)
+                    this.ctx.stroke()
                 })
                 this.ctx.restore()
 
@@ -194,12 +215,19 @@ export default {
                 this.ctx.translate(0, this.height * 0.75)
                 this.ctx.strokeStyle = '#ff9c33'
                 hasChangedColor = false
-                this.waveDataRight.forEach((y, x) => {
-                    if (!hasChangedColor && x > progress) {
+                this.waveData.right.forEach((i) => {
+                    if (!hasChangedColor && i[0] > progress) {
                         this.ctx.strokeStyle = '#666'
                         hasChangedColor = true
                     }
-                    drawWaveLine(this.ctx, x, y)
+                    this.ctx.beginPath()
+                    this.ctx.moveTo(i[0], 0)
+                    this.ctx.lineTo(i[0], i[1])
+                    this.ctx.stroke()
+                    this.ctx.beginPath()
+                    this.ctx.moveTo(i[0], 0)
+                    this.ctx.lineTo(i[0], i[1] * -1)
+                    this.ctx.stroke()
                 })
                 this.ctx.restore()
 
@@ -213,20 +241,34 @@ export default {
 
                 this.ctx.save()
                 this.ctx.translate(0, this.height * 0.25)
-                this.waveDataLeft.forEach((y, x) => {
-                    drawWaveLine(this.ctx, x, y)
+                this.waveData.left.forEach((i) => {
+                    this.ctx.beginPath()
+                    this.ctx.moveTo(i[0], 0)
+                    this.ctx.lineTo(i[0], i[1])
+                    this.ctx.stroke()
+                    this.ctx.beginPath()
+                    this.ctx.moveTo(i[0], 0)
+                    this.ctx.lineTo(i[0], i[1] * -1)
+                    this.ctx.stroke()
                 })
                 this.ctx.restore()
 
                 this.ctx.save()
                 this.ctx.translate(0, this.height * 0.75)
-                this.waveDataRight.forEach((y, x) => {
-                    drawWaveLine(this.ctx, x, y)
+                this.waveData.right.forEach((i) => {
+                    this.ctx.beginPath()
+                    this.ctx.moveTo(i[0], 0)
+                    this.ctx.lineTo(i[0], i[1])
+                    this.ctx.stroke()
+                    this.ctx.beginPath()
+                    this.ctx.moveTo(i[0], 0)
+                    this.ctx.lineTo(i[0], i[1] * -1)
+                    this.ctx.stroke()
                 })
                 this.ctx.restore()
             }
 
-            if (this.audioElement.readyState === 4) {
+            if (this.node.loaded) {
                 this.ctx.strokeStyle = '#c9c9c9'
                 this.ctx.beginPath()
                 this.ctx.moveTo(this.mousePos.x, 0)
@@ -237,62 +279,60 @@ export default {
             window.requestAnimationFrame(this.draw)
         },
         close() {
-            this.audioElement.src = ''
             this.$emit('closeEffect', effectName)
         },
     },
     data() {
         return {
             isActive: false,
+            isMuted: false,
             width: 400,
             height: 100,
-            audioElement: document.getElementById('backingAudio'),
-            waveDataLeft: [],
-            waveDataRight: [],
+            waveData: {
+                left: [],
+                right: [],
+            },
+            duration: 0,
+            pauseTime: 0,
             mousePos: {},
-            btVolume: 100,
-            btSpeed: 100,
-            btFileName: '',
         }
     },
     mounted() {
-        if (this.audioElement.src) {
-            this.waveDataLeft = localStorage.btWaveDataLeft || this.waveDataLeft
-            this.waveDataRight = localStorage.btWaveDataRight || this.waveDataRight
-            this.waveDataLeft = this.waveDataLeft.split(',')
-            this.waveDataRight = this.waveDataRight.split(',')
-
-            this.$refs.fileName.innerText = localStorage.btFileName || this.btFileName
-            this.$refs.timeData.innerText = `0:00 / ${secondsToMinutes(this.audioElement.duration)}`
-
-            if (this.audioElement.paused) {
-                this.setStopState()
-            } else {
-                this.setPlayState()
-            }
-        }
-
-        this.btVolume = localStorage.btVolume || this.btVolume
-        this.btSpeed = localStorage.btSpeed || this.btSpeed
-
         this.knobs = {
-            volume: knob.create(this.$refs.volume, 'Volume', this.btVolume, 0, 100, false, (knob, value) => {
-                this.audioElement.volume = value / 100
-                this.btVolume = value
+            volume: knob.create(this.$refs.volume, 'Volume', 0, -10, 10, true, (knob, value) => {
+                this.node.volume.value = value
             }),
-            speed: knob.create(this.$refs.speed, 'Speed', this.btSpeed, 50, 150, true, (knob, value) => {
-                this.audioElement.playbackRate = value / 100
-                this.btSpeed = value
+            pan: knob.create(this.$refs.pan, 'L     Pan     R', 0, -100, 100, true, (knob, value) => {
+                this.panner.pan.value = value / 100
             }),
         }
-        Object.values(this.knobs).forEach((knob) => {
-            knob.setActive(true)
-        })
 
         this.node = new Tone.Player(null, () => {
             this.$refs.toggleButton.classList.remove('disabled')
         })
         window.bt = this.node
+
+        this.panner = new Tone.Panner().toDestination()
+        this.node.connect(this.panner)
+        Tone.connect(this.panner, this.$store.getters.streamOutput)
+
+        Events.$on('toggleMonitor', (isMonitorActive) => {
+            if (isMonitorActive) {
+                Tone.disconnect(this.panner, Tone.Destination)
+            } else {
+                Tone.connect(this.panner, Tone.Destination)
+            }
+        })
+
+        Tone.Transport.on('stop', () => {
+            Tone.Transport.start()
+        })
+
+        Tone.Transport.on('stopTransport', (emitter) => {
+            if (emitter.toString() !== effectName && this.isActive) {
+                this.toggle()
+            }
+        })
 
         this.canvas = this.$refs.canvas
 
@@ -319,24 +359,11 @@ export default {
 
         window.requestAnimationFrame(this.draw)
     },
-    watch: {
-        btVolume(value) {
-            localStorage.btVolume = value
-        },
-        btSpeed(value) {
-            localStorage.btSpeed = value
-        },
-        waveDataLeft(value) {
-            localStorage.btWaveDataLeft = value
-        },
-        waveDataRight(value) {
-            localStorage.btWaveDataRight = value
-        },
-        btFileName(value) {
-            localStorage.btFileName = value
-        },
+    beforeDestroy() {
+        this.node.stop()
+        this.node.disconnect()
+        this.panner.disconnect()
     },
-    beforeDestroy() {},
 }
 </script>
 
@@ -386,7 +413,6 @@ export default {
 
 canvas {
     border-radius: 6px;
-    margin-right: 8px;
 }
 
 .muted {

@@ -355,6 +355,9 @@ export default {
 
 canvas {
     border-radius: 6px;
+    /* margin-right: 8px; */
+    position: relative;
+    left: -8px;
 }
 
 #topRow {

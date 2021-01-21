@@ -1,9 +1,9 @@
 <template>
     <div id="app">
-        <audio v-if="debug" ref="stream1" src="/static/wat/EADGBE.mp3" controls autoplay></audio>
+        <audio v-if="debug" ref="stream1" src="/static/wat/oad.mp3" controls autoplay></audio>
         <audio v-if="debug" ref="stream2" src="/static/wat/smoc.mp3" controls></audio>
 
-        <!-- <audio ref="backing" controls></audio> -->
+        <audio ref="backingAudio" id="backingAudio" controls></audio>
 
         <draggable v-model="effects" v-bind="dragOptions" @start="drag = true" @end="drag = false">
             <!-- <transition-group type="transition" :name="!drag ? 'flip-list' : null"> -->
@@ -123,6 +123,7 @@ import * as Tone from 'tone'
 window.Tone = Tone
 import {mapActions} from 'vuex'
 import {utils} from './utils'
+import {Events} from './events'
 
 export default {
     name: 'App',
@@ -251,12 +252,35 @@ export default {
             }
         }
 
+        let backingGain = null
+        this.$refs.backingAudio.oncanplaythrough = () => {
+            if (backingGain !== null) {
+                return
+            }
+            const backingSource = Tone.context.createMediaElementSource(this.$refs.backingAudio)
+            backingGain = new Tone.Gain().toDestination()
+            backingSource.connect(backingGain._gainNode)
+            Tone.connect(backingGain, this.$store.getters.streamOutput)
+
+            Events.$on('toggleMonitor', (isMonitorActive) => {
+                if (isMonitorActive) {
+                    Tone.disconnect(backingGain, Tone.Destination)
+                } else {
+                    Tone.connect(backingGain, Tone.Destination)
+                }
+            })
+        }
+
         utils.preventDrag(this.$refs.newEffect)
     },
 }
 </script>
 
 <style>
+#backingAudio {
+    display: none;
+}
+
 input:focus,
 select:focus,
 textarea:focus,

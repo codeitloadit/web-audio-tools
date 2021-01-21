@@ -41,7 +41,7 @@ export default {
     mounted() {
         this.knobs = {
             volume: knob.create(this.$refs.volume, 'Volume', 100, 0, 100, false, (knob, value) => {
-                Tone.Master.volume.value = utils.map(value, 0, 100, -50, 0)
+                Tone.Destination.volume.value = utils.map(value, 0, 100, -50, 0)
             }),
         }
         utils.preventDrag(this.$refs.effectContainer)
