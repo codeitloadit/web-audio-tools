@@ -315,9 +315,9 @@ h1 {
 
 input[type='text'],
 select {
-    font-family: 'Metropolis Regular', Avenir, Helvetica, Arial, sans-serif;
-    color: #c9c9c9;
-    background-color: #111111;
+    font-family: 'Metropolis Regular', Avenir, Helvetica, Arial, sans-serif !important;
+    color: #c9c9c9 !important;
+    background-color: #111111 !important;
     font-size: 16px;
     border: none;
     border-radius: 6px;
@@ -333,11 +333,11 @@ select {
     -moz-appearance: none;
     appearance: none;
     background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%23666666'><polygon points='0,0 80,0 40,50'/></svg>")
-        no-repeat;
-    background-size: 12px;
-    background-position: calc(100% - 3px) 10px;
-    background-repeat: no-repeat;
-    background-color: #111111;
+        no-repeat !important;
+    background-size: 12px !important;
+    background-position: calc(100% - 3px) 10px !important;
+    background-repeat: no-repeat !important;
+    background-color: #111111 !important;
     padding-left: 12px;
     text-align: left;
 }
