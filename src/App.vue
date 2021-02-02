@@ -343,7 +343,7 @@ h1 {
 }
 
 #app select.disabled {
-    color: #666;
+    color: #666 !important;
 }
 
 #dragContainer {
