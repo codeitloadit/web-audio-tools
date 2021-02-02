@@ -313,8 +313,8 @@ h1 {
     display: table-cell;
 }
 
-input[type='text'],
-select {
+#app input[type='text'],
+#app select {
     font-family: 'Metropolis Regular', Avenir, Helvetica, Arial, sans-serif !important;
     color: #c9c9c9 !important;
     background-color: #111111 !important;
@@ -328,7 +328,7 @@ select {
     -webkit-user-select: initial;
 }
 
-select {
+#app select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -342,7 +342,7 @@ select {
     text-align: left;
 }
 
-select.disabled {
+#app select.disabled {
     color: #666;
 }
 
