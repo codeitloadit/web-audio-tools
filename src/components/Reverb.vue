@@ -2,6 +2,9 @@
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
         <h1 ref="title" class="title">Reverb</h1>
+        <select ref="presets" class="presets">
+            <option value="disabled" disabled selected>Presets</option>
+        </select>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -15,6 +18,7 @@
 import * as Tone from 'tone'
 import {knob} from '../knob'
 import {mapActions} from 'vuex'
+import json from '../presets.json'
 
 const effectName = 'Reverb'
 
@@ -56,6 +60,25 @@ export default {
         close() {
             this.$emit('closeEffect', effectName)
         },
+        checkPresets() {
+            this.$refs.presets.value = 'disabled'
+            Object.keys(json[effectName]).forEach((name) => {
+                const preset = json[effectName][name]
+                if (
+                    this.knobs.decay.getValue('rvbDecay') === preset.rvbDecay &&
+                    this.knobs.preDelay.getValue('rvbPreDelay') === preset.rvbPreDelay &&
+                    this.knobs.wet.getValue('rvbWet') === preset.rvbWet
+                ) {
+                    this.$refs.presets.value = name
+                }
+            })
+
+            if (this.$refs.presets.value === 'disabled') {
+                this.$refs.presets.classList.add('disabled')
+            } else {
+                this.$refs.presets.classList.remove('disabled')
+            }
+        },
     },
     data() {
         return {
@@ -69,6 +92,21 @@ export default {
         }
     },
     mounted() {
+        Object.keys(json[effectName]).forEach((name) => {
+            const option = document.createElement('option')
+            option.text = name
+            option.value = name
+            this.$refs.presets.append(option)
+        })
+
+        this.$refs.presets.onchange = () => {
+            const preset = json[effectName][this.$refs.presets.value]
+
+            this.knobs.decay.setValue(preset.rvbDecay)
+            this.knobs.preDelay.setValue(preset.rvbPreDelay)
+            this.knobs.wet.setValue(preset.rvbWet)
+        }
+
         this.node = new Tone.Reverb()
         this.generateReverb()
         this.appendToChain(this.node)
@@ -84,23 +122,28 @@ export default {
                 this.node.decay = v / 100
                 this.rvbDecay = v
                 this.generateReverb()
+                this.checkPresets()
             }),
             preDelay: knob.create(this.$refs.preDelay, 'Pre Delay', this.rvbPreDelay, 1, 100, false, (_, v) => {
                 this.node.preDelay = v / 1000
                 this.rvbPreDelay = v
                 this.generateReverb()
+                this.checkPresets()
             }),
             wet: knob.create(this.$refs.wet, 'Dry/Wet', this.rvbWet, 0, 100, true, (_, v) => {
                 if (this.isActive) {
                     this.node.wet.value = v / 100
                     this.rvbWet = v
                 }
+                this.checkPresets()
             }),
         }
 
         this.node.decay = this.knobs.decay.getValue() / 100
         this.node.preDelay = this.knobs.preDelay.getValue() / 1000
         this.node.wet.value = 0
+
+        this.checkPresets()
 
         if (this.rvbWasActive) {
             this.toggle()

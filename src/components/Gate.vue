@@ -2,6 +2,9 @@
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
         <h1 ref="title" class="title">Gate</h1>
+        <select ref="presets" class="presets">
+            <option value="disabled" disabled selected>Presets</option>
+        </select>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -14,6 +17,7 @@
 import * as Tone from 'tone'
 import {knob} from '../knob'
 import {mapActions} from 'vuex'
+import json from '../presets.json'
 
 const effectName = 'Gate'
 
@@ -40,6 +44,24 @@ export default {
         close() {
             this.$emit('closeEffect', effectName)
         },
+        checkPresets() {
+            this.$refs.presets.value = 'disabled'
+            Object.keys(json[effectName]).forEach((name) => {
+                const preset = json[effectName][name]
+                if (
+                    this.knobs.threshold.getValue('dlyTime') === preset.gateThreshold &&
+                    this.knobs.smoothing.getValue('dlyWet') === preset.gateSmoothing
+                ) {
+                    this.$refs.presets.value = name
+                }
+            })
+
+            if (this.$refs.presets.value === 'disabled') {
+                this.$refs.presets.classList.add('disabled')
+            } else {
+                this.$refs.presets.classList.remove('disabled')
+            }
+        },
     },
     data() {
         return {
@@ -50,6 +72,20 @@ export default {
         }
     },
     mounted() {
+        Object.keys(json[effectName]).forEach((name) => {
+            const option = document.createElement('option')
+            option.text = name
+            option.value = name
+            this.$refs.presets.append(option)
+        })
+
+        this.$refs.presets.onchange = () => {
+            const preset = json[effectName][this.$refs.presets.value]
+
+            this.knobs.threshold.setValue(preset.gateThreshold)
+            this.knobs.smoothing.setValue(preset.gateSmoothing)
+        }
+
         this.node = new Tone.Gate(-1000, 0.1)
         this.appendToChain(this.node)
 
@@ -63,14 +99,18 @@ export default {
                     this.node.threshold = v
                     this.gateThreshold = v
                 }
+                this.checkPresets()
             }),
             smoothing: knob.create(this.$refs.smoothing, 'Smoothing', this.gateSmoothing, 1, 100, false, (_, v) => {
                 this.node.smoothing = v / 100
                 this.gateSmoothing = v
+                this.checkPresets()
             }),
         }
 
         this.node.smoothing = this.knobs.smoothing.getValue() / 100
+
+        this.checkPresets()
 
         if (this.gateWasActive) {
             this.toggle()

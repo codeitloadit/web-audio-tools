@@ -2,6 +2,9 @@
     <div class="effectContainer">
         <img class="buttonIcon close" src="/static/wat/x_white.svg" @click="close" />
         <h1 ref="title" class="title">Compressor</h1>
+        <select ref="presets" class="presets">
+            <option value="disabled" disabled selected>Presets</option>
+        </select>
         <span ref="toggleButton" class="toggleButton" @click="toggle">
             <img class="buttonIcon" src="/static/wat/power.svg" />
         </span>
@@ -17,6 +20,7 @@
 import * as Tone from 'tone'
 import {knob} from '../knob'
 import {mapActions} from 'vuex'
+import json from '../presets.json'
 
 const effectName = 'Compressor'
 
@@ -43,6 +47,27 @@ export default {
         close() {
             this.$emit('closeEffect', effectName)
         },
+        checkPresets() {
+            this.$refs.presets.value = 'disabled'
+            Object.keys(json[effectName]).forEach((name) => {
+                const preset = json[effectName][name]
+                if (
+                    this.knobs.threshold.getValue('cmpThreshold') === preset.cmpThreshold &&
+                    this.knobs.ratio.getValue('cmpRatio') === preset.cmpRatio &&
+                    this.knobs.attack.getValue('cmpAttack') === preset.cmpAttack &&
+                    this.knobs.release.getValue('cmpRelease') === preset.cmpRelease &&
+                    this.knobs.knee.getValue('cmpKnee') === preset.cmpKnee
+                ) {
+                    this.$refs.presets.value = name
+                }
+            })
+
+            if (this.$refs.presets.value === 'disabled') {
+                this.$refs.presets.classList.add('disabled')
+            } else {
+                this.$refs.presets.classList.remove('disabled')
+            }
+        },
     },
     data() {
         return {
@@ -56,6 +81,23 @@ export default {
         }
     },
     mounted() {
+        Object.keys(json[effectName]).forEach((name) => {
+            const option = document.createElement('option')
+            option.text = name
+            option.value = name
+            this.$refs.presets.append(option)
+        })
+
+        this.$refs.presets.onchange = () => {
+            const preset = json[effectName][this.$refs.presets.value]
+
+            this.knobs.threshold.setValue(preset.cmpThreshold)
+            this.knobs.ratio.setValue(preset.cmpRatio)
+            this.knobs.attack.setValue(preset.cmpAttack)
+            this.knobs.release.setValue(preset.cmpRelease)
+            this.knobs.knee.setValue(preset.cmpKnee)
+        }
+
         this.node = new Tone.Compressor(0, 1)
         this.appendToChain(this.node)
 
@@ -72,22 +114,27 @@ export default {
                     this.node.threshold.value = v
                     this.cmpThreshold = v
                 }
+                this.checkPresets()
             }),
             ratio: knob.create(this.$refs.ratio, 'Ratio', this.cmpRatio, 1, 20, false, (_, v) => {
                 this.node.ratio.value = v
                 this.cmpRatio = v
+                this.checkPresets()
             }),
             attack: knob.create(this.$refs.attack, 'Attack', this.cmpAttack, 0, 1000, false, (_, v) => {
                 this.node.attack.value = v / 1000
                 this.cmpAttack = v
+                this.checkPresets()
             }),
             release: knob.create(this.$refs.release, 'Release', this.cmpRelease, 1, 1000, false, (_, v) => {
                 this.node.release.value = v / 1000
                 this.cmpRelease = v
+                this.checkPresets()
             }),
             knee: knob.create(this.$refs.knee, 'Knee', this.cmpKnee, 0, 40, false, (_, v) => {
                 this.node.knee.value = v
                 this.cmpKnee = v
+                this.checkPresets()
             }),
         }
 
@@ -96,6 +143,8 @@ export default {
         this.node.attack.value = this.knobs.attack.getValue() / 1000
         this.node.release.value = this.knobs.release.getValue() / 1000
         this.node.knee.value = this.knobs.knee.getValue()
+
+        this.checkPresets()
 
         if (this.cmpWasActive) {
             this.toggle()

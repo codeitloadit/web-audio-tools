@@ -408,34 +408,12 @@ label {
 
 input[type='text'],
 select {
-    font-family: 'Metropolis Regular', Avenir, Helvetica, Arial, sans-serif;
     width: 40px;
-    color: #c9c9c9;
-    background-color: #111111;
-    font-size: 16px;
-    border: none;
-    border-radius: 6px;
     text-align: center;
     margin-right: 23px;
-    padding: 5px 5px 5px 2px;
-    user-select: initial;
-    -moz-user-select: initial;
-    -ms-user-select: initial;
-    -webkit-user-select: initial;
 }
 
 select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%23666666'><polygon points='0,0 80,0 40,50'/></svg>")
-        no-repeat;
-    background-size: 12px;
-    background-position: calc(100% - 3px) 10px;
-    background-repeat: no-repeat;
-    background-color: #111111;
-    padding-left: 12px;
-    text-align: left;
     width: 47px;
 }
 

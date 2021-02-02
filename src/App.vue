@@ -308,6 +308,42 @@ h1 {
     font-size: 20px;
     margin: 0;
     padding: 0;
+    position: relative;
+    top: -3px;
+    display: table-cell;
+}
+
+input[type='text'],
+select {
+    font-family: 'Metropolis Regular', Avenir, Helvetica, Arial, sans-serif;
+    color: #c9c9c9;
+    background-color: #111111;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 5px 5px 2px;
+    user-select: initial;
+    -moz-user-select: initial;
+    -ms-user-select: initial;
+    -webkit-user-select: initial;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%23666666'><polygon points='0,0 80,0 40,50'/></svg>")
+        no-repeat;
+    background-size: 12px;
+    background-position: calc(100% - 3px) 10px;
+    background-repeat: no-repeat;
+    background-color: #111111;
+    padding-left: 12px;
+    text-align: left;
+}
+
+select.disabled {
+    color: #666;
 }
 
 #dragContainer {
@@ -318,7 +354,7 @@ h1 {
     border: 2px solid #1e1e1e;
     background-color: #1e1e1e;
     cursor: pointer;
-    padding: 14px 0 18px;
+    padding: 14px 0 10px;
 }
 
 #newEffect > img {
@@ -342,12 +378,13 @@ h1 {
 .effectContainer {
     display: inline-block;
     background-color: #1e1e1e;
-    padding: 16px;
+    padding: 16px 16px 8px 16px;
     border-radius: 12px;
     margin: 3px 2px;
     height: 125px;
     border: 2px solid #1e1e1e;
     cursor: move;
+    position: relative;
 }
 
 canvas {
@@ -365,7 +402,7 @@ canvas {
     padding: 6px 4px 2px 4px;
     vertical-align: top;
     position: relative;
-    top: 34px;
+    top: 30px;
     margin: 0 12px 0 4px;
     cursor: pointer;
     font-size: 12px;
@@ -391,7 +428,14 @@ canvas {
     cursor: pointer;
     position: relative;
     right: -10px;
-    top: -10px;
+    top: -5px;
+}
+
+.presets {
+    position: absolute;
+    right: 32px;
+    top: 8px;
+    width: 150px;
 }
 
 #browser {

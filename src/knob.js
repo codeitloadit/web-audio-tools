@@ -1,7 +1,7 @@
 'use strict'
 
 function Knob() {
-    this.create = function(div, label, value, valMin, valMax, isNeedle = false, listener) {
+    this.create = function (div, label, value, valMin, valMax, isNeedle = false, listener) {
         const width = 100
         const height = 100
         const heightString = height.toString()
@@ -273,6 +273,8 @@ function Knob() {
                 this.setProperty('val', value)
             },
         }
+
+        knob.setValue(value)
 
         const mouseEventToValue = function(e, properties) {
             const canvas = e.target

@@ -1,0 +1,86 @@
+{
+    "Delay": {
+        "Slapback": {
+            "dlyTime": 10,
+            "dlyFeedback": 40,
+            "dlyWet": 11
+        },
+        "90 BPM": {
+            "dlyTime": 65,
+            "dlyFeedback": 50,
+            "dlyWet": 11
+        },
+        "120 BPM": {
+            "dlyTime": 50,
+            "dlyFeedback": 50,
+            "dlyWet": 11
+        }
+    },
+    "Reverb": {
+        "Church": {
+            "rvbDecay": 350,
+            "rvbPreDelay": 50,
+            "rvbWet": 21
+        },
+        "Room": {
+            "rvbDecay": 95,
+            "rvbPreDelay": 50,
+            "rvbWet": 50
+        },
+        "Spring Accent": {
+            "rvbDecay": 500,
+            "rvbPreDelay": 50,
+            "rvbWet": 7
+        },
+        "Lead Vocal": {
+            "rvbDecay": 310,
+            "rvbPreDelay": 11,
+            "rvbWet": 20
+        }
+    },
+    "Equalizer": {
+        "Lead Vocal": {
+            "eqLow": -4,
+            "eqLowFreq": 103,
+            "eqMid": 5,
+            "eqHighFreq": 1814,
+            "eqHigh": 7
+        },
+        "Bass": {
+            "eqLow": 10,
+            "eqLowFreq": 105,
+            "eqMid": 3,
+            "eqHighFreq": 2000,
+            "eqHigh": 10
+        },
+        "Strings": {
+            "eqLow": 6,
+            "eqLowFreq": 250,
+            "eqMid": 0,
+            "eqHighFreq": 4000,
+            "eqHigh": 3
+        },
+        "Acoustic Guitar": {
+            "eqLow": 6,
+            "eqLowFreq": 80,
+            "eqMid": 5,
+            "eqHighFreq": 2249,
+            "eqHigh": 2
+        }
+    },
+    "Compressor": {
+        "Male Voice": {
+            "cmpThreshold": -30,
+            "cmpRatio": 4,
+            "cmpAttack": 5,
+            "cmpRelease": 200,
+            "cmpKnee": 30
+        }
+    },
+    "Gate": {
+        "Lead Vocal": {
+            "gateThreshold": -96,
+            "gateSmoothing": 26
+        }
+    }
+}
