@@ -44,7 +44,7 @@ export default {
         return {
             isActive: false,
             lmtWasActive: true,
-            lmtThreshold: -50,
+            lmtThreshold: -35,
         }
     },
     mounted() {
@@ -55,7 +55,7 @@ export default {
         this.lmtThreshold = localStorage.lmtThreshold || this.lmtThreshold
 
         this.knobs = {
-            threshold: knob.create(this.$refs.threshold, 'Threshold', this.lmtThreshold, -50, 0, false, (_, v) => {
+            threshold: knob.create(this.$refs.threshold, 'Threshold', this.lmtThreshold, -35, 0, false, (_, v) => {
                 if (this.isActive) {
                     this.node.threshold.value = v
                     this.lmtThreshold = v
