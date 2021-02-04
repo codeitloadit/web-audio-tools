@@ -560,27 +560,27 @@ function Knob() {
             knob.redraw()
         }
 
-        // const scrollListener = function(e) {
-        //     const readonly = knob.getProperty('readonly')
+        const scrollListener = function(e) {
+            const readonly = knob.getProperty('readonly')
 
-        //     if (!readonly) {
-        //         e.preventDefault()
-        //         const delta = e.deltaY
-        //         const direction = delta > 0 ? 1 : delta < 0 ? -1 : 0
-        //         let val = knob.getValue()
-        //         val += direction
-        //         knob.setValueFloating(val)
+            if (!readonly) {
+                e.preventDefault()
+                const delta = e.deltaY
+                const direction = delta > 0 ? 1 : delta < 0 ? -1 : 0
+                let val = knob.getValue()
+                val += direction
+                knob.setValueFloating(val)
 
-        //         const commit = function() {
-        //             knob.commit()
-        //         }
+                const commit = function() {
+                    knob.commit()
+                }
 
-        //         let timeout = knob._timeout
-        //         window.clearTimeout(timeout)
-        //         timeout = window.setTimeout(commit, 250)
-        //         knob._timeout = timeout
-        //     }
-        // }
+                let timeout = knob._timeout
+                window.clearTimeout(timeout)
+                timeout = window.setTimeout(commit, 250)
+                knob._timeout = timeout
+            }
+        }
 
         // const keyPressListener = function(e) {
         //     const kc = e.keyCode
@@ -616,7 +616,7 @@ function Knob() {
         canvas.addEventListener('touchmove', touchMoveListener, {passive: true})
         canvas.addEventListener('touchend', touchEndListener)
         canvas.addEventListener('touchcancel', touchCancelListener)
-        // canvas.addEventListener('wheel', scrollListener, {passive: true})
+        canvas.addEventListener('wheel', scrollListener, {passive: false})
         // input.addEventListener('keypress', keyPressListener)
         knob.redraw()
         knob.addListener(listener)
