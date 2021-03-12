@@ -286,7 +286,7 @@ export default {
             }),
         }
         Object.values(this.knobs).forEach((knob) => {
-            knob.setActive(true)
+            knob.setActive(false)
         })
 
         this.node = new Tone.Player(null, () => {

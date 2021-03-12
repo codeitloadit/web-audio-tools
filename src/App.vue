@@ -40,6 +40,13 @@
                     src="/static/wat/reverb.png"
                 /> -->
                 <img ref="Reverb" class="effectImage" @click="addEffect($event, Reverb)" src="/static/wat/reverb.png" />
+                <img ref="Delay" class="effectImage" @click="addEffect($event, Delay)" src="/static/wat/delay.png" />
+                <img
+                    ref="Limiter"
+                    class="effectImage"
+                    @click="addEffect($event, Limiter)"
+                    src="/static/wat/limiter.png"
+                />
                 <img
                     ref="Compressor"
                     class="effectImage"
@@ -47,13 +54,6 @@
                     src="/static/wat/compressor.png"
                 />
                 <img ref="Gate" class="effectImage" @click="addEffect($event, Gate)" src="/static/wat/gate.png" />
-                <img
-                    ref="Limiter"
-                    class="effectImage"
-                    @click="addEffect($event, Limiter)"
-                    src="/static/wat/limiter.png"
-                />
-                <img ref="Delay" class="effectImage" @click="addEffect($event, Delay)" src="/static/wat/delay.png" />
                 <img
                     ref="Equalizer"
                     class="effectImage"
@@ -64,24 +64,17 @@
                 <br />
                 <h1>Tools:</h1>
                 <img ref="Meter" class="effectImage" @click="addEffect($event, Meter)" src="/static/wat/meter.png" />
-                <img ref="Tuner" class="effectImage" @click="addEffect($event, Tuner)" src="/static/wat/tuner.png" />
-                <!-- <img
-                    ref="TunerFFT"
+                <img
+                    ref="BackingTrack"
                     class="effectImage"
-                    @click="addEffect($event, TunerFFT)"
-                    src="/static/wat/tuner.png"
-                /> -->
+                    @click="addEffect($event, BackingTrack)"
+                    src="/static/wat/backing.png"
+                />
                 <img
                     ref="Spectrum"
                     class="effectImage"
                     @click="addEffect($event, Spectrum)"
                     src="/static/wat/spectrum.png"
-                />
-                <img
-                    ref="Waveform"
-                    class="effectImage"
-                    @click="addEffect($event, Waveform)"
-                    src="/static/wat/waveform.png"
                 />
                 <img
                     ref="Metronome"
@@ -90,11 +83,18 @@
                     src="/static/wat/metronome.png"
                 />
                 <img
-                    ref="BackingTrack"
+                    ref="Waveform"
                     class="effectImage"
-                    @click="addEffect($event, BackingTrack)"
-                    src="/static/wat/backing.png"
+                    @click="addEffect($event, Waveform)"
+                    src="/static/wat/waveform.png"
                 />
+                <img ref="Tuner" class="effectImage" @click="addEffect($event, Tuner)" src="/static/wat/tuner.png" />
+                <!-- <img
+                    ref="TunerFFT"
+                    class="effectImage"
+                    @click="addEffect($event, TunerFFT)"
+                    src="/static/wat/tuner.png"
+                /> -->
             </div>
         </div>
     </div>
@@ -158,11 +158,11 @@ export default {
             const overlayHeight = document.getElementById('browser').clientHeight
             if (overlayHeight < 726) {
                 this.$refs.browserContent.style.maxHeight = `${overlayHeight - 64}px`
-                this.$refs.browserContent.style.width = '642px'
+                this.$refs.browserContent.style.width = '716px'
                 this.$refs.browserContent.style.overflowY = 'scroll'
             } else {
                 this.$refs.browserContent.style.maxHeight = ''
-                this.$refs.browserContent.style.width = '622px'
+                this.$refs.browserContent.style.width = '696px'
                 this.$refs.browserContent.style.overflowY = ''
             }
             const topMargin = Math.max((overlayHeight - document.getElementById('browserContent').offsetHeight) / 2, 0)
@@ -311,6 +311,10 @@ h1 {
     position: relative;
     top: -3px;
     display: table-cell;
+}
+
+#app {
+    padding: 8px;
 }
 
 #app input[type='text'],
