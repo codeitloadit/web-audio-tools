@@ -277,14 +277,14 @@ export default {
 </script>
 
 <style>
-#backingAudio {
+#app #backingAudio {
     display: none;
 }
 
-input:focus,
-select:focus,
-textarea:focus,
-button:focus {
+#app input:focus,
+#app select:focus,
+#app textarea:focus,
+#app button:focus {
     outline: none;
 }
 
@@ -295,15 +295,7 @@ button:focus {
     -webkit-user-select: none;
 }
 
-html {
-    color: #aaa;
-    background-color: #101010;
-    font-family: 'Metropolis Regular', Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-h1 {
+#app h1 {
     font-family: 'Metropolis Medium', Avenir, Helvetica, Arial, sans-serif;
     font-size: 20px;
     margin: 0;
@@ -315,6 +307,11 @@ h1 {
 
 #app {
     padding: 8px;
+    color: #aaa;
+    background-color: #101010;
+    font-family: 'Metropolis Regular', Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 #app input[type='text'],
@@ -350,36 +347,36 @@ h1 {
     color: #666 !important;
 }
 
-#dragContainer {
+#app #dragContainer {
     display: inline-block;
 }
 
-#newEffect {
+#app #newEffect {
     border: 2px solid #1e1e1e;
     background-color: #1e1e1e;
     cursor: pointer;
     padding: 14px 0 10px;
 }
 
-#newEffect > img {
+#app #newEffect > img {
     display: inline-block;
     width: 48px;
     height: 122px;
 }
 
-#newEffect > h1 {
+#app #newEffect > h1 {
     display: inline-block;
     color: #ff9c33;
     margin: 0 24px 110px 12px;
     vertical-align: middle;
 }
 
-#newEffect:active,
-#newEffect > h1:active {
+#app #newEffect:active,
+#app #newEffect > h1:active {
     background-color: #333;
 }
 
-.effectContainer {
+#app .effectContainer {
     display: inline-block;
     background-color: #1e1e1e;
     padding: 16px 16px 8px 16px;
@@ -391,11 +388,11 @@ h1 {
     position: relative;
 }
 
-canvas {
+#app canvas {
     cursor: default;
 }
 
-.toggleButton {
+#app .toggleButton {
     display: inline-block;
     width: 30px;
     height: 24px;
@@ -413,21 +410,21 @@ canvas {
     font-weight: bold;
 }
 
-.activeButton {
+#app .activeButton {
     background-color: #d6c771;
     box-shadow: 0 0 30px #d6c771;
 }
 
-.disabled {
+#app .disabled {
     color: #666;
 }
 
-.buttonIcon {
+#app .buttonIcon {
     width: 20px;
     height: 20px;
 }
 
-.buttonIcon.close {
+#app .buttonIcon.close {
     float: right;
     cursor: pointer;
     position: relative;
@@ -435,14 +432,14 @@ canvas {
     top: -5px;
 }
 
-.presets {
+#app .presets {
     position: absolute;
     right: 32px;
     top: 8px;
     width: 150px;
 }
 
-#browser {
+#app #browser {
     display: none;
     position: fixed;
     top: 0;
@@ -454,7 +451,7 @@ canvas {
     z-index: 999;
 }
 
-#browserContent {
+#app #browserContent {
     display: inline-block;
     background-color: #333;
     border-radius: 12px;
@@ -462,39 +459,39 @@ canvas {
     text-align: left;
 }
 
-#browserContent h1 {
+#app #browserContent h1 {
     color: #aaa;
     margin-bottom: 4px;
 }
 
-.effectImage {
+#app .effectImage {
     margin-right: 4px;
     height: 100px;
     cursor: pointer;
 }
 
-.effectImage.active {
+#app .effectImage.active {
     opacity: 0.5;
     cursor: default;
 }
 
-.effectWrapper {
+#app .effectWrapper {
     display: inline-block;
 }
 
-.title {
+#app .title {
     color: #9c9c9c;
 }
 
-.title.active {
+#app .title.active {
     color: #ff9c33;
 }
 
-.sortable-ghost {
+#app .sortable-ghost {
     opacity: 0.5;
 }
 
-.sortable-ghost > div {
+#app .sortable-ghost > div {
     border: 2px solid #ff9c33;
 }
 </style>
